@@ -1,14 +1,21 @@
-# Dependencies
+# =============================================================================
+# Mughal Steel - Comprehensive Git Ignore Rules
+# =============================================================================
+
+# 1. Node & Frontend Dependencies & Builds
 node_modules/
 **/node_modules/
-
-# Production builds
 dist/
 **/dist/
 dist-ssr/
 build/
+.vite/
+**/.vite/
+.output/
+.turbo/
+.cache/
 
-# .NET / C# build outputs
+# 2. .NET & Visual Studio Artifacts
 bin/
 obj/
 **/bin/
@@ -19,13 +26,43 @@ obj/
 *.suo
 *.userosscache
 *.sln.docstates
+TestResults/
+[Dd]ebug/
+[Rr]elease/
+*.nupkg
+*.dbmdl
 
-# Logs & temp files
+# 3. Heavy Local Raw Video Folders (Frontend uses public/videos)
+videos/
+videos animation/
+**/videos animation/
+
+# 4. OS, Editor & Temp Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+
+# 5. Logs & Debugger Output
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-.DS_Store
+.system_generated/
+
+# 6. Local Environment Overrides & Temporary Test Scripts
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 *.local
+test_*.mjs
+test_*.js
