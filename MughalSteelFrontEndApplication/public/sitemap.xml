@@ -1,48 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://localhost:5173/</loc>
+    <loc>https://mughalsteelfabrication.com/</loc>
     <priority>1.0</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>http://localhost:5173/shop</loc>
+    <loc>https://mughalsteelfabrication.com/shop</loc>
     <priority>0.9</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>http://localhost:5173/custom-design</loc>
+    <loc>https://mughalsteelfabrication.com/projects</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://mughalsteelfabrication.com/gallery</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://mughalsteelfabrication.com/services</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>http://localhost:5173/virtual-try-on</loc>
-    <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>http://localhost:5173/gallery</loc>
+    <loc>https://mughalsteelfabrication.com/custom-design</loc>
     <priority>0.8</priority>
-    <changefreq>weekly</changefreq>
+    <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>http://localhost:5173/blog</loc>
+    <loc>https://mughalsteelfabrication.com/try-at-home</loc>
     <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://mughalsteelfabrication.com/about</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://mughalsteelfabrication.com/contact</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://mughalsteelfabrication.com/reviews</loc>
+    <priority>0.7</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>http://localhost:5173/about</loc>
+    <loc>https://mughalsteelfabrication.com/blog</loc>
     <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>http://localhost:5173/contact</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>http://localhost:5173/faq</loc>
+    <loc>https://mughalsteelfabrication.com/faq</loc>
     <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://mughalsteelfabrication.com/warranty</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://mughalsteelfabrication.com/terms</loc>
+    <priority>0.5</priority>
     <changefreq>monthly</changefreq>
   </url>
 </urlset>
