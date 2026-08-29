@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #070b12;
+    --text-primary: #f5f5f4;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: clip;
+    touch-action: pan-y;
+    overscroll-behavior-y: auto;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html.light {
+    --bg-primary: #f8f9fa;
+    --text-primary: #1e293b;
+  }
+
+  body {
+    min-height: 100vh;
+    overflow-x: clip;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+    @apply bg-brand-dark text-stone-100 font-sans antialiased selection:bg-brand-gold selection:text-brand-dark;
+  }
+
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: clip;
+  }
+
+  html.light body {
+    background-color: #f8f9fa;
+    color: #1e293b;
+    selection-background-color: #d4af37;
+    selection-color: #0f172a;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight font-bold text-stone-100;
+  }
+
+  html.light h1, html.light h2, html.light h3, html.light h4, html.light h5, html.light h6 {
+    color: #0f172a;
+  }
+}
+
+@layer components {
+  /* Premium Metallic Gold Button */
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-brand-gold bg-gradient-to-r from-brand-gold to-brand-gold-dark text-brand-dark font-heading font-bold tracking-wider text-xs uppercase transition-all duration-300 hover:brightness-110 hover:shadow-glow-gold active:scale-95 rounded-sm shadow-md cursor-pointer;
+  }
+
+  /* WhatsApp Action Button */
+  .btn-whatsapp {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-bold tracking-wider text-xs uppercase transition-all duration-300 hover:shadow-lg active:scale-95 rounded-sm border border-emerald-400/30 cursor-pointer;
+  }
+
+  /* Sleek Outline Button */
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-brand-light bg-brand-navy/60 hover:bg-brand-medium text-stone-200 hover:text-brand-gold hover:border-brand-gold/60 font-heading font-semibold tracking-wider text-xs uppercase transition-all duration-300 active:scale-95 rounded-sm backdrop-blur-sm cursor-pointer;
+  }
+
+  html.light .btn-outline {
+    background-color: #ffffff;
+    border-color: #cbd5e1;
+    color: #334155;
+  }
+
+  html.light .btn-outline:hover {
+    border-color: #c5a880;
+    color: #936f38;
+    background-color: #faf5ee;
+  }
+
+  /* Steel Dark Button */
+  .btn-dark {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-brand-medium text-stone-100 font-heading font-semibold tracking-wider text-xs uppercase transition-all duration-300 hover:bg-brand-light hover:text-brand-gold active:scale-95 border border-brand-light rounded-sm cursor-pointer;
+  }
+
+  html.light .btn-dark {
+    background-color: #0f172a;
+    color: #ffffff;
+    border-color: #334155;
+  }
+
+  /* Glassmorphism & Panel Styling */
+  .glass-panel {
+    @apply bg-brand-medium/90 backdrop-blur-md border border-brand-light/80 shadow-premium;
+  }
+
+  html.light .glass-panel {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-color: #e2e8f0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.07), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:border-brand-gold/50 hover:shadow-premium-hover;
+  }
+
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#e2d5c3] via-[#d4af37] to-[#c5a880];
+  }
+
+  html.light .text-gradient-gold {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#a67c1e] via-[#c59a30] to-[#8c6717];
+  }
+
+  .text-gradient-steel {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-stone-100 via-slate-300 to-slate-400;
+  }
+
+  html.light .text-gradient-steel {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-slate-700 to-slate-600;
+  }
+
+  .nav-link-hover {
+    @apply relative transition-colors duration-200;
+  }
+
+  .nav-link-hover::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-[2px] bg-brand-gold transition-all duration-300;
+  }
+
+  .nav-link-hover:hover::after {
+    @apply w-full;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #070b12;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c5a880;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(197, 168, 128, 0.2); }
+  50% { box-shadow: 0 0 30px rgba(197, 168, 128, 0.5); }
+}
+
+.glow-animation {
+  animation: pulseGlow 3s infinite;
+}

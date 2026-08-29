@@ -1,0 +1,6 @@
+@MughalSteelApi_HostAddress = http://localhost:5263
+
+GET {{MughalSteelApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
