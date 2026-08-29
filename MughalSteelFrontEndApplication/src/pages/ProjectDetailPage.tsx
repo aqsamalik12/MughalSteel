@@ -8,6 +8,7 @@ import {
   X, ChevronLeft, ChevronRight, Clock, Building2, Wrench
 } from 'lucide-react';
 import type { PortfolioProject } from '../types';
+import { useSEO } from '../utils/useSEO';
 
 export const ProjectDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -83,6 +84,32 @@ export const ProjectDetailPage: React.FC = () => {
     p.slug?.toLowerCase() === slug?.toLowerCase() || 
     p.id === slug
   );
+
+  useSEO({
+    title: project ? `${project.title} — Case Study | Mughal Steel Fabrication` : 'Project Case Study | Mughal Steel Fabrication',
+    description: project ? `${project.title} (${project.location}). ${project.shortDescription}` : 'Custom architectural steel fabrication case study.',
+    image: project?.image || project?.galleryImages?.[0],
+    url: project?.slug ? `/projects/${project.slug}` : undefined,
+    structuredData: project ? {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: project.title,
+      description: project.shortDescription || project.description,
+      image: project.image || project.galleryImages?.[0],
+      author: {
+        '@type': 'Organization',
+        name: 'Mughal Steel Fabrication'
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Mughal Steel Fabrication',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://mughalsteelfabrication.com/mughal-steel-logo.png'
+        }
+      }
+    } : undefined
+  });
 
   // Manage Lightbox Body Scroll Lock & Keyboard Events
   useEffect(() => {

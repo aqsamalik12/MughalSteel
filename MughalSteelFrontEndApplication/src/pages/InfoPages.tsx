@@ -1,8 +1,14 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, Truck, RefreshCw, FileText } from 'lucide-react';
+import { useSEO } from '../utils/useSEO';
 
 export const ShippingPage: React.FC = () => {
+  useSEO({
+    title: 'Shipping & On-Site Installation | Mughal Steel Fabrication',
+    description: 'Learn about our heavy structural transport, crating, and on-site laser alignment installation process across Pakistan.',
+    url: '/shipping'
+  });
   useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
     <div className="bg-brand-dark min-h-screen text-stone-200 py-16 px-6">
@@ -15,34 +21,20 @@ export const ShippingPage: React.FC = () => {
         <section className="space-y-4">
           <h2 className="text-xl font-serif text-stone-100 uppercase tracking-widest border-l-2 border-brand-gold pl-3">Freight Delivery Process</h2>
           <p className="text-stone-400 text-sm leading-relaxed">
-            Due to the structural weight and dimensions of IronCraft double doors, pivots, and custom steel frames, all entries are shipped via heavy freight LTL carriers. Your door will arrive crated in a custom wooden container, secured by industrial straps to prevent vibration and damage.
+            Due to the structural weight and dimensions of Mughal Steel double driveway gates, pivot doors, and custom steel frames, all entries are transported via specialized heavy flatbed carriers with cushioned crating to prevent vibration and damage.
           </p>
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-serif text-stone-100 uppercase tracking-widest border-l-2 border-brand-gold pl-3">Lead Times</h2>
+          <h2 className="text-xl font-serif text-stone-100 uppercase tracking-widest border-l-2 border-brand-gold pl-3">Fabrication & Delivery Timelines</h2>
           <p className="text-stone-400 text-sm leading-relaxed">
-            - **In-Stock Units**: Standard units ship out within 5-7 business days. Delivery transits average 5-10 business days depending on location.<br />
-            - **Bespoke/Custom Design Doors**: Custom entries require hand-forging, structural frame welding, glass sealing, and customized finishing coats. Current lead times for custom layouts average 12-16 weeks.
-          </p>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="text-xl font-serif text-stone-100 uppercase tracking-widest border-l-2 border-brand-gold pl-3">Freight Charges</h2>
-          <p className="text-stone-400 text-sm leading-relaxed">
-            Flat-rate freight shipping for single or double entry doors is **$350** inside the continental US. Smaller hardware components ship flat-rate at **$45**. Orders exceeding **$8,000** are qualified for **FREE standard freight shipping**.
-          </p>
-        </section>
-
-        <section className="space-y-4 bg-brand-medium/50 border border-brand-light p-6 rounded">
-          <h3 className="text-sm font-serif text-brand-gold uppercase tracking-widest mb-2 font-bold">Important: Inspection Requirement</h3>
-          <p className="text-stone-400 text-xs leading-relaxed">
-            You or your general contractor must inspect the wooden crate for signs of damage BEFORE signing the freight receipt. If the crate is damaged, take photos immediately, write "Damaged upon receipt" on the shipping slip, refuse the shipment, and call our service department at (800) 555-IRON.
+            - **Standard Catalog Products**: Standard manufactured units are prepared within 7-10 business days.<br />
+            - **Bespoke / Custom CAD Architectural Designs**: Custom entries require CNC fiber laser profiling, hand-forging, structural frame welding, zinc anti-rust primer, and electrostatic powder baking. Turnaround averages 14-21 business days.
           </p>
         </section>
 
         <div className="pt-6">
-          <Link to="/quote" className="btn-gold text-xs inline-flex items-center space-x-2">
+          <Link to="/contact" className="btn-gold text-xs inline-flex items-center space-x-2">
             <span>Ask a Shipping Question</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -95,6 +87,11 @@ export const ReturnsPage: React.FC = () => {
 };
 
 export const WarrantyPage: React.FC = () => {
+  useSEO({
+    title: '10-Year Structural Warranty | Mughal Steel Fabrication',
+    description: 'Read the official 10-Year Structural Anti-Sag and 5-Year Anti-Corrosion warranty policy for Mughal Steel Fabrication products.',
+    url: '/warranty'
+  });
   useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
     <div className="bg-brand-dark min-h-screen text-stone-200 py-16 px-6">
@@ -107,11 +104,11 @@ export const WarrantyPage: React.FC = () => {
         <section className="space-y-4">
           <h2 className="text-xl font-serif text-stone-100 uppercase tracking-widest border-l-2 border-brand-gold pl-3">Coverage Structure</h2>
           <p className="text-stone-400 text-sm leading-relaxed">
-            Every IronCraft door is backed by our comprehensive warranty coverage:<br />
-            - **Iron Frame & Structural Welds**: 10-Year Limited Warranty.<br />
-            - **Finishes & Paint**: 5-Year Limited Warranty against peeling, blistering, or flaking under normal exposure.<br />
+            Every Mughal Steel gate and door is backed by our comprehensive warranty coverage:<br />
+            - **Steel Frame & Structural Welds**: 10-Year Limited Structural Warranty.<br />
+            - **Finishes & Electrostatic Powder Coat**: 5-Year Limited Warranty against blistering or flaking under normal environmental exposure.<br />
             - **Glass Units & Seals**: 5-Year Limited Warranty against seal failure and moisture fogging.<br />
-            - **Handles & Locks**: 2-Year Limited Warranty on mechanics.
+            - **Italian Gate Automation & Motors**: 2-Year Official Manufacturer Warranty.
           </p>
         </section>
 
@@ -119,10 +116,9 @@ export const WarrantyPage: React.FC = () => {
           <h2 className="text-xl font-serif text-stone-100 uppercase tracking-widest border-l-2 border-brand-gold pl-3">Warranty Exclusions</h2>
           <p className="text-stone-400 text-sm leading-relaxed">
             This warranty does not cover damages caused by:<br />
-            - Improper installation or failing to follow structural guidelines.<br />
-            - Modifications made to the door frame after leaving our facility.<br />
-            - Extreme marine atmospheres or coastal salt spray without choosing our special Marine Clear Finish.<br />
-            - Natural wear-and-tear or minor cosmetic fading of bronze highlighting over time.
+            - Improper installation by unauthorized third parties failing to follow structural leveling guidelines.<br />
+            - Unapproved modifications made to the frame after leaving our fabrication workshop.<br />
+            - Natural wear-and-tear or minor cosmetic fading of bronze highlighting over extended years.
           </p>
         </section>
 
@@ -145,6 +141,11 @@ export const WarrantyPage: React.FC = () => {
 };
 
 export const PrivacyPage: React.FC = () => {
+  useSEO({
+    title: 'Privacy Policy | Mughal Steel Fabrication',
+    description: 'Privacy policy for Mughal Steel Fabrication client inquiries, measurements, and quotation data.',
+    url: '/privacy'
+  });
   useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
     <div className="bg-brand-dark min-h-screen text-stone-200 py-16 px-6">
@@ -154,7 +155,7 @@ export const PrivacyPage: React.FC = () => {
           <h1 className="text-4xl font-serif uppercase tracking-widest">Privacy Policy</h1>
         </div>
         <p className="text-stone-400 text-sm leading-relaxed">
-          At IronCraft Doors, your privacy is a cornerstone of our service. We collect information like your name, email, phone, and project measurements to construct accurate quotes and deliver products. We do not sell your data. Mock credit card transactions during checkout are processed via simulated systems and card details are never stored.
+          At Mughal Steel Fabrication, your privacy is a cornerstone of our service. We collect information like your name, email, phone, and project measurements exclusively to construct accurate quotes and deliver fabricated steel products. We do not sell your personal data.
         </p>
       </div>
     </div>
@@ -162,6 +163,11 @@ export const PrivacyPage: React.FC = () => {
 };
 
 export const TermsPage: React.FC = () => {
+  useSEO({
+    title: 'Terms & Conditions | Mughal Steel Fabrication',
+    description: 'Terms and conditions for Mughal Steel Fabrication engineering contracts, site surveys, and product fabrication.',
+    url: '/terms'
+  });
   useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
     <div className="bg-brand-dark min-h-screen text-stone-200 py-16 px-6">
@@ -171,7 +177,7 @@ export const TermsPage: React.FC = () => {
           <h1 className="text-4xl font-serif uppercase tracking-widest">Terms & Conditions</h1>
         </div>
         <p className="text-stone-400 text-sm leading-relaxed">
-          By browsing or buying from IronCraft Doors, you agree to our terms. Structural framing, threshold level checks, and building permit clearances are the absolute responsibility of the homeowner and installer. Estimated prices in the Custom Designer and Try-on tools are mock approximations; formal contracts will specify official final pricing.
+          By engaging Mughal Steel Fabrication for steel fabrication, you agree to our terms. Structural pillar leveling checks, masonry anchor clearances, and building permit approvals are coordinated between the homeowner and our on-site survey engineers. Estimated prices in the Custom Designer and Try-on tools are close approximations; formal contracts specify official final pricing.
         </p>
       </div>
     </div>

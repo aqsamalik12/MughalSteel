@@ -6,8 +6,16 @@ import {
   ShieldCheck, Hammer, Layers, Shield, Maximize2, 
   Factory, ArrowRight, MessageCircle, Sparkles, CheckCircle2 
 } from 'lucide-react';
+import { useSEO } from '../utils/useSEO';
 
 export const ServicesPage: React.FC = () => {
+  useSEO({
+    title: 'Steel Fabrication Services | Mughal Steel Fabrication',
+    description: 'Explore our full spectrum of specialized fabrication services: CNC fiber laser cutting, wrought iron artistry, architectural staircases, security boundary grills, and Italian automated gates.',
+    keywords: 'Steel fabrication services, CNC laser cutting Pakistan, wrought iron gates, security window grills, stainless steel stairs',
+    url: '/services'
+  });
+
   const { getWhatsAppUrl, services } = useData();
 
   useEffect(() => {

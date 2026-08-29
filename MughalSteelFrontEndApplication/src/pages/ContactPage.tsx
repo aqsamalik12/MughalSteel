@@ -4,8 +4,16 @@ import {
   Phone, Mail, MapPin, Clock, MessageCircle, 
   CheckCircle2, AlertCircle, Sparkles, Send 
 } from 'lucide-react';
+import { useSEO } from '../utils/useSEO';
 
 export const ContactPage: React.FC = () => {
+  useSEO({
+    title: 'Contact Mughal Steel Fabrication | Islamabad & Rawalpindi',
+    description: 'Get in touch with Mughal Steel Fabrication. Visit our workshop in Sector I-9 Industrial Area, request a site laser measurement survey, or get an instant WhatsApp quote.',
+    keywords: 'Contact Mughal Steel, steel fabricator phone number Islamabad, metal gate workshop Rawalpindi address',
+    url: '/contact'
+  });
+
   const { settings, addContactMessage, getWhatsAppUrl } = useData();
 
   const [name, setName] = useState('');

@@ -11,6 +11,7 @@ import {
   X, Layers, Compass, ZoomIn, Share2, Check, FileText,
   User, Phone, MapPin
 } from 'lucide-react';
+import { useSEO } from '../utils/useSEO';
 
 export const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -21,13 +22,36 @@ export const ProductDetailPage: React.FC = () => {
 
   const { user } = useAuth();
 
-
   // Find product by slug or code
   const product = products.find(p => 
     p.slug === slug || 
     p.productCode.toLowerCase() === slug?.toLowerCase() ||
     p.id === slug
   ) || products[0];
+
+  useSEO({
+    title: product ? `${product.name} | Mughal Steel Fabrication` : 'Product Details | Mughal Steel Fabrication',
+    description: product?.description || 'Custom architectural steel fabrication, laser-cut specifications, and instant sizing calculator.',
+    image: product?.images?.[0] || (product as any)?.image,
+    url: product?.slug ? `/product/${product.slug}` : undefined,
+    structuredData: product ? {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.name,
+      image: product.images?.[0] || (product as any)?.image,
+      description: product.description,
+      brand: {
+        '@type': 'Brand',
+        name: 'Mughal Steel Fabrication'
+      },
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'PKR',
+        price: product.price || 0,
+        availability: 'https://schema.org/InStock'
+      }
+    } : undefined
+  });
 
   // Gallery state
   const [activeImageIndex, setActiveImageIndex] = useState(0);

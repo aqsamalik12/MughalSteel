@@ -3,8 +3,16 @@ import { Link } from 'react-router-dom';
 import { SEED_PROJECTS, PROJECT_CATEGORIES_DATA } from '../data/seedData';
 import { useData } from '../context/DataContext';
 import { Sparkles, MapPin, Eye, MessageCircle, ArrowRight, Filter } from 'lucide-react';
+import { useSEO } from '../utils/useSEO';
 
 export const GalleryPage: React.FC = () => {
+  useSEO({
+    title: 'Steel Fabrication Portfolio & Visual Gallery | Mughal Steel Fabrication',
+    description: 'Explore high-resolution multi-angle photography of completed luxury gates, stainless steel railings, boundary grills, and custom architectural fabrication.',
+    keywords: 'Steel fabrication gallery, metalwork portfolio Pakistan, modern gate pictures, railing designs gallery',
+    url: '/gallery'
+  });
+
   const { getWhatsAppUrl, categories, projects } = useData();
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const allProjects = (projects && projects.length > 0) ? projects : SEED_PROJECTS;

@@ -9,8 +9,16 @@ import {
   Star, Quote, ThumbsUp, Check, MessageSquare
 } from 'lucide-react';
 import type { PortfolioProject } from '../types';
+import { useSEO } from '../utils/useSEO';
 
 export const ProjectsPage: React.FC = () => {
+  useSEO({
+    title: 'Steel Fabrication Projects & Case Studies | Mughal Steel Fabrication',
+    description: 'Explore on-site architectural case studies, structural villa gates, stainless steel railings, and commercial projects across Islamabad & Rawalpindi.',
+    keywords: 'Steel fabrication projects, completed gates Islamabad, wrought iron case studies, architectural steel portfolio',
+    url: '/projects'
+  });
+
   const { slug } = useParams<{ slug?: string }>();
   const navigate = useNavigate();
   const location = useLocation();

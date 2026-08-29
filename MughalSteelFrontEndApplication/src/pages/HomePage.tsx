@@ -11,6 +11,7 @@ import {
   Send, Mail, SkipForward, SkipBack
 } from 'lucide-react';
 import { PROJECT_CATEGORIES_DATA, SEED_PROJECTS } from '../data/seedData';
+import { useSEO } from '../utils/useSEO';
 
 // Merged Architectural 3D & Fabrication Background Animation Videos (Excluding on-site reviews/projects)
 const HERO_BG_VIDEOS = [
@@ -29,6 +30,13 @@ const HERO_BG_VIDEOS = [
 ];
 
 export const HomePage: React.FC = () => {
+  useSEO({
+    title: 'Mughal Steel Fabrication | Steel Doors, Gates & Custom Fabrication',
+    description: 'Premier architectural steel fabrication in Islamabad & Rawalpindi. Modern CNC laser-cut main gates, luxury wrought iron, safety grills, and stainless stairs.',
+    keywords: 'Mughal Steel Fabrication, steel gates Islamabad, laser cut main gate, wrought iron railing, stainless stairs, Pakistan steel workshop',
+    url: '/'
+  });
+
   const location = useLocation();
   const { products, testimonials, addTestimonial, getWhatsAppUrl, categories, projects } = useData();
   const { formatPrice } = useCurrency();

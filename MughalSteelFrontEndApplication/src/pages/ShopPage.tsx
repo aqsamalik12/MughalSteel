@@ -7,8 +7,16 @@ import {
   Search, Filter, SlidersHorizontal, ArrowUpDown, 
   Sparkles, Eye, Calculator, ArrowRight, X, CheckCircle, MessageCircle 
 } from 'lucide-react';
+import { useSEO } from '../utils/useSEO';
 
 export const ShopPage: React.FC = () => {
+  useSEO({
+    title: 'Steel Doors & Main Gates Catalog | Mughal Steel Fabrication',
+    description: 'Browse our catalog of custom fabricated steel main gates, pivot security doors, window grills, and architectural railings with instant price estimation.',
+    keywords: 'Steel doors catalog, buy steel gates, main gates prices Pakistan, window grills designs',
+    url: '/shop'
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
   const { products, getWhatsAppUrl, categories } = useData();
   const { formatPrice } = useCurrency();

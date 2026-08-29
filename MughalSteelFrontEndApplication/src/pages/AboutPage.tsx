@@ -5,8 +5,16 @@ import {
   ShieldCheck, Hammer, Award, Factory, Sparkles, 
   MapPin, CheckCircle2, MessageCircle, ArrowRight 
 } from 'lucide-react';
+import { useSEO } from '../utils/useSEO';
 
 export const AboutPage: React.FC = () => {
+  useSEO({
+    title: 'About Mughal Steel Fabrication | Quality Steel Fabrication',
+    description: 'Learn about Mughal Steel Fabrication, our 30+ year engineering heritage in Rawalpindi & Islamabad, and our certified 14-gauge structural steel standards.',
+    keywords: 'About Mughal Steel, steel fabricators Pakistan, metal workshop Rawalpindi, gate manufacturers Islamabad',
+    url: '/about'
+  });
+
   const { settings, getWhatsAppUrl } = useData();
 
   useEffect(() => { 

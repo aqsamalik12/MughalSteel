@@ -5,8 +5,16 @@ import {
   Star, MessageCircle, ShieldCheck, CheckCircle2, Award, 
   Sparkles, Send, Check, ThumbsUp, MapPin 
 } from 'lucide-react';
+import { useSEO } from '../utils/useSEO';
 
 export const ReviewsPage: React.FC = () => {
+  useSEO({
+    title: 'Client Reviews & Testimonials | Mughal Steel Fabrication',
+    description: 'Read verified homeowner and architectural client reviews for Mughal Steel Fabrication across Islamabad, Rawalpindi, and Punjab.',
+    keywords: 'Mughal steel reviews, gate fabrication client feedback, customer testimonials Pakistan',
+    url: '/reviews'
+  });
+
   const { testimonials, addTestimonial, getWhatsAppUrl } = useData();
 
   const [name, setName] = useState('');
