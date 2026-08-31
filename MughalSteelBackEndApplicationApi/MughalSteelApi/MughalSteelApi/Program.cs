@@ -114,12 +114,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
-        policy.SetIsOriginAllowed(origin => 
-              {
-                  if (string.IsNullOrWhiteSpace(origin)) return false;
-                  var uri = new Uri(origin);
-                  return uri.Host == "localhost" || uri.Host == "127.0.0.1";
-              })
+        policy.SetIsOriginAllowed(_ => true)
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
@@ -181,17 +176,23 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Only display and map Scalar / OpenAPI documentation in non-Production environments
-if (!app.Environment.IsProduction())
+// Display and map Scalar / OpenAPI documentation
+app.MapOpenApi();
+app.MapScalarApiReference(options =>
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference(options =>
-    {
-        options.WithTitle("Mughal Steel API Reference")
-               .WithTheme(ScalarTheme.Moon)
-               .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
-    });
-}
+    options.WithTitle("Mughal Steel API Reference")
+           .WithTheme(ScalarTheme.Moon)
+           .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+});
+
+// Root Health & Welcome Endpoint
+app.MapGet("/", () => Results.Ok(new 
+{ 
+    status = "healthy", 
+    name = "Mughal Steel API",
+    docs = "/scalar/v1",
+    timestamp = DateTime.UtcNow 
+}));
 
 app.UseCors("CorsPolicy");
 
