@@ -10,6 +10,10 @@ using MughalSteelApi.Repositories.Interfaces;
 using MughalSteelApi.Services;
 using Scalar.AspNetCore;
 
+// Fix Linux container inotify limit on Render/Cloud hosts
+Environment.SetEnvironmentVariable("DOTNET_USE_POLLING_FILE_WATCHER", "true");
+Environment.SetEnvironmentVariable("DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false");
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add controllers
