@@ -15,10 +15,47 @@ var builder = WebApplication.CreateBuilder(args);
 // Add controllers
 builder.Services.AddControllers();
 
-// Database Context
+// Database Context (Supports both Supabase PostgreSQL and SQL Server)
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-           .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
+{
+    if (connectionString.StartsWith("postgres", StringComparison.OrdinalIgnoreCase) || 
+        connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase) ||
+        connectionString.Contains("supabase.co", StringComparison.OrdinalIgnoreCase))
+    {
+        // Convert postgresql:// URI format to Npgsql connection string if needed
+        string npgsqlConn = connectionString;
+        if (connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) || 
+            connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                var uri = new Uri(connectionString);
+                var userInfo = uri.UserInfo.Split(':');
+                var user = userInfo[0];
+                var pass = userInfo.Length > 1 ? userInfo[1] : "";
+                var host = uri.Host;
+                var port = uri.Port > 0 ? uri.Port : 5432;
+                var db = uri.AbsolutePath.TrimStart('/');
+                if (string.IsNullOrEmpty(db)) db = "postgres";
+
+                npgsqlConn = $"Host={host};Port={port};Database={db};Username={user};Password={pass};SSL Mode=Require;Trust Server Certificate=true;";
+            }
+            catch
+            {
+                npgsqlConn = connectionString;
+            }
+        }
+
+        options.UseNpgsql(npgsqlConn)
+               .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+    }
+    else
+    {
+        options.UseSqlServer(connectionString)
+               .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+    }
+});
 
 // Repositories (Layered Architecture)
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
