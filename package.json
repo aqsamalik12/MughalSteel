@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "dev": "npm --prefix MughalSteelFrontEndApplication run dev",
-    "build": "npm --prefix MughalSteelFrontEndApplication install && npm --prefix MughalSteelFrontEndApplication run build",
+    "build": "npm --prefix MughalSteelFrontEndApplication run build",
     "preview": "npm --prefix MughalSteelFrontEndApplication run preview"
   }
 }
