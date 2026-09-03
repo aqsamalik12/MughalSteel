@@ -14,6 +14,7 @@ build/
 .output/
 .turbo/
 .cache/
+MughalSteelFrontEndApplication/package-lock.json
 
 # 2. .NET & Visual Studio Artifacts
 bin/
