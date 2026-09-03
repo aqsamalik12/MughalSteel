@@ -2522,6 +2522,33 @@ export const AdminPage: React.FC = () => {
                     className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs font-mono"
                   />
                 </div>
+
+                <div className="pt-2 border-t border-stone-800">
+                  <label className="block text-[10px] text-brand-gold uppercase tracking-wider mb-1 font-bold">
+                    Formspree Endpoint (Email Notifications)
+                  </label>
+                  <div className="flex gap-2">
+                    <input 
+                      type="url" 
+                      value={settingsForm.formspreeEndpoint || 'https://formspree.io/f/mppzrorn'}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, formspreeEndpoint: e.target.value })}
+                      placeholder="https://formspree.io/f/mppzrorn"
+                      className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs font-mono"
+                    />
+                    <a 
+                      href={settingsForm.formspreeEndpoint || 'https://formspree.io/f/mppzrorn'} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="px-3 py-2 bg-brand-gold/10 hover:bg-brand-gold/20 text-brand-gold border border-brand-gold/30 rounded-lg text-xs font-bold whitespace-nowrap flex items-center gap-1 transition"
+                      title="Open Formspree Portal"
+                    >
+                      <span>Formspree</span>
+                    </a>
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    Website inquiries from the Contact and Quote forms are sent here and forwarded directly to your email.
+                  </p>
+                </div>
               </div>
 
             </div>

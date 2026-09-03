@@ -95,7 +95,8 @@ const DEFAULT_SETTINGS: WebsiteSettings = {
     youtube: 'https://youtube.com/playlist?list=PLIY_NugRLGiBoPBJd6qhjl3Ra5QqTCb-f&si=rJY9tie1xTRH59SU'
   },
   logoUrl: '/image/logo.png',
-  currency: 'PKR'
+  currency: 'PKR',
+  formspreeEndpoint: import.meta.env.VITE_FORMSPREE_ENDPOINT || 'https://formspree.io/f/mppzrorn'
 };
 
 const DataContext = createContext<DataContextType | undefined>(undefined);

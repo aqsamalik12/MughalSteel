@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useData } from '../context/DataContext';
 import { 
   Phone, Mail, MapPin, Clock, MessageCircle, 
-  CheckCircle2, AlertCircle, Sparkles, Send 
+  CheckCircle2, AlertCircle, Sparkles, Send, Loader2 
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
 
@@ -22,6 +22,7 @@ export const ContactPage: React.FC = () => {
   const [subject, setSubject] = useState('');
   const [projectCategory, setProjectCategory] = useState('Modern Home');
   const [message, setMessage] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
@@ -31,19 +32,61 @@ export const ContactPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !phone || !message) {
-      setError('Please fill in your name, phone, and message.');
+    if (!name.trim() || !phone.trim() || !message.trim()) {
+      setError('Please fill in your name, phone number, and project requirements.');
       return;
     }
     setError('');
-    await addContactMessage({
-      name,
-      email: email || 'not-provided@client.com',
-      phone,
-      subject: subject || `Inquiry for ${projectCategory}`,
-      message,
-      projectCategory
-    });
+    setSubmitting(true);
+
+    const formspreeUrl = settings.formspreeEndpoint || import.meta.env.VITE_FORMSPREE_ENDPOINT || 'https://formspree.io/f/mppzrorn';
+
+    // 1. Post to Formspree endpoint via AJAX for instant notification
+    try {
+      const response = await fetch(formspreeUrl, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          _subject: `New Mughal Steel Inquiry: ${name} (${projectCategory})`,
+          name,
+          phone,
+          email: email || 'not-provided@client.com',
+          projectCategory,
+          subject: subject || `Inquiry for ${projectCategory}`,
+          message,
+          submittedAt: new Date().toLocaleString()
+        })
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        if (data && data.errors && data.errors.length > 0) {
+          const detail = data.errors.map((item: any) => item.message).join(', ');
+          console.warn('Formspree response warning:', detail);
+        }
+      }
+    } catch (err) {
+      console.warn('Network issue submitting to Formspree:', err);
+    }
+
+    // 2. Also register in local/backend data store
+    try {
+      await addContactMessage({
+        name,
+        email: email || 'not-provided@client.com',
+        phone,
+        subject: subject || `Inquiry for ${projectCategory}`,
+        message,
+        projectCategory
+      });
+    } catch (err) {
+      console.warn('Local message store error:', err);
+    }
+
+    setSubmitting(false);
     setSubmitted(true);
     setMessage('');
   };
@@ -134,20 +177,25 @@ export const ContactPage: React.FC = () => {
           
           {/* Inquiry Form */}
           <div className="lg:col-span-7 bg-brand-medium border border-brand-light p-6 sm:p-8 rounded-sm space-y-6 shadow-2xl">
-            <div className="border-b border-brand-light pb-3">
-              <h3 className="font-heading text-base font-bold text-stone-100 uppercase tracking-wide">
-                Send Us a Direct Message
-              </h3>
-              <p className="text-xs text-slate-400">
-                We typically respond within 2 to 4 business hours.
-              </p>
+            <div className="border-b border-brand-light pb-3 flex items-center justify-between">
+              <div>
+                <h3 className="font-heading text-base font-bold text-stone-100 uppercase tracking-wide">
+                  Send Us a Direct Message
+                </h3>
+                <p className="text-xs text-slate-400">
+                  We typically respond within 2 to 4 business hours.
+                </p>
+              </div>
+              <span className="text-[10px] font-mono text-brand-gold bg-brand-gold/10 px-2 py-1 rounded border border-brand-gold/30 hidden sm:inline-block">
+                Formspree Verified
+              </span>
             </div>
 
             {submitted ? (
               <div className="p-6 bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs rounded text-center space-y-3 animate-fade-in">
                 <CheckCircle2 className="w-8 h-8 mx-auto text-emerald-400" />
                 <h4 className="font-heading font-bold text-sm text-stone-100">Message Received!</h4>
-                <p>Thank you, {name}. Our team has received your message and will get back to you shortly.</p>
+                <p>Thank you, {name}. Your inquiry has been submitted and sent to our fabrication estimators.</p>
                 <div className="pt-2">
                   <a 
                     href={whatsappDirectUrl} 
@@ -161,12 +209,21 @@ export const ContactPage: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+              <form 
+                action={settings.formspreeEndpoint || 'https://formspree.io/f/mppzrorn'} 
+                method="POST" 
+                onSubmit={handleSubmit} 
+                className="space-y-4 text-xs"
+              >
+                <input type="hidden" name="_subject" value={`New Mughal Steel Inquiry: ${name || 'Prospective Client'} (${projectCategory})`} />
+                <input type="hidden" name="_replyto" value={email} />
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-[11px] text-slate-300 block mb-1">Your Name *</label>
                     <input 
                       type="text" 
+                      name="name"
                       required
                       placeholder="e.g. Tariq Mehmood"
                       value={name}
@@ -179,11 +236,12 @@ export const ContactPage: React.FC = () => {
                     <label className="text-[11px] text-slate-300 block mb-1">Phone Number *</label>
                     <input 
                       type="tel" 
+                      name="phone"
                       required
                       placeholder="e.g. 0300-8456789"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full bg-brand-dark border border-brand-light p-2.5 rounded text-stone-100 focus:border-brand-gold focus:outline-none"
+                      className="w-full bg-brand-dark border border-brand-light p-2.5 rounded text-stone-100 focus:border-brand-gold focus:outline-none font-mono"
                     />
                   </div>
                 </div>
@@ -193,6 +251,7 @@ export const ContactPage: React.FC = () => {
                     <label className="text-[11px] text-slate-300 block mb-1">Email Address</label>
                     <input 
                       type="email" 
+                      name="email"
                       placeholder="e.g. tariq@email.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -203,6 +262,7 @@ export const ContactPage: React.FC = () => {
                   <div>
                     <label className="text-[11px] text-slate-300 block mb-1">Project Category</label>
                     <select
+                      name="projectCategory"
                       value={projectCategory}
                       onChange={(e) => setProjectCategory(e.target.value)}
                       className="w-full bg-brand-dark border border-brand-light p-2.5 rounded text-stone-100 focus:border-brand-gold focus:outline-none"
@@ -225,6 +285,7 @@ export const ContactPage: React.FC = () => {
                   <label className="text-[11px] text-slate-300 block mb-1">Subject</label>
                   <input 
                     type="text" 
+                    name="subject"
                     placeholder="e.g. Quotation for 14ft Laser Cut Main Gate"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
@@ -235,6 +296,7 @@ export const ContactPage: React.FC = () => {
                 <div>
                   <label className="text-[11px] text-slate-300 block mb-1">Your Project Requirements *</label>
                   <textarea 
+                    name="message"
                     required
                     rows={4}
                     placeholder="Please include approximate dimensions, property location, and required timeline..."
@@ -251,9 +313,22 @@ export const ContactPage: React.FC = () => {
                   </div>
                 )}
 
-                <button type="submit" className="btn-gold w-full text-xs py-3.5">
-                  <Send className="w-4 h-4" />
-                  <span>Send Message</span>
+                <button 
+                  type="submit" 
+                  disabled={submitting} 
+                  className="btn-gold w-full text-xs py-3.5 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-stone-900" />
+                      <span>Submitting Inquiry to Mughal Steel...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>Send Message</span>
+                    </>
+                  )}
                 </button>
               </form>
             )}

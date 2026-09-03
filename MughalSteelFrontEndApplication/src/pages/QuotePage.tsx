@@ -9,7 +9,7 @@ import {
 
 export const QuotePage: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const { products, addQuote, getWhatsAppUrl, categories } = useData();
+  const { products, addQuote, getWhatsAppUrl, categories, settings } = useData();
   const activeCategories = (categories && categories.length > 0) ? categories : PROJECT_CATEGORIES_DATA;
 
   const paramCode = searchParams.get('productCode') || '';
@@ -57,6 +57,36 @@ export const QuotePage: React.FC = () => {
       const area = parseFloat((width * height).toFixed(2));
       const baseRate = 2500;
       const estimatedPrice = Math.round(area * baseRate * quantity);
+
+      // Forward to Formspree endpoint for immediate email alert
+      const formspreeUrl = settings?.formspreeEndpoint || import.meta.env.VITE_FORMSPREE_ENDPOINT || 'https://formspree.io/f/mppzrorn';
+      try {
+        await fetch(formspreeUrl, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            _subject: `New Mughal Steel Quote Request: ${firstName} ${lastName} (${projectCategory} - ${productItem})`,
+            clientName: `${firstName} ${lastName}`.trim(),
+            email,
+            phone,
+            city,
+            projectCategory,
+            productItem,
+            productCode: productCode || 'CUSTOM-FAB',
+            dimensions: `${width} ft (W) × ${height} ft (H) = ${area} sq.ft`,
+            quantity,
+            estimatedPrice: `PKR ${estimatedPrice.toLocaleString()}`,
+            requirements,
+            customNotes,
+            submittedAt: new Date().toLocaleString()
+          })
+        });
+      } catch (err) {
+        console.warn('Formspree quote notification error:', err);
+      }
 
       await addQuote({
         customer: {
@@ -180,7 +210,12 @@ export const QuotePage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="bg-brand-medium border border-brand-light p-6 sm:p-10 rounded-sm space-y-8 shadow-2xl">
+          <form 
+            action={settings?.formspreeEndpoint || 'https://formspree.io/f/mppzrorn'} 
+            method="POST" 
+            onSubmit={handleSubmit} 
+            className="bg-brand-medium border border-brand-light p-6 sm:p-10 rounded-sm space-y-8 shadow-2xl"
+          >
             
             {/* Section 1: Customer Contact Information */}
             <div className="space-y-4">

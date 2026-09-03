@@ -409,4 +409,5 @@ export interface WebsiteSettings {
     pinterest?: string;
     twitter?: string;
   };
+  formspreeEndpoint?: string;
 }

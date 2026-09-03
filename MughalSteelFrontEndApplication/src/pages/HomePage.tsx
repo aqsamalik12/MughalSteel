@@ -38,7 +38,7 @@ export const HomePage: React.FC = () => {
   });
 
   const location = useLocation();
-  const { products, testimonials, addTestimonial, getWhatsAppUrl, categories, projects } = useData();
+  const { products, testimonials, addTestimonial, getWhatsAppUrl, categories, projects, settings } = useData();
   const { formatPrice } = useCurrency();
   const activeCategories = (categories && categories.length > 0) ? categories : PROJECT_CATEGORIES_DATA;
 
@@ -157,6 +157,28 @@ export const HomePage: React.FC = () => {
       `Estimated Base Rate: Rs. 2,500 / sq.ft\n` +
       `Estimated Base Total: Rs. ${est.toLocaleString()}\n\n` +
       `Please schedule an on-site laser survey and send an official CAD drawing.`;
+
+    // Forward to Formspree endpoint in background for email tracking
+    const formspreeUrl = settings?.formspreeEndpoint || import.meta.env.VITE_FORMSPREE_ENDPOINT || 'https://formspree.io/f/mppzrorn';
+    fetch(formspreeUrl, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        _subject: `Quick Quote Inquiry: ${quoteName} (${quoteCategory} - ${quoteItem})`,
+        name: quoteName,
+        phone: quotePhone,
+        projectCategory: quoteCategory,
+        fabricationItem: quoteItem,
+        width: `${quoteWidth} ft`,
+        height: `${quoteHeight} ft`,
+        area: `${area} sq.ft`,
+        estimatedPrice: `Rs. ${est.toLocaleString()}`,
+        submittedAt: new Date().toLocaleString()
+      })
+    }).catch(err => console.warn('Formspree quick quote dispatch warning:', err));
 
     setQuoteSuccess(true);
     setTimeout(() => {
@@ -1217,7 +1239,12 @@ export const HomePage: React.FC = () => {
             
             {/* Left: Quick Quote & Consultation Form */}
             <div className="lg:col-span-6">
-              <form onSubmit={handleQuickQuoteSubmit} className="bg-brand-navy border border-brand-gold/40 p-6 sm:p-8 rounded-lg space-y-4 shadow-2xl">
+              <form 
+                action={settings?.formspreeEndpoint || 'https://formspree.io/f/mppzrorn'} 
+                method="POST" 
+                onSubmit={handleQuickQuoteSubmit} 
+                className="bg-brand-navy border border-brand-gold/40 p-6 sm:p-8 rounded-lg space-y-4 shadow-2xl"
+              >
                 <div className="border-b border-brand-light pb-3 flex items-center justify-between">
                   <h3 className="font-heading font-black text-base text-stone-100 uppercase tracking-wider">
                     Instant Price Quotation
