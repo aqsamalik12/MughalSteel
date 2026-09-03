@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node -e \"if (process.platform === 'linux') { try { require('@rollup/rollup-linux-x64-gnu') } catch { require('child_process').execSync('npm install @rollup/rollup-linux-x64-gnu@4.62.4 --no-save', { stdio: 'inherit' }) } }\"",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"

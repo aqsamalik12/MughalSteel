@@ -1,5 +1,6 @@
 {
   "framework": "vite",
+  "installCommand": "npm install && node -e \"if (process.platform === 'linux') { try { require('@rollup/rollup-linux-x64-gnu') } catch { require('child_process').execSync('npm install @rollup/rollup-linux-x64-gnu@4.62.4 --no-save', { stdio: 'inherit' }) } }\"",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
