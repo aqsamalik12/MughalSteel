@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, Truck, RefreshCw, FileText } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
+import { openDirectEmail } from '../utils/emailHelper';
 
 export const ShippingPage: React.FC = () => {
   useSEO({
@@ -125,7 +126,7 @@ export const WarrantyPage: React.FC = () => {
         <section className="space-y-4">
           <h2 className="text-xl font-serif text-stone-100 uppercase tracking-widest border-l-2 border-brand-gold pl-3">Claims Process</h2>
           <p className="text-stone-400 text-sm leading-relaxed">
-            To submit a warranty claim, prepare your invoice details, structural photographs of the issue, and email them to <a href="mailto:mughalsteelfabrication51@gmail.com?subject=Warranty%20Claim%20%E2%80%93%20Mughal%20Steel%20Fabrication" className="text-brand-gold font-bold underline hover:brightness-110">mughalsteelfabrication51@gmail.com</a>. A certified structural inspector will review your case within 5 business days.
+            To submit a warranty claim, prepare your invoice details, structural photographs of the issue, and email them to <a href="mailto:mughalsteelfabrication51@gmail.com?subject=Warranty%20Claim%20%E2%80%93%20Mughal%20Steel%20Fabrication" onClick={(e) => { e.preventDefault(); openDirectEmail('mughalsteelfabrication51@gmail.com', 'Warranty Claim – Mughal Steel Fabrication'); }} className="text-brand-gold font-bold underline hover:brightness-110 cursor-pointer">mughalsteelfabrication51@gmail.com</a>. A certified structural inspector will review your case within 5 business days.
           </p>
         </section>
 

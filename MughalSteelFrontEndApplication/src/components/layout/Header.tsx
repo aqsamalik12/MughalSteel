@@ -14,6 +14,7 @@ import {
   Sun, Moon
 } from 'lucide-react';
 import { PROJECT_CATEGORIES_DATA } from '../../data/seedData';
+import { prefetchRoute } from '../../utils/prefetchRoutes';
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -308,6 +309,7 @@ export const Header: React.FC = () => {
               <button 
                 type="button"
                 onClick={() => handleNavClick('services')}
+                onMouseEnter={() => prefetchRoute('services')}
                 className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 whitespace-nowrap ${
                   isNavActive('services', '/services')
                     ? 'text-brand-gold font-bold' 
@@ -320,7 +322,7 @@ export const Header: React.FC = () => {
               {/* PRODUCTS (Dropdown/MegaMenu) */}
               <div 
                 className="relative group/nav"
-                onMouseEnter={() => handleMouseEnterMega('items')}
+                onMouseEnter={() => { handleMouseEnterMega('items'); prefetchRoute('products'); }}
                 onMouseLeave={handleMouseLeaveMega}
               >
                 <button 
@@ -343,7 +345,7 @@ export const Header: React.FC = () => {
               {/* PORTFOLIO (Dropdown/MegaMenu) */}
               <div 
                 className="relative group/nav"
-                onMouseEnter={() => handleMouseEnterMega('categories')}
+                onMouseEnter={() => { handleMouseEnterMega('categories'); prefetchRoute('categories'); }}
                 onMouseLeave={handleMouseLeaveMega}
               >
                 <button 
@@ -367,6 +369,7 @@ export const Header: React.FC = () => {
               <button 
                 type="button"
                 onClick={() => handleNavClick('projects', '/projects')}
+                onMouseEnter={() => prefetchRoute('projects')}
                 className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center whitespace-nowrap ${
                   isNavActive('projects', '/projects') 
                     ? 'text-brand-gold font-bold' 
@@ -380,6 +383,7 @@ export const Header: React.FC = () => {
               <button 
                 type="button"
                 onClick={() => handleNavClick('reviews', '/projects#reviews')}
+                onMouseEnter={() => prefetchRoute('reviews')}
                 className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center whitespace-nowrap ${
                   isNavActive('reviews', '/reviews') || location.hash === '#reviews'
                     ? 'text-brand-gold font-bold' 
@@ -393,6 +397,7 @@ export const Header: React.FC = () => {
               <button 
                 type="button"
                 onClick={() => handleNavClick('contact', '/contact')}
+                onMouseEnter={() => prefetchRoute('contact')}
                 className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center whitespace-nowrap ${
                   isNavActive('contact', '/contact') 
                     ? 'text-brand-gold font-bold' 
@@ -410,14 +415,24 @@ export const Header: React.FC = () => {
             {/* User Profile Link */}
             <Link 
               to={isAdmin ? "/admin" : "/account"} 
-              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg border border-brand-gold/40 bg-brand-navy/60 hover:border-brand-gold hover:bg-brand-gold/10 text-[#c5a880] transition group cursor-pointer shrink-0"
-              title={isAuthenticated ? (isAdmin ? "Admin Dashboard" : `Account (${user?.firstName || 'User'})`) : "Account Login"}
+              onMouseEnter={() => prefetchRoute(isAdmin ? 'admin' : 'account')}
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg border border-brand-gold/40 bg-brand-navy/60 hover:border-brand-gold hover:bg-brand-gold/10 text-[#c5a880] transition group cursor-pointer shrink-0 max-w-[180px]"
+              title={isAuthenticated ? (isAdmin ? "Admin Dashboard" : `Account (${user?.displayName || user?.firstName || 'User'})`) : "Account Login"}
             >
-              <div className="w-5 h-5 rounded-full bg-brand-gold/15 flex items-center justify-center text-brand-gold border border-brand-gold/30 shrink-0">
-                {isAdmin ? <Shield className="w-3 h-3 text-amber-400" /> : <UserIcon className="w-3 h-3" />}
+              <div className="w-5 h-5 rounded-full bg-brand-gold/15 flex items-center justify-center text-brand-gold border border-brand-gold/30 shrink-0 overflow-hidden">
+                {user?.photoURL ? (
+                  <img src={user.photoURL} alt={user?.displayName || user?.firstName || 'User'} className="w-full h-full object-cover rounded-full" />
+                ) : isAdmin ? (
+                  <Shield className="w-3 h-3 text-amber-400" />
+                ) : (
+                  <UserIcon className="w-3 h-3" />
+                )}
               </div>
-              <span className="text-[11px] sm:text-xs font-heading font-black tracking-wider uppercase text-stone-200 group-hover:text-brand-gold whitespace-nowrap">
-                {isAuthenticated ? (user?.firstName ? user.firstName : (isAdmin ? 'Admin' : 'Profile')) : 'Profile'}
+              <span className="text-[11px] sm:text-xs font-heading font-black tracking-wider uppercase text-stone-200 group-hover:text-brand-gold truncate">
+                {isAuthenticated 
+                  ? (user?.displayName || (user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (isAdmin ? 'Admin' : 'Profile')))
+                  : 'Profile'
+                }
               </span>
             </Link>
 
@@ -425,9 +440,9 @@ export const Header: React.FC = () => {
             {isAuthenticated ? (
               <button 
                 type="button"
-                onClick={() => {
-                  logout();
-                  navigate('/login');
+                onClick={async () => {
+                  await logout();
+                  navigate('/');
                 }}
                 className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-950/20 hover:bg-red-900/40 hover:border-red-500/60 text-red-400 hover:text-red-300 transition text-[11px] sm:text-xs font-heading font-black tracking-wider uppercase cursor-pointer shrink-0 whitespace-nowrap"
                 title="Sign Out"
@@ -702,14 +717,24 @@ export const Header: React.FC = () => {
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center justify-between py-2 px-3 text-stone-200 hover:text-brand-gold"
                     >
-                      <span className="flex items-center gap-2">
-                        <UserIcon className="w-4 h-4 text-brand-gold" />
-                        <span>MY ACCOUNT ({user?.firstName})</span>
+                      <span className="flex items-center gap-2 truncate pr-2">
+                        <div className="w-5 h-5 rounded-full bg-brand-gold/15 flex items-center justify-center text-brand-gold border border-brand-gold/30 shrink-0 overflow-hidden">
+                          {user?.photoURL ? (
+                            <img src={user.photoURL} alt={user?.displayName || user?.firstName || 'User'} className="w-full h-full object-cover rounded-full" />
+                          ) : (
+                            <UserIcon className="w-3 h-3" />
+                          )}
+                        </div>
+                        <span className="truncate">MY ACCOUNT ({user?.displayName || (user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'User')})</span>
                       </span>
-                      <ChevronRight className="w-4 h-4 text-slate-500" />
+                      <ChevronRight className="w-4 h-4 text-slate-500 shrink-0" />
                     </Link>
                     <button 
-                      onClick={() => { logout(); setMobileMenuOpen(false); }}
+                      onClick={async () => { 
+                        await logout(); 
+                        setMobileMenuOpen(false); 
+                        navigate('/');
+                      }}
                       className="w-full text-left flex items-center justify-between py-2 px-3 text-red-400 hover:text-red-300 cursor-pointer"
                     >
                       <span className="flex items-center gap-2">
@@ -720,7 +745,7 @@ export const Header: React.FC = () => {
                   </div>
                 ) : (
                   <Link 
-                    to="/account" 
+                    to="/login" 
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center justify-between py-2 px-3 text-stone-200 hover:text-brand-gold"
                   >

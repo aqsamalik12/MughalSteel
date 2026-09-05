@@ -282,10 +282,19 @@ export const CartDrawer: React.FC = () => {
 
               {/* Action Buttons */}
               <div className="space-y-2">
+                <Link 
+                  to="/checkout" 
+                  onClick={() => setCartOpen(false)}
+                  className="btn-gold w-full text-center text-xs py-3 shadow-lg flex items-center justify-center gap-2 cursor-pointer uppercase font-bold"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Proceed to Checkout</span>
+                </Link>
+
                 {!showInquiryForm && (
                   <button 
                     onClick={() => setShowInquiryForm(true)}
-                    className="btn-whatsapp w-full text-center text-xs py-3.5 shadow-lg flex items-center justify-center gap-2"
+                    className="btn-whatsapp w-full text-center text-xs py-3 shadow-lg flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <MessageCircle className="w-4 h-4" />
                     <span>Send Complete Cart to WhatsApp</span>
@@ -304,7 +313,7 @@ export const CartDrawer: React.FC = () => {
                   <Link 
                     to="/quote" 
                     onClick={() => setCartOpen(false)}
-                    className="btn-gold text-center text-[11px] py-2.5"
+                    className="btn-outline text-center text-[11px] py-2.5"
                   >
                     <span>Request Formal Quote</span>
                   </Link>

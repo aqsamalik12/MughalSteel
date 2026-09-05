@@ -9,14 +9,14 @@ import {
   Plus, Edit, Trash2, Check, X, ArrowLeft,
   BookOpen, MessageSquare, Settings, History, MessageCircle,
   Database, RefreshCw, Download, HardDrive, Cloud, CloudOff, CheckCircle2, Globe, LogOut, 
-  Image, ImagePlus, Eye, Layers, Phone, Mail, MapPin, Search, Filter, Shield, Calendar,
+  Image, ImagePlus, Eye, EyeOff, Layers, Phone, Mail, MapPin, Search, Filter, Shield, Calendar,
   DollarSign, CheckCircle, Clock, AlertCircle, Sparkles, SlidersHorizontal, ArrowUpRight,
   Hammer, Factory, Wrench, ShieldCheck, Maximize2, Upload, FolderUp, Camera, RotateCw, Building2
 } from 'lucide-react';
 
 export const AdminPage: React.FC = () => {
   const navigate = useNavigate();
-  const { isAdmin, logout, user } = useAuth();
+  const { isAdmin, logout, user, resetPasswordDirectly } = useAuth();
   const { 
     products, quotes, orders, savedDesigns, addProduct, updateProduct, deleteProduct, 
     updateQuoteStatus, updateOrderStatus,
@@ -286,11 +286,69 @@ export const AdminPage: React.FC = () => {
   // Global Settings form state
   const [settingsForm, setSettingsForm] = useState<any>(null);
 
+  // Admin Password Management State
+  const [adminNewPass, setAdminNewPass] = useState('');
+  const [adminConfirmPass, setAdminConfirmPass] = useState('');
+  const [showAdminPass, setShowAdminPass] = useState(false);
+  const [adminPassStatus, setAdminPassStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [adminPassLoading, setAdminPassLoading] = useState(false);
+
   useEffect(() => {
     if (settings && !settingsForm) {
       setSettingsForm(settings);
     }
   }, [settings, settingsForm]);
+
+  const handleAdminPasswordUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdminPassStatus(null);
+    const cleanPass = adminNewPass.trim();
+    const cleanConfirm = adminConfirmPass.trim();
+
+    if (cleanPass.length < 6) {
+      setAdminPassStatus({ type: 'error', message: 'New password must be at least 6 characters in length.' });
+      return;
+    }
+    if (cleanPass !== cleanConfirm) {
+      setAdminPassStatus({ type: 'error', message: 'Passwords do not match. Please verify both fields.' });
+      return;
+    }
+
+    setAdminPassLoading(true);
+    try {
+      const emailTarget = user?.email || 'mughalsteelfabrication51@gmail.com';
+      await resetPasswordDirectly(emailTarget, cleanPass);
+      addActivityLog('SECURITY_PASSWORD_CHANGED', `Administrator password updated for ${emailTarget}`);
+      setAdminPassStatus({ 
+        type: 'success', 
+        message: `Admin password successfully updated to "${cleanPass}"! This password is active immediately for all future logins.` 
+      });
+      setAdminNewPass('');
+      setAdminConfirmPass('');
+    } catch {
+      setAdminPassStatus({ type: 'error', message: 'Failed to update admin password. Please try again.' });
+    } finally {
+      setAdminPassLoading(false);
+    }
+  };
+
+  const handleResetToDefaultAdminPassword = async () => {
+    if (!window.confirm('Reset Master Admin password back to default "Qasim@123"?')) return;
+    setAdminPassLoading(true);
+    try {
+      const emailTarget = user?.email || 'mughalsteelfabrication51@gmail.com';
+      await resetPasswordDirectly(emailTarget, 'Qasim@123');
+      addActivityLog('SECURITY_PASSWORD_RESET_DEFAULT', `Admin password reset to default Qasim@123 for ${emailTarget}`);
+      setAdminPassStatus({
+        type: 'success',
+        message: 'Master Admin password reset to default "Qasim@123".'
+      });
+    } catch {
+      setAdminPassStatus({ type: 'error', message: 'Failed to reset password.' });
+    } finally {
+      setAdminPassLoading(false);
+    }
+  };
 
   // -------------------------------------------------------------
   // HANDLERS
@@ -2551,6 +2609,120 @@ export const AdminPage: React.FC = () => {
                 </div>
               </div>
 
+            </div>
+
+            {/* ------------------------------------------------------------- */}
+            {/* MASTER ADMINISTRATOR SECURITY & PASSWORD RESET */}
+            {/* ------------------------------------------------------------- */}
+            <div className="pt-6 border-t border-brand-light/40 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-brand-gold">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="font-heading font-bold text-sm text-stone-100 uppercase tracking-wider">
+                      Master Administrator Password & Security
+                    </h4>
+                    <p className="text-[11px] text-slate-400">
+                      Change the SuperAdmin password directly. Any update takes effect immediately across all sessions.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-brand-gold text-[10px] font-mono uppercase font-bold">
+                    SuperAdmin Account
+                  </span>
+                </div>
+              </div>
+
+              {adminPassStatus && (
+                <div className={`p-3 rounded-lg border text-xs flex items-center gap-2 animate-in fade-in duration-200 ${
+                  adminPassStatus.type === 'success' 
+                    ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300' 
+                    : 'bg-red-950/60 border-red-500/50 text-red-300'
+                }`}>
+                  {adminPassStatus.type === 'success' ? <CheckCircle className="w-4 h-4 shrink-0 text-emerald-400" /> : <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />}
+                  <span>{adminPassStatus.message}</span>
+                </div>
+              )}
+
+              <div className="bg-[#070C15] border border-stone-800 rounded-xl p-4 sm:p-5 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-stone-800">
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] uppercase tracking-wider text-stone-500 font-bold">Master Admin Account Email</span>
+                    <p className="font-mono text-xs text-stone-200 font-bold">{user?.email || 'mughalsteelfabrication51@gmail.com'}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleResetToDefaultAdminPassword}
+                    disabled={adminPassLoading}
+                    className="px-3 py-1.5 rounded-lg border border-stone-700 bg-stone-900/80 hover:border-amber-500/50 text-stone-300 hover:text-brand-gold text-[11px] font-semibold transition cursor-pointer disabled:opacity-50"
+                  >
+                    Reset to Default (Qasim@123)
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">
+                      New Admin Password *
+                    </label>
+                    <div className="relative">
+                      <input 
+                        type={showAdminPass ? 'text' : 'password'}
+                        value={adminNewPass}
+                        onChange={(e) => setAdminNewPass(e.target.value)}
+                        placeholder="Min 6 characters"
+                        className="w-full bg-[#0C1322] border border-stone-700 rounded-lg px-3 py-2 pr-9 text-stone-100 focus:outline-none focus:border-brand-gold text-xs font-mono"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowAdminPass(!showAdminPass)}
+                        className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-stone-500 hover:text-stone-300 cursor-pointer"
+                      >
+                        {showAdminPass ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">
+                      Confirm New Password *
+                    </label>
+                    <div className="relative">
+                      <input 
+                        type={showAdminPass ? 'text' : 'password'}
+                        value={adminConfirmPass}
+                        onChange={(e) => setAdminConfirmPass(e.target.value)}
+                        placeholder="Repeat new password"
+                        className="w-full bg-[#0C1322] border border-stone-700 rounded-lg px-3 py-2 pr-9 text-stone-100 focus:outline-none focus:border-brand-gold text-xs font-mono"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-1">
+                  <button 
+                    type="button"
+                    onClick={handleAdminPasswordUpdate}
+                    disabled={adminPassLoading || !adminNewPass || !adminConfirmPass}
+                    className="px-4 py-2 bg-gradient-to-r from-amber-500 via-brand-gold to-yellow-500 text-brand-dark rounded-lg font-heading font-black text-xs uppercase tracking-wider hover:brightness-110 active:scale-[0.99] transition shadow cursor-pointer disabled:opacity-40 flex items-center gap-2"
+                  >
+                    {adminPassLoading ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin text-brand-dark" />
+                        <span>Updating Password...</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        <span>Update Admin Password</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
             </div>
           </form>
         )}

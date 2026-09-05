@@ -4,28 +4,25 @@ import { useData } from '../context/DataContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { 
   ShieldCheck, Shield, Calculator, ArrowRight, Star, 
-  Sparkles, CheckCircle2, CheckCircle, MessageCircle, MessageSquare, Play, Pause,
+  Sparkles, CheckCircle2, CheckCircle, MessageCircle, MessageSquare, Play,
   Sliders, RefreshCw, X, Video, Award, Clock, 
   MapPin, Check, Heart, Eye, Globe, Compass, 
   Layers, Package, Cog, User as UserIcon, Factory, Hammer,
-  Send, Mail, SkipForward, SkipBack
+  Send, Mail
 } from 'lucide-react';
 import { PROJECT_CATEGORIES_DATA, SEED_PROJECTS } from '../data/seedData';
 import { useSEO } from '../utils/useSEO';
+import { openDirectEmail } from '../utils/emailHelper';
 
-// Merged Architectural 3D & Fabrication Background Animation Videos (Excluding on-site reviews/projects)
+// Cloudinary CDN Architectural Background Animation Videos (Hardware-accelerated H.264 60FPS streams)
 const HERO_BG_VIDEOS = [
   {
-    title: 'Architectural Perspective & Fabrication Space',
-    src: '/videos/vecteezy_rotation-and-panoramic-view-in-empty-modern-hall-with_21600063.mp4'
+    title: 'Modern Panoramic Architectural Hall',
+    src: 'https://res.cloudinary.com/dfh28zk9/video/upload/w_1280,c_limit,q_auto:eco,vc_h264/v1788500133/vecteezy_rotation-and-panoramic-view-in-empty-modern-hall-with_21600063_2.mp4'
   },
   {
-    title: 'Modern Architectural Interiors & Framing',
-    src: '/videos/vecteezy_green-interior-of-a-large-office_2016164.mp4'
-  },
-  {
-    title: 'Contemporary Metal & Glass Space',
-    src: '/videos/The Interior of A Large Office 2016989 Stock Video at Vecteezy.mp4'
+    title: 'Modern Large Space Interior & Metal Framing',
+    src: 'https://res.cloudinary.com/dfh28zk9/video/upload/w_1280,c_limit,q_auto:eco,vc_h264/v1788500132/vecteezy_green-interior-of-a-large-office_2016164.mp4'
   }
 ];
 
@@ -42,41 +39,49 @@ export const HomePage: React.FC = () => {
   const { formatPrice } = useCurrency();
   const activeCategories = (categories && categories.length > 0) ? categories : PROJECT_CATEGORIES_DATA;
 
-  // Lightweight Hardware-Accelerated Video Player
-  const [currentHeroVideoIndex, setCurrentHeroVideoIndex] = useState(0);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  // 60FPS Hardware-Accelerated Seamless Dual-Buffer Background Video Player
+  const [activeBuffer, setActiveBuffer] = useState<0 | 1>(0);
+  const videoRef0 = useRef<HTMLVideoElement | null>(null);
+  const videoRef1 = useRef<HTMLVideoElement | null>(null);
+  const isTransitioningRef = useRef(false);
 
-  const handleNextVideo = () => {
-    setCurrentHeroVideoIndex(prev => (prev + 1) % HERO_BG_VIDEOS.length);
-  };
-
-  const handlePrevVideo = () => {
-    setCurrentHeroVideoIndex(prev => (prev - 1 + HERO_BG_VIDEOS.length) % HERO_BG_VIDEOS.length);
-  };
-
-  const toggleVideoPlayback = () => {
-    if (videoRef.current) {
-      if (videoRef.current.paused) {
-        videoRef.current.play().catch(() => {});
-        setIsVideoPlaying(true);
-      } else {
-        videoRef.current.pause();
-        setIsVideoPlaying(false);
-      }
-    }
-  };
-
-  // Sync play state on video change
   useEffect(() => {
-    if (videoRef.current) {
-      if (isVideoPlaying) {
-        videoRef.current.play().catch(() => {});
-      } else {
-        videoRef.current.pause();
-      }
+    // Ensure active video starts smoothly on mount
+    const v0 = videoRef0.current;
+    if (v0) {
+      v0.play().catch(() => {});
     }
-  }, [currentHeroVideoIndex, isVideoPlaying]);
+  }, []);
+
+  const triggerSwitchToBuffer = (nextBuffer: 0 | 1) => {
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+
+    const nextVid = nextBuffer === 0 ? videoRef0.current : videoRef1.current;
+    if (nextVid) {
+      nextVid.currentTime = 0;
+      nextVid.play().catch(() => {});
+    }
+    setActiveBuffer(nextBuffer);
+
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 1500);
+  };
+
+  const handleTimeUpdate0 = () => {
+    const v0 = videoRef0.current;
+    if (v0 && v0.duration && v0.currentTime >= v0.duration - 1.2) {
+      triggerSwitchToBuffer(1);
+    }
+  };
+
+  const handleTimeUpdate1 = () => {
+    const v1 = videoRef1.current;
+    if (v1 && v1.duration && v1.currentTime >= v1.duration - 1.2) {
+      triggerSwitchToBuffer(0);
+    }
+  };
 
   const [activeVideoModal, setActiveVideoModal] = useState<{
     title: string;
@@ -193,7 +198,7 @@ export const HomePage: React.FC = () => {
       title: '1 Kanal House Project',
       subtitle: 'Faisalabad - Complete Villa Steel Work',
       thumbnail: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
-      videoUrl: '/videos/1 Kanal House Steel Fabrication Project - Faisalabad - Mughal Steel Fabrication.mp4',
+      videoUrl: 'https://res.cloudinary.com/dfh28zk9/video/upload/q_auto,vc_h264/v1788502166/1_Kanal_House_Steel_Fabrication_Project_-_Faisalabad_-_Mughal_Steel_Fabrication.mp4',
       description: 'Comprehensive walkthrough of 1 Kanal luxury house steel fabrication in Faisalabad executed by Mughal Steel Fabrication. Featuring custom main entrance gate, boundary security grills, balcony railings, and interior stairs.'
     },
     {
@@ -201,7 +206,7 @@ export const HomePage: React.FC = () => {
       title: 'Completed Project Overview',
       subtitle: 'Heavy Structural Steel Work & Railings',
       thumbnail: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
-      videoUrl: '/videos/Overview of completed project Mughal steel fabrication, Steel Work, Railing.mp4',
+      videoUrl: 'https://res.cloudinary.com/dfh28zk9/video/upload/q_auto,vc_h264/v1788502145/Overview_of_completed_project_Mughal_steel_fabrication_Steel_Work_Railing.mp4',
       description: 'Overview of completed site installation showcasing heavy-gauge steel fabrication, precision laser cutting, forge-welded balustrades, and powder-coated boundary walls.'
     },
     {
@@ -209,7 +214,7 @@ export const HomePage: React.FC = () => {
       title: 'Customer Review & Feedback',
       subtitle: 'NDU Islamabad Project Handover',
       thumbnail: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
-      videoUrl: '/videos/Customer Review, NDU Islamabad, Project completed by Mughal Steel Fab.mp4',
+      videoUrl: 'https://res.cloudinary.com/dfh28zk9/video/upload/q_auto,vc_h264/v1788502154/Customer_Review_NDU_Islamabad_Project_completed_by_Mughal_Steel_Fab.mp4',
       description: 'Verified client review and project handover at National Defence University (NDU) Islamabad. Client shares detailed feedback on structural craftsmanship, timely delivery, and professional installation standards.',
       rating: 5
     }
@@ -236,35 +241,64 @@ export const HomePage: React.FC = () => {
     <div className="w-full bg-[#05080E] text-stone-100 font-sans">
       
       {/* ======================================================== */}
-      {/* 1. HOME SECTION: HERO & 60FPS SEAMLESS BACKGROUND VIDEO LOOP */}
+      {/* 1. HOME SECTION: HERO & 60FPS SEAMLESS DUAL-BUFFER VIDEO ANIMATION */}
       {/* ======================================================== */}
-      <section id="home" className="relative scroll-mt-24 w-full border-b border-brand-light/40 py-12 md:py-16 overflow-hidden">
+      <section id="home" className="relative scroll-mt-24 w-full border-b border-brand-light/40 py-12 md:py-16 overflow-hidden bg-[#05080E]">
         
-        {/* 60 FPS Dual-Buffer Seamless Background Video Loop */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          {/* Single Hardware-Accelerated Seamless Video Player */}
+        {/* 60 FPS Dual-Buffer Hardware-Accelerated Seamless Video Player */}
+        <div 
+          className="absolute inset-0 z-0 overflow-hidden pointer-events-none"
+          style={{ transform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden' }}
+        >
+          {/* Buffer 0 */}
           <video
-            ref={videoRef}
-            key={HERO_BG_VIDEOS[currentHeroVideoIndex].src}
-            src={HERO_BG_VIDEOS[currentHeroVideoIndex].src}
+            ref={videoRef0}
+            src={HERO_BG_VIDEOS[0].src}
             autoPlay
             muted
             playsInline
+            preload="metadata"
             disablePictureInPicture
-            onEnded={handleNextVideo}
-            onError={handleNextVideo}
-            className="absolute inset-0 w-full h-full object-cover scale-105 opacity-85 transition-opacity duration-700 pointer-events-none"
+            onTimeUpdate={handleTimeUpdate0}
+            onEnded={() => triggerSwitchToBuffer(1)}
+            onError={() => triggerSwitchToBuffer(1)}
+            className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000 ease-in-out pointer-events-none ${
+              activeBuffer === 0 ? 'opacity-80 z-[1]' : 'opacity-0 z-0'
+            }`}
             style={{
-              pointerEvents: 'none',
-              willChange: 'transform, opacity',
+              willChange: 'opacity',
               transform: 'translate3d(0, 0, 0)',
               backfaceVisibility: 'hidden'
             }}
           />
 
-          {/* Clean hardware-accelerated cinematic gradient overlays */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#070C15]/50 via-[#05080E]/35 to-[#080D17]/65 pointer-events-none" />
-          <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#070C15]/15 to-[#070C15]/50 pointer-events-none" />
+          {/* Buffer 1 */}
+          <video
+            ref={videoRef1}
+            src={HERO_BG_VIDEOS[1].src}
+            muted
+            playsInline
+            preload="none"
+            disablePictureInPicture
+            onTimeUpdate={handleTimeUpdate1}
+            onEnded={() => triggerSwitchToBuffer(0)}
+            onError={() => triggerSwitchToBuffer(0)}
+            className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000 ease-in-out pointer-events-none ${
+              activeBuffer === 1 ? 'opacity-80 z-[1]' : 'opacity-0 z-0'
+            }`}
+            style={{
+              willChange: 'opacity',
+              transform: 'translate3d(0, 0, 0)',
+              backfaceVisibility: 'hidden'
+            }}
+          />
+
+          {/* Cinematic Overlays & Ambient Lighting */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#070C15]/75 via-[#05080E]/60 to-[#080D17]/85 pointer-events-none" />
+          <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#070C15]/20 to-[#070C15]/60 pointer-events-none" />
+          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-brand-gold/10 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute top-1/4 -left-32 w-80 h-80 bg-amber-600/10 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-10 -right-32 w-80 h-80 bg-brand-light/10 rounded-full blur-[100px] pointer-events-none" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
@@ -407,7 +441,7 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       {/* 2. ABOUT SECTION: 30+ YEARS HERITAGE & WORKFLOW */}
       {/* ======================================================== */}
-      <section id="about" className="scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
+      <section id="about" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
           
           {/* Header */}
@@ -477,6 +511,8 @@ export const HomePage: React.FC = () => {
                 <img 
                   src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80" 
                   alt="Master fabricators at Mughal Steel" 
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-5">
@@ -530,7 +566,7 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       {/* SERVICES SECTION: 6 CORE CAPABILITIES */}
       {/* ======================================================== */}
-      <section id="services" className="scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
+      <section id="services" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
@@ -809,7 +845,7 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       {/* PRODUCTS SECTION: FRONT GATES & MODERN HOME ITEMS */}
       {/* ======================================================== */}
-      <section id="products" className="scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
+      <section id="products" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
@@ -839,6 +875,8 @@ export const HomePage: React.FC = () => {
                   <img 
                     src={prod.images[0]} 
                     alt={prod.name} 
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
                   <div className="absolute top-2.5 left-2.5 bg-black/80 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-brand-gold/40">
@@ -911,6 +949,8 @@ export const HomePage: React.FC = () => {
                     <img 
                       src={item.image} 
                       alt={item.name} 
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                     />
                   </div>
@@ -947,6 +987,8 @@ export const HomePage: React.FC = () => {
                 <img 
                   src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" 
                   alt="Live visualizer tool" 
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover" 
                 />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
@@ -964,7 +1006,7 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       {/* PORTFOLIO SECTION: 10 ARCHITECTURAL CATEGORIES */}
       {/* ======================================================== */}
-      <section id="portfolio" className="scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
+      <section id="portfolio" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
@@ -994,6 +1036,8 @@ export const HomePage: React.FC = () => {
                   <img 
                     src={cat.heroImage} 
                     alt={cat.name} 
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
                   />
                 </div>
@@ -1015,7 +1059,7 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       {/* FEATURED WORK / PROJECTS SHOWCASE */}
       {/* ======================================================== */}
-      <section id="projects" className="scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
+      <section id="projects" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
@@ -1052,6 +1096,7 @@ export const HomePage: React.FC = () => {
                   src={project.image || (project as any).coverImage} 
                   alt={project.title}
                   loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                 />
                 
@@ -1101,7 +1146,7 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       {/* REVIEWS SECTION: VERIFIED FEEDBACK & CLIENT REVIEWS */}
       {/* ======================================================== */}
-      <section id="reviews" className="scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
+      <section id="reviews" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
@@ -1163,6 +1208,8 @@ export const HomePage: React.FC = () => {
                   <img 
                     src={item.image} 
                     alt={item.project} 
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -1218,7 +1265,7 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       {/* 8. CONTACT SECTION: WORKSHOP LIVE LOCATION & DIRECT INQUIRY */}
       {/* ======================================================== */}
-      <section id="contact" className="scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
+      <section id="contact" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
           {/* Section Header */}
@@ -1353,7 +1400,8 @@ export const HomePage: React.FC = () => {
                   <a href="https://wa.me/923239898317" target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1 text-emerald-400">💬 0323-9898317</a>
                   <a 
                     href="mailto:mughalsteelfabrication51@gmail.com?subject=Website%20Inquiry%20%E2%80%93%20Mughal%20Steel%20Fabrication" 
-                    className="hover:underline flex items-center gap-1 text-stone-200 hover:text-brand-gold transition-colors"
+                    onClick={(e) => { e.preventDefault(); openDirectEmail(); }}
+                    className="hover:underline flex items-center gap-1 text-stone-200 hover:text-brand-gold transition-colors cursor-pointer"
                     title="Send Email to Mughal Steel"
                   >
                     ✉️ mughalsteelfabrication51@gmail.com
@@ -1390,7 +1438,8 @@ export const HomePage: React.FC = () => {
 
                 <a 
                   href="mailto:mughalsteelfabrication51@gmail.com?subject=Website%20Inquiry%20%E2%80%93%20Mughal%20Steel%20Fabrication"
-                  className="btn-outline text-xs py-2.5 text-center justify-center font-bold uppercase tracking-wider flex items-center gap-1.5"
+                  onClick={(e) => { e.preventDefault(); openDirectEmail(); }}
+                  className="btn-outline text-xs py-2.5 text-center justify-center font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer"
                   title="Click to Email Directly"
                 >
                   <Mail className="w-4 h-4 text-brand-gold" />
@@ -1405,35 +1454,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Video Modal */}
-      {activeVideoModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in">
-          <div className="bg-brand-navy border border-brand-gold/50 rounded-lg max-w-3xl w-full p-6 space-y-4 shadow-2xl relative">
-            <div className="flex items-center justify-between border-b border-brand-light pb-3">
-              <h3 className="font-heading font-black text-lg text-stone-100 uppercase">
-                {activeVideoModal.title}
-              </h3>
-              <button 
-                onClick={() => setActiveVideoModal(null)}
-                className="p-1.5 text-slate-400 hover:text-white rounded hover:bg-brand-medium"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="aspect-video w-full rounded overflow-hidden bg-black">
-              <video 
-                src={activeVideoModal.videoUrl} 
-                controls 
-                autoPlay 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <p className="text-xs text-slate-300 font-sans leading-relaxed">
-              {activeVideoModal.description}
-            </p>
-          </div>
-        </div>
-      )}
+
 
       {/* Review Modal */}
       {showReviewModal && (
@@ -1784,12 +1805,7 @@ export const HomePage: React.FC = () => {
         </div>
       )}
 
-      {/* Hidden Background Preloaders for Section Showcase Videos */}
-      <div className="hidden" aria-hidden="true">
-        {videoShowcases.map((v) => (
-          <video key={`preload-${v.id}`} src={v.videoUrl} preload="metadata" muted playsInline />
-        ))}
-      </div>
+
 
     </div>
   );

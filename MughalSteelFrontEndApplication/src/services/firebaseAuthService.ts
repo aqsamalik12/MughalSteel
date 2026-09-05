@@ -17,9 +17,12 @@ import type { User } from '../types';
 
 // Helper to map Firebase User to App User format
 export const mapFirebaseUser = (fbUser: FirebaseUser, extra?: { phone?: string; isAdmin?: boolean; role?: 'admin' | 'customer'; addresses?: any[] }): User => {
-  const nameParts = (fbUser.displayName || '').split(' ');
+  const rawDisplayName = (fbUser.displayName || '').trim();
+  const nameParts = rawDisplayName ? rawDisplayName.split(' ') : [];
   const firstName = nameParts[0] || fbUser.email?.split('@')[0] || 'User';
   const lastName = nameParts.slice(1).join(' ') || '';
+  const displayName = rawDisplayName || `${firstName} ${lastName}`.trim() || fbUser.email?.split('@')[0] || 'User';
+  const photoURL = fbUser.photoURL || undefined;
   
   const email = (fbUser.email || '').toLowerCase().trim();
   // An account is an admin if explicitly marked as admin, assigned admin role, or is the registered company admin
@@ -34,6 +37,8 @@ export const mapFirebaseUser = (fbUser: FirebaseUser, extra?: { phone?: string; 
     email: fbUser.email || '',
     firstName,
     lastName,
+    displayName,
+    photoURL,
     phone: extra?.phone || fbUser.phoneNumber || '',
     addresses: extra?.addresses || [],
     isAdmin: isExplicitAdmin,

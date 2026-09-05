@@ -6,17 +6,27 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: '127.0.0.1',
-    port: 5173
+    port: 5173,
+    warmup: {
+      clientFiles: ['./src/main.tsx', './src/App.tsx', './src/pages/HomePage.tsx']
+    }
   },
   build: {
-    chunkSizeWarningLimit: 1000,
+    target: 'es2020',
+    cssCodeSplit: true,
+    assetsInlineLimit: 4096,
+    chunkSizeWarningLimit: 1200,
     rollupOptions: {
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router', 'react-router-dom'],
-          'vendor-icons': ['lucide-react']
+          'vendor-icons': ['lucide-react'],
+          'vendor-firebase': ['firebase/app', 'firebase/auth']
         }
       }
     }
+  },
+  esbuild: {
+    legalComments: 'none'
   }
 })

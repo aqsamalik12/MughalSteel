@@ -4,6 +4,7 @@ import { useData } from '../context/DataContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import { 
   Calculator, Sparkles, MessageCircle, Heart, CheckCircle2, 
   Ruler, ShieldCheck, Hammer, Award, Star, ArrowRight, Eye, 
@@ -19,6 +20,7 @@ export const ProductDetailPage: React.FC = () => {
   const { products, getWhatsAppUrl } = useData();
   const { formatPrice } = useCurrency();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const { addToCart } = useCart();
 
   const { user } = useAuth();
 
@@ -64,7 +66,7 @@ export const ProductDetailPage: React.FC = () => {
   const [validationError, setValidationError] = useState<string | null>(null);
 
   // Customer Site & Contact Info for WhatsApp Order
-  const [customerName, setCustomerName] = useState(user ? `${user.firstName} ${user.lastName || ''}`.trim() : '');
+  const [customerName, setCustomerName] = useState(user ? (user.displayName || `${user.firstName} ${user.lastName || ''}`.trim()) : '');
   const [customerPhone, setCustomerPhone] = useState(user?.phone || '');
   const [customerAddress, setCustomerAddress] = useState(
     user?.addresses?.[0] ? `${user.addresses[0].street}, ${user.addresses[0].city}` : ''
@@ -73,7 +75,7 @@ export const ProductDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      if (!customerName) setCustomerName(`${user.firstName} ${user.lastName || ''}`.trim());
+      if (!customerName) setCustomerName(user.displayName || `${user.firstName} ${user.lastName || ''}`.trim());
       if (!customerPhone && user.phone) setCustomerPhone(user.phone);
       if (!customerAddress && user?.addresses?.[0]) {
         setCustomerAddress(`${user.addresses[0].street}, ${user.addresses[0].city}`);
@@ -248,6 +250,32 @@ export const ProductDetailPage: React.FC = () => {
 
     const url = getWhatsAppUrl(msg);
     window.open(url, '_blank');
+  };
+
+  const handleBuyNow = () => {
+    addToCart({
+      id: `${product.id}-${Date.now()}`,
+      productId: product.id,
+      productCode: product.productCode,
+      productName: product.name,
+      productImage: galleryViews[activeImageIndex]?.url || galleryViews[0]?.url || product.frontImage || product.images[0],
+      category: product.category,
+      item: product.item,
+      width: validatedWidth,
+      height: validatedHeight,
+      area: area,
+      pricePerSqFt: rate,
+      customNotes: [
+        notes,
+        customSize ? 'Custom Driveway Size' : '',
+        customDesign ? 'Custom CNC Laser Motif' : '',
+        colorChange ? 'Custom Powder Color' : '',
+        automaticSystem ? 'German Motor Automation' : '',
+        siteInstallation ? 'Turnkey Site Installation' : ''
+      ].filter(Boolean).join(', ')
+    }, validatedQty);
+
+    navigate('/checkout');
   };
 
 
@@ -709,13 +737,22 @@ export const ProductDetailPage: React.FC = () => {
 
               {/* ACTION BUTTONS GRID */}
               <div className="space-y-2.5 pt-1">
+                {/* Order Now / Proceed to Checkout Button */}
+                <button 
+                  onClick={handleBuyNow}
+                  className="btn-gold w-full text-xs py-3.5 px-4 text-center justify-center font-bold shadow-xl uppercase tracking-wider flex items-center gap-2 cursor-pointer active:scale-[0.99] transition-all"
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Order Now / Proceed to Checkout</span>
+                </button>
+
                 {/* Primary WhatsApp Order & Inquiry with Photo */}
                 <button 
                   onClick={handleWhatsAppInquiry}
-                  className="btn-whatsapp w-full text-xs py-3.5 px-4 text-center justify-center font-bold shadow-xl uppercase tracking-wider flex items-center gap-2 cursor-pointer active:scale-[0.99] transition-all"
+                  className="btn-whatsapp w-full text-xs py-3 px-4 text-center justify-center font-bold shadow-xl uppercase tracking-wider flex items-center gap-2 cursor-pointer active:scale-[0.99] transition-all"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>Send Order & Inquire on WhatsApp (With Name, Address & Photo)</span>
+                  <span>Send Order & Inquire on WhatsApp</span>
                 </button>
 
 

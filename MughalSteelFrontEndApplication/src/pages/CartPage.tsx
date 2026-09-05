@@ -290,9 +290,17 @@ export const CartPage: React.FC = () => {
                 </div>
 
                 <div className="space-y-2.5 pt-2">
+                  <Link 
+                    to="/checkout" 
+                    className="btn-gold w-full py-3.5 text-center justify-center font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 cursor-pointer"
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    <span>Proceed to Checkout / Buy Now</span>
+                  </Link>
+
                   <button 
                     onClick={handleWhatsAppSend}
-                    className="btn-whatsapp w-full py-3.5 text-center justify-center font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2"
+                    className="btn-whatsapp w-full py-3 text-center justify-center font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 cursor-pointer"
                   >
                     <MessageCircle className="w-4 h-4" />
                     <span>Send Complete Cart to WhatsApp</span>
@@ -300,7 +308,7 @@ export const CartPage: React.FC = () => {
 
                   <Link 
                     to="/quote" 
-                    className="btn-outline w-full py-3 text-center justify-center font-bold text-xs uppercase tracking-wider block"
+                    className="btn-outline w-full py-2.5 text-center justify-center font-bold text-xs uppercase tracking-wider block"
                   >
                     <span>Request Official CAD Drawing</span>
                   </Link>

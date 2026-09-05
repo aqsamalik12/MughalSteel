@@ -18,6 +18,7 @@ import { HomePage } from './pages/HomePage';
 import { CustomerLoginPage } from './pages/CustomerLoginPage';
 import { AdminLoginPage } from './pages/AdminLoginPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
+import { scheduleIdlePrefetch } from './utils/prefetchRoutes';
 
 // Lazy-Loaded Route Pages (Splits 1.28MB monolithic bundle into lightweight chunks)
 const CategoriesPage = lazy(() => import('./pages/CategoriesPage').then(m => ({ default: m.CategoriesPage })));
@@ -91,8 +92,12 @@ const PublicOnlyRoute: React.FC<{ children: React.ReactNode }> = ({ children }) 
     if (isAdmin) {
       return <Navigate to="/admin" replace />;
     }
-    const from = (location.state as any)?.from?.pathname || '/';
-    return <Navigate to={from} replace />;
+    const stateFrom = (location.state as any)?.from;
+    const fromPath = typeof stateFrom === 'string' ? stateFrom : stateFrom?.pathname;
+    const destination = (fromPath && fromPath !== '/login' && fromPath !== '/register' && fromPath !== '/signin') 
+      ? (typeof stateFrom === 'string' ? stateFrom : (stateFrom.pathname + (stateFrom.search || '') + (stateFrom.hash || '')))
+      : '/account';
+    return <Navigate to={destination} replace />;
   }
 
   return <>{children}</>;
@@ -123,7 +128,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   if (!hasAdmin) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/account" replace />;
   }
 
   return <>{children}</>;
@@ -132,7 +137,6 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 const AppContent: React.FC = () => {
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
   const { isDark } = useTheme();
   const isAdminPage = location.pathname.startsWith('/admin') && !location.pathname.startsWith('/admin/login') && !location.pathname.startsWith('/admin/reset-password');
   const isAuthPage = [
@@ -141,8 +145,13 @@ const AppContent: React.FC = () => {
     '/reset-password', '/admin/reset-password'
   ].some(p => location.pathname === p || location.pathname.startsWith(p + '/'));
 
-  // Show header and footer only when user is authenticated and not on dedicated auth pages
-  const showNav = isAuthenticated && !isAdminPage && !isAuthPage;
+  // Show header and footer across public browsing, hidden only on dedicated auth and admin portal pages
+  const showNav = !isAdminPage && !isAuthPage;
+
+  // Ultra-low latency: Automatically prefetch primary routes in background idle cycles
+  React.useEffect(() => {
+    scheduleIdlePrefetch();
+  }, []);
 
   return (
     <div className={`flex flex-col min-h-screen transition-colors duration-300 font-sans ${
@@ -173,59 +182,61 @@ const AppContent: React.FC = () => {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/admin/reset-password" element={<ResetPasswordPage />} />
 
-            {/* Protected Home & Landing Portal */}
-            <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+            {/* Completely Open Public Storefront & Browsing Routes */}
+            <Route path="/" element={<HomePage />} />
             
-            {/* Catalog & Shop (10 Categories & Dedicated Item Slugs) */}
-            <Route path="/categories" element={<ProtectedRoute><CategoriesPage /></ProtectedRoute>} />
-            <Route path="/category/:category" element={<ProtectedRoute><CategoryDetailPage /></ProtectedRoute>} />
-            <Route path="/categories/:category" element={<ProtectedRoute><CategoryDetailPage /></ProtectedRoute>} />
-            <Route path="/category/:category/:subcategory" element={<ProtectedRoute><CategoryDetailPage /></ProtectedRoute>} />
-            <Route path="/categories/:category/:subcategory" element={<ProtectedRoute><CategoryDetailPage /></ProtectedRoute>} />
-            <Route path="/products" element={<ProtectedRoute><ShopPage /></ProtectedRoute>} />
-            <Route path="/product/:slug" element={<ProtectedRoute><ProductDetailPage /></ProtectedRoute>} />
-            <Route path="/items" element={<ProtectedRoute><ShopPage /></ProtectedRoute>} />
-            <Route path="/item/:slug" element={<ProtectedRoute><ProductDetailPage /></ProtectedRoute>} />
+            {/* Catalog & Shop (Categories & Dedicated Item Slugs) */}
+            <Route path="/categories" element={<CategoriesPage />} />
+            <Route path="/category/:category" element={<CategoryDetailPage />} />
+            <Route path="/categories/:category" element={<CategoryDetailPage />} />
+            <Route path="/category/:category/:subcategory" element={<CategoryDetailPage />} />
+            <Route path="/categories/:category/:subcategory" element={<CategoryDetailPage />} />
+            <Route path="/products" element={<ShopPage />} />
+            <Route path="/product/:slug" element={<ProductDetailPage />} />
+            <Route path="/items" element={<ShopPage />} />
+            <Route path="/item/:slug" element={<ProductDetailPage />} />
 
             {/* Try at Home Tool & Custom Design Studio */}
-            <Route path="/try-at-home" element={<ProtectedRoute><VirtualTryOnPage /></ProtectedRoute>} />
+            <Route path="/try-at-home" element={<VirtualTryOnPage />} />
             <Route path="/virtual-try-on" element={<Navigate to="/try-at-home" replace />} />
-            <Route path="/custom-design" element={<ProtectedRoute><CustomDesignPage /></ProtectedRoute>} />
+            <Route path="/custom-design" element={<CustomDesignPage />} />
 
             {/* Services, Projects & Portfolio */}
-            <Route path="/services" element={<ProtectedRoute><ServicesPage /></ProtectedRoute>} />
-            <Route path="/portfolio" element={<ProtectedRoute><ProjectsPage /></ProtectedRoute>} />
-            <Route path="/portfolio/:slug" element={<ProtectedRoute><ProjectDetailPage /></ProtectedRoute>} />
-            <Route path="/projects" element={<ProtectedRoute><ProjectsPage /></ProtectedRoute>} />
-            <Route path="/projects/:slug" element={<ProtectedRoute><ProjectDetailPage /></ProtectedRoute>} />
-            <Route path="/gallery" element={<ProtectedRoute><GalleryPage /></ProtectedRoute>} />
-            <Route path="/reviews" element={<ProtectedRoute><ReviewsPage /></ProtectedRoute>} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/portfolio" element={<ProjectsPage />} />
+            <Route path="/portfolio/:slug" element={<ProjectDetailPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/:slug" element={<ProjectDetailPage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/reviews" element={<ReviewsPage />} />
 
-            {/* Customer Quotation, Cart, Wishlist, Checkout & Account */}
-            <Route path="/quote" element={<ProtectedRoute><QuotePage /></ProtectedRoute>} />
-            <Route path="/quote-calculator" element={<ProtectedRoute><QuotePage /></ProtectedRoute>} />
-            <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+            {/* Customer Quotation, Cart & Wishlist (Freely Browseable) */}
+            <Route path="/quote" element={<QuotePage />} />
+            <Route path="/quote-calculator" element={<QuotePage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
+
+            {/* Strictly Protected: Purchase/Checkout Completion & Private Account Dashboard */}
             <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
-            <Route path="/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
             <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
 
             {/* Blog & Articles */}
-            <Route path="/blog" element={<ProtectedRoute><BlogPage /></ProtectedRoute>} />
-            <Route path="/blog/:slug" element={<ProtectedRoute><BlogDetailPage /></ProtectedRoute>} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogDetailPage />} />
 
             {/* Company, Information & Contact */}
-            <Route path="/about" element={<ProtectedRoute><AboutPage /></ProtectedRoute>} />
-            <Route path="/contact" element={<ProtectedRoute><ContactPage /></ProtectedRoute>} />
-            <Route path="/contact-us" element={<ProtectedRoute><ContactPage /></ProtectedRoute>} />
-            <Route path="/faq" element={<ProtectedRoute><FaqPage /></ProtectedRoute>} />
-            <Route path="/warranty" element={<ProtectedRoute><WarrantyPage /></ProtectedRoute>} />
-            <Route path="/terms" element={<ProtectedRoute><TermsPage /></ProtectedRoute>} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/contact-us" element={<ContactPage />} />
+            <Route path="/faq" element={<FaqPage />} />
+            <Route path="/warranty" element={<WarrantyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
 
             {/* Administrator Dashboard */}
             <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
             <Route path="/admin/*" element={<AdminRoute><AdminPage /></AdminRoute>} />
 
-            {/* Fallback Catch-all: Redirects to / which in turn enforces authentication */}
+            {/* Fallback Catch-all: Redirects to Home */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>

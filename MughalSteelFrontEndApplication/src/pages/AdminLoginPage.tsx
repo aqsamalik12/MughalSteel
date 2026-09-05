@@ -10,7 +10,7 @@ export const AdminLoginPage: React.FC = () => {
   const { login, resetPasswordDirectly, isAdmin, isAuthenticated, logout, error: authError } = useAuth();
 
   const [mode, setMode] = useState<'login' | 'forgot'>('login');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('mughalsteelfabrication51@gmail.com');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -206,7 +206,7 @@ export const AdminLoginPage: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); if (errorMsg) setErrorMsg(null); }}
-                    placeholder="admin@yourcompany.com"
+                    placeholder="mughalsteelfabrication51@gmail.com"
                     className="w-full pl-10 pr-4 py-2.5 bg-[#060911]/90 border border-stone-700/90 rounded-xl text-xs font-sans text-stone-100 placeholder-stone-600 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition shadow-inner"
                   />
                 </div>

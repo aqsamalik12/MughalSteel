@@ -18,7 +18,7 @@ export const CheckoutPage: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const [fullName, setFullName] = useState(user ? `${user.firstName} ${user.lastName}`.trim() : '');
+  const [fullName, setFullName] = useState(user ? (user.displayName || `${user.firstName} ${user.lastName}`.trim()) : '');
   const [phone, setPhone] = useState(user?.phone || '');
   const [email, setEmail] = useState(user?.email || '');
   const [city, setCity] = useState('Lahore');
@@ -28,6 +28,14 @@ export const CheckoutPage: React.FC = () => {
   const [orderId, setOrderId] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      if (!fullName) setFullName(user.displayName || `${user.firstName} ${user.lastName}`.trim());
+      if (!phone && user.phone) setPhone(user.phone);
+      if (!email && user.email) setEmail(user.email);
+    }
+  }, [user]);
 
   const handleOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

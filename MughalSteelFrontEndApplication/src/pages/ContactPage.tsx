@@ -5,6 +5,7 @@ import {
   CheckCircle2, AlertCircle, Sparkles, Send, Loader2 
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
+import { openDirectEmail } from '../utils/emailHelper';
 
 export const ContactPage: React.FC = () => {
   useSEO({
@@ -53,7 +54,7 @@ export const ContactPage: React.FC = () => {
           _subject: `New Mughal Steel Inquiry: ${name} (${projectCategory})`,
           name,
           phone,
-          email: email || 'not-provided@client.com',
+          email: email.trim() || 'inquiry@mughalsteel.com',
           projectCategory,
           subject: subject || `Inquiry for ${projectCategory}`,
           message,
@@ -76,7 +77,7 @@ export const ContactPage: React.FC = () => {
     try {
       await addContactMessage({
         name,
-        email: email || 'not-provided@client.com',
+        email: email.trim() || 'inquiry@mughalsteel.com',
         phone,
         subject: subject || `Inquiry for ${projectCategory}`,
         message,
@@ -152,7 +153,8 @@ export const ContactPage: React.FC = () => {
             <h3 className="font-heading text-sm font-bold text-stone-100 uppercase">Email Us</h3>
             <a 
               href={`mailto:${settings.email || 'mughalsteelfabrication51@gmail.com'}?subject=Website%20Inquiry%20%E2%80%93%20Mughal%20Steel%20Fabrication`} 
-              className="text-xs font-mono font-semibold text-stone-200 block hover:text-brand-gold transition-colors"
+              onClick={(e) => { e.preventDefault(); openDirectEmail(settings.email || 'mughalsteelfabrication51@gmail.com'); }}
+              className="text-xs font-mono font-semibold text-stone-200 block hover:text-brand-gold transition-colors cursor-pointer"
               title="Click to email Mughal Steel Fabrication"
             >
               {settings.email || 'mughalsteelfabrication51@gmail.com'}

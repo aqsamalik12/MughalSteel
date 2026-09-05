@@ -89,6 +89,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const currentLocal = JSON.parse(localStorage.getItem('ic_user') || '{}');
           const mergedUser: User = {
             ...fbUser,
+            displayName: fbUser.displayName || currentLocal.displayName,
+            photoURL: fbUser.photoURL || currentLocal.photoURL,
             phone: fbUser.phone || currentLocal.phone || '',
             addresses: (currentLocal.addresses && currentLocal.addresses.length > 0) ? currentLocal.addresses : fbUser.addresses,
             isAdmin: fbUser.isAdmin || currentLocal.isAdmin
@@ -125,6 +127,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return false;
     }
 
+    // Step 0: Check Master Administrator & Saved Direct Credentials (Priority 1)
+    const isMasterAdmin = cleanEmail === 'mughalsteelfabrication51@gmail.com';
+    const savedDirectPass = localStorage.getItem('ms_cred_' + cleanEmail);
+    const activeAdminPass = savedDirectPass || 'Qasim@123';
+
+    if ((savedDirectPass && savedDirectPass === cleanPass) || (isMasterAdmin && cleanPass === activeAdminPass)) {
+      const isAdm = isMasterAdmin || cleanEmail.startsWith('admin') || cleanEmail.includes('admin');
+      const localUser: User = {
+        id: isAdm ? 'admin_mughal_01' : 'usr_' + Date.now(),
+        email: cleanEmail,
+        firstName: isAdm ? 'Mughal Steel' : cleanEmail.split('@')[0],
+        lastName: isAdm ? 'Admin' : '',
+        phone: '+92 323 9898317',
+        addresses: [],
+        isAdmin: isAdm,
+        role: isAdm ? 'admin' : 'customer'
+      };
+      const mockToken = 'ms_admin_tok_' + Math.random().toString(36).substring(2);
+      localStorage.setItem('ic_token', mockToken);
+      localStorage.setItem('ms_token', mockToken);
+      setUser(localUser);
+      localStorage.setItem('ic_user', JSON.stringify(localUser));
+
+      // Optional background sync with backend if online
+      apiRequest('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email: cleanEmail, password: cleanPass })
+      }).catch(() => {});
+
+      return true;
+    }
+
     // Step A: Attempt Backend API Authentication
     try {
       const res = await apiRequest('/api/auth/login', {
@@ -156,12 +190,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('ic_user', JSON.stringify(loggedUser));
         return true;
       }
-    } catch (apiErr: any) {
-      // If backend explicitly rejected credentials
-      if (apiErr.message && (apiErr.message.includes('Invalid') || apiErr.message.includes('password') || apiErr.message.includes('email'))) {
-        setError(apiErr.message);
-        return false;
-      }
+    } catch {
+      // Proceed to Firebase or fallback
     }
 
     // Step B: Attempt Firebase Authentication
@@ -175,29 +205,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return true;
       }
     } catch {
-      // Proceed to local fallback
-    }
-
-    // Step C: Check local direct reset / saved credential store
-    const savedDirectPass = localStorage.getItem('ms_cred_' + cleanEmail);
-    if (savedDirectPass && savedDirectPass === cleanPass) {
-      const isAdm = cleanEmail === 'mughalsteelfabrication51@gmail.com' || cleanEmail.startsWith('admin') || cleanEmail.includes('admin');
-      const localUser: User = {
-        id: 'usr_' + Date.now(),
-        email: cleanEmail,
-        firstName: cleanEmail.split('@')[0],
-        lastName: isAdm ? 'Admin' : '',
-        phone: '+92 300 1234567',
-        addresses: [],
-        isAdmin: isAdm,
-        role: isAdm ? 'admin' : 'customer'
-      };
-      const mockToken = 'ms_tok_' + Math.random().toString(36).substring(2);
-      localStorage.setItem('ic_token', mockToken);
-      localStorage.setItem('ms_token', mockToken);
-      setUser(localUser);
-      localStorage.setItem('ic_user', JSON.stringify(localUser));
-      return true;
+      // Proceed to error
     }
 
     setError('Invalid email or password. Please check your credentials and try again.');

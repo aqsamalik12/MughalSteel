@@ -29,6 +29,8 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  displayName?: string;
+  photoURL?: string;
   role?: 'admin' | 'customer';
   isAdmin?: boolean;
   phone?: string;

@@ -82,12 +82,16 @@ export const AccountPage: React.FC = () => {
         {/* Left Side: Sidebar Control Panel */}
         <aside className="lg:col-span-3 bg-[#0C1322]/95 border border-stone-800/90 p-6 rounded-2xl shadow-xl space-y-6">
           <div className="text-center space-y-2 pb-4 border-b border-stone-800">
-            <div className="w-14 h-14 bg-gradient-to-br from-amber-400 via-brand-gold to-yellow-600 text-brand-dark rounded-2xl flex items-center justify-center font-serif text-xl font-bold mx-auto shadow-md shadow-brand-gold/10">
-              {(user.firstName || user.email || 'U')[0].toUpperCase()}
+            <div className="w-14 h-14 bg-gradient-to-br from-amber-400 via-brand-gold to-yellow-600 text-brand-dark rounded-2xl flex items-center justify-center font-serif text-xl font-bold mx-auto shadow-md shadow-brand-gold/10 overflow-hidden">
+              {user.photoURL ? (
+                <img src={user.photoURL} alt={user.displayName || user.firstName} className="w-full h-full object-cover" />
+              ) : (
+                (user.displayName || user.firstName || user.email || 'U')[0].toUpperCase()
+              )}
             </div>
             <div>
-              <h2 className="font-serif text-base text-stone-100 uppercase tracking-wider font-bold">
-                {user.firstName} {user.lastName}
+              <h2 className="font-serif text-base text-stone-100 uppercase tracking-wider font-bold truncate max-w-[220px] mx-auto">
+                {user.displayName || `${user.firstName} ${user.lastName}`.trim()}
               </h2>
               <p className="text-[10px] text-brand-gold font-mono uppercase tracking-widest font-bold mt-0.5">
                 {user.isAdmin ? 'Administrator' : 'Customer Account'}
@@ -167,9 +171,9 @@ export const AccountPage: React.FC = () => {
             )}
 
             <button 
-              onClick={() => {
-                logout();
-                navigate('/login');
+              onClick={async () => {
+                await logout();
+                navigate('/');
               }}
               className="py-2.5 px-3.5 text-left rounded-xl flex items-center space-x-2.5 hover:bg-red-950/25 hover:text-red-300 mt-6 text-red-400 font-bold border border-red-950/40 cursor-pointer transition"
             >

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 import { Phone, MessageCircle, Mail, MapPin, ArrowRight, ShieldCheck, Clock, Award } from 'lucide-react';
+import { openDirectEmail } from '../../utils/emailHelper';
 
 export const Footer: React.FC = () => {
   const { getWhatsAppUrl } = useData();
@@ -102,7 +103,8 @@ export const Footer: React.FC = () => {
 
               <a 
                 href="mailto:mughalsteelfabrication51@gmail.com?subject=Website%20Inquiry%20%E2%80%93%20Mughal%20Steel%20Fabrication" 
-                className="flex items-center gap-3 hover:text-brand-gold transition-colors group"
+                onClick={(e) => { e.preventDefault(); openDirectEmail(); }}
+                className="flex items-center gap-3 hover:text-brand-gold transition-colors group cursor-pointer"
                 title="Send Email to Mughal Steel Fabrication"
               >
                 <div className="w-7 h-7 rounded-full bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center shrink-0 group-hover:border-brand-gold">
