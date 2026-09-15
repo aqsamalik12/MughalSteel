@@ -8,23 +8,12 @@ import {
   Sliders, RefreshCw, X, Video, Award, Clock, 
   MapPin, Check, Heart, Eye, Globe, Compass, 
   Layers, Package, Cog, User as UserIcon, Factory, Hammer,
-  Send, Mail
+  Send, Mail, Phone
 } from 'lucide-react';
 import { PROJECT_CATEGORIES_DATA, SEED_PROJECTS } from '../data/seedData';
 import { useSEO } from '../utils/useSEO';
 import { openDirectEmail } from '../utils/emailHelper';
 
-// Cloudinary CDN Architectural Background Animation Videos (Hardware-accelerated H.264 60FPS streams)
-const HERO_BG_VIDEOS = [
-  {
-    title: 'Modern Panoramic Architectural Hall',
-    src: 'https://res.cloudinary.com/dfh28zk9/video/upload/w_1280,c_limit,q_auto:eco,vc_h264/v1788500133/vecteezy_rotation-and-panoramic-view-in-empty-modern-hall-with_21600063_2.mp4'
-  },
-  {
-    title: 'Modern Large Space Interior & Metal Framing',
-    src: 'https://res.cloudinary.com/dfh28zk9/video/upload/w_1280,c_limit,q_auto:eco,vc_h264/v1788500132/vecteezy_green-interior-of-a-large-office_2016164.mp4'
-  }
-];
 
 export const HomePage: React.FC = () => {
   useSEO({
@@ -39,49 +28,6 @@ export const HomePage: React.FC = () => {
   const { formatPrice } = useCurrency();
   const activeCategories = (categories && categories.length > 0) ? categories : PROJECT_CATEGORIES_DATA;
 
-  // 60FPS Hardware-Accelerated Seamless Dual-Buffer Background Video Player
-  const [activeBuffer, setActiveBuffer] = useState<0 | 1>(0);
-  const videoRef0 = useRef<HTMLVideoElement | null>(null);
-  const videoRef1 = useRef<HTMLVideoElement | null>(null);
-  const isTransitioningRef = useRef(false);
-
-  useEffect(() => {
-    // Ensure active video starts smoothly on mount
-    const v0 = videoRef0.current;
-    if (v0) {
-      v0.play().catch(() => {});
-    }
-  }, []);
-
-  const triggerSwitchToBuffer = (nextBuffer: 0 | 1) => {
-    if (isTransitioningRef.current) return;
-    isTransitioningRef.current = true;
-
-    const nextVid = nextBuffer === 0 ? videoRef0.current : videoRef1.current;
-    if (nextVid) {
-      nextVid.currentTime = 0;
-      nextVid.play().catch(() => {});
-    }
-    setActiveBuffer(nextBuffer);
-
-    setTimeout(() => {
-      isTransitioningRef.current = false;
-    }, 1500);
-  };
-
-  const handleTimeUpdate0 = () => {
-    const v0 = videoRef0.current;
-    if (v0 && v0.duration && v0.currentTime >= v0.duration - 1.2) {
-      triggerSwitchToBuffer(1);
-    }
-  };
-
-  const handleTimeUpdate1 = () => {
-    const v1 = videoRef1.current;
-    if (v1 && v1.duration && v1.currentTime >= v1.duration - 1.2) {
-      triggerSwitchToBuffer(0);
-    }
-  };
 
   const [activeVideoModal, setActiveVideoModal] = useState<{
     title: string;
@@ -89,6 +35,124 @@ export const HomePage: React.FC = () => {
     description: string;
   } | null>(null);
   const [isVideoBuffering, setIsVideoBuffering] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isSliderPaused, setIsSliderPaused] = useState(false);
+  const [slideProgress, setSlideProgress] = useState(0);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  // 10 Distinct Real Project Videos Normalized from Mughal Steel Site Installations
+  const bgSliderVideos = [
+    {
+      id: 'bg-v1',
+      src: '/video/slides/part_01.mp4',
+      title: 'Modern Front Gate Fabrication',
+      tag: 'Laser Cut Main Gate',
+      description: 'Heavy-gauge CNC laser-cut entrance gate fabrication with forge-welded hinges and electrostatic powder coating.'
+    },
+    {
+      id: 'bg-v2',
+      src: '/video/slides/part_02.mp4',
+      title: 'Heavy Structural Balustrade & Railing',
+      tag: 'Stainless & MS Railing',
+      description: 'Precision engineered stair and balcony balustrades built with solid core steel balusters and flawless TIG welding.'
+    },
+    {
+      id: 'bg-v3',
+      src: '/video/slides/part_03.mp4',
+      title: 'Hand-Forged Wrought Iron Craftsmanship',
+      tag: 'Artisan Heritage',
+      description: 'Traditional blacksmith craftsmanship combined with modern durability for luxury classical estates.'
+    },
+    {
+      id: 'bg-v4',
+      src: '/video/slides/part_04.mp4',
+      title: 'Architectural Staircase & Spiral Steps',
+      tag: 'Stair Systems',
+      description: 'Floating cantilever and spiral steel staircases designed to engineering code with zero flex.'
+    },
+    {
+      id: 'bg-v5',
+      src: '/video/slides/part_05.mp4',
+      title: 'Perimeter Boundary Wall Grills',
+      tag: 'High-Tensile Security',
+      description: 'High-security boundary wall grills treated with hot-zinc anti-corrosion primer and baked finish.'
+    },
+    {
+      id: 'bg-v6',
+      src: '/video/slides/part_06.mp4',
+      title: '1 Kanal Luxury Villa Installation',
+      tag: 'Villa Gate Project',
+      description: 'Comprehensive walkthrough of 1 Kanal luxury house steel fabrication in Faisalabad executed by Mughal Steel.'
+    },
+    {
+      id: 'bg-v7',
+      src: '/video/slides/part_07.mp4',
+      title: 'Motorized Sliding Gate Automation',
+      tag: 'Italian Motor Setup',
+      description: 'Heavy-duty automated sliding gate motors with infrared safety sensors and remote wireless access.'
+    },
+    {
+      id: 'bg-v8',
+      src: '/video/slides/part_08.mp4',
+      title: 'Cantilever Car Porch Shed Trusses',
+      tag: 'Heavy Canopy',
+      description: 'Engineered cantilever car porch shed with wind-load structural calculations and polycarbonate / sheet roofing.'
+    },
+    {
+      id: 'bg-v9',
+      src: '/video/slides/part_09.mp4',
+      title: 'CNC Fiber Laser Precision Cutting',
+      tag: '±0.1mm Tolerance',
+      description: 'High-speed industrial CNC fiber laser cutting steel plates with micron-level precision and smooth edges.'
+    },
+    {
+      id: 'bg-v10',
+      src: '/video/slides/part_10.mp4',
+      title: 'Twin Cities Turnkey Site Handover',
+      tag: 'NDU & DHA Sites',
+      description: 'Completed site installation and verified client handover across premier housing societies in Islamabad & Rawalpindi.'
+    }
+  ];
+
+  // 10-Second interval for full video left slider
+  useEffect(() => {
+    if (isSliderPaused) return;
+
+    const intervalTime = 100; // update every 100ms
+    const step = 100 / (10000 / intervalTime); // 10,000ms = 10 sec
+
+    const timer = setInterval(() => {
+      setSlideProgress((prev) => {
+        if (prev >= 100) {
+          setCurrentSlide((curr) => (curr + 1) % bgSliderVideos.length);
+          return 0;
+        }
+        return prev + step;
+      });
+    }, intervalTime);
+
+    return () => clearInterval(timer);
+  }, [isSliderPaused, bgSliderVideos.length]);
+
+  // When currentSlide changes, ensure the active video is playing
+  useEffect(() => {
+    setSlideProgress(0);
+    const activeVid = videoRefs.current[currentSlide];
+    if (activeVid) {
+      activeVid.currentTime = 0;
+      activeVid.play().catch(() => {});
+    }
+  }, [currentSlide]);
+
+  const nextSlide = () => {
+    setSlideProgress(0);
+    setCurrentSlide((curr) => (curr + 1) % bgSliderVideos.length);
+  };
+
+  const prevSlide = () => {
+    setSlideProgress(0);
+    setCurrentSlide((curr) => (curr - 1 + bgSliderVideos.length) % bgSliderVideos.length);
+  };
 
   // Dedicated Active Service Modal State with Full Engineering Info
   const [activeServiceModal, setActiveServiceModal] = useState<{
@@ -239,105 +303,105 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="w-full bg-[#05080E] text-stone-100 font-sans">
-      
+            {/* ======================================================== */}
+      {/* 1. HOME SECTION: HERO WITH FULL-VIDEO 10-SEC LEFT SLIDER */}
       {/* ======================================================== */}
-      {/* 1. HOME SECTION: HERO & 60FPS SEAMLESS DUAL-BUFFER VIDEO ANIMATION */}
-      {/* ======================================================== */}
-      <section id="home" className="relative scroll-mt-24 w-full border-b border-brand-light/40 py-12 md:py-16 overflow-hidden bg-[#05080E]">
+      <section id="home" className="relative scroll-mt-24 w-full border-b border-brand-light/40 py-12 md:py-20 overflow-hidden bg-[#05080E]">
         
-        {/* 60 FPS Dual-Buffer Hardware-Accelerated Seamless Video Player */}
+        {/* Full-Screen Left-Sliding Video Track: Each separate video is full width & height */}
         <div 
-          className="absolute inset-0 z-0 overflow-hidden pointer-events-none"
+          className="absolute inset-0 z-0 overflow-hidden select-none"
           style={{ transform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden' }}
         >
-          {/* Buffer 0 */}
-          <video
-            ref={videoRef0}
-            src={HERO_BG_VIDEOS[0].src}
-            autoPlay
-            muted
-            playsInline
-            preload="metadata"
-            disablePictureInPicture
-            onTimeUpdate={handleTimeUpdate0}
-            onEnded={() => triggerSwitchToBuffer(1)}
-            onError={() => triggerSwitchToBuffer(1)}
-            className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000 ease-in-out pointer-events-none ${
-              activeBuffer === 0 ? 'opacity-80 z-[1]' : 'opacity-0 z-0'
-            }`}
-            style={{
-              willChange: 'opacity',
-              transform: 'translate3d(0, 0, 0)',
-              backfaceVisibility: 'hidden'
+          <div 
+            className="flex h-full w-full transition-transform duration-1000 ease-in-out"
+            style={{ 
+              transform: `translate3d(-${currentSlide * 100}%, 0, 0)`,
+              width: `${bgSliderVideos.length * 100}%`
             }}
-          />
+          >
+            {bgSliderVideos.map((video, idx) => (
+              <div 
+                key={video.id}
+                style={{ width: `${100 / bgSliderVideos.length}%` }}
+                className="h-full shrink-0 relative overflow-hidden"
+              >
+                <video
+                  ref={(el) => { videoRefs.current[idx] = el; }}
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline 
+                  preload="auto"
+                  className="w-full h-full object-cover object-center filter brightness-[0.98] contrast-[1.05] saturate-[1.1]"
+                >
+                  <source src={video.src} type="video/mp4" />
+                </video>
+              </div>
+            ))}
+          </div>
 
-          {/* Buffer 1 */}
-          <video
-            ref={videoRef1}
-            src={HERO_BG_VIDEOS[1].src}
-            muted
-            playsInline
-            preload="none"
-            disablePictureInPicture
-            onTimeUpdate={handleTimeUpdate1}
-            onEnded={() => triggerSwitchToBuffer(0)}
-            onError={() => triggerSwitchToBuffer(0)}
-            className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000 ease-in-out pointer-events-none ${
-              activeBuffer === 1 ? 'opacity-80 z-[1]' : 'opacity-0 z-0'
-            }`}
-            style={{
-              willChange: 'opacity',
-              transform: 'translate3d(0, 0, 0)',
-              backfaceVisibility: 'hidden'
-            }}
-          />
-
-          {/* Cinematic Overlays & Ambient Lighting */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#070C15]/75 via-[#05080E]/60 to-[#080D17]/85 pointer-events-none" />
-          <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#070C15]/20 to-[#070C15]/60 pointer-events-none" />
-          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-brand-gold/10 rounded-full blur-[120px] pointer-events-none" />
-          <div className="absolute top-1/4 -left-32 w-80 h-80 bg-amber-600/10 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute bottom-10 -right-32 w-80 h-80 bg-brand-light/10 rounded-full blur-[100px] pointer-events-none" />
+          {/* Lowest Transparency Overlays: Minimal dark vignetting to keep videos bright, vivid & prominent */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#05080E]/30 via-transparent to-[#05080E]/50 pointer-events-none z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#05080E]/60 via-[#05080E]/20 to-transparent pointer-events-none z-10" />
+          {/* Subtle Ambient Gold Glow Accent */}
+          <div className="absolute -top-40 left-1/3 -translate-x-1/2 w-[600px] h-[400px] bg-brand-gold/10 rounded-full blur-[140px] pointer-events-none z-10" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           
-          {/* Top Banner Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-8 pt-4">
             
-            {/* Left Content (6 cols) */}
-            <div className="lg:col-span-6 space-y-6">
+            {/* Left-Aligned Adjusted Hero Box (With breathing space from left) */}
+            <div className="text-left max-w-xl lg:max-w-2xl space-y-5 bg-[#05080E]/85 backdrop-blur-md border border-brand-gold/40 p-6 sm:p-10 rounded-2xl shadow-2xl relative overflow-hidden ml-0 sm:ml-2">
               
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-xs font-heading font-black uppercase tracking-widest rounded-sm backdrop-blur-md">
-                <Sparkles className="w-4 h-4" />
-                <span>Premier Architectural Steel Fabrication</span>
+              {/* Ambient metallic line */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand-gold/60 to-transparent" />
+
+              <div className="flex flex-wrap items-center justify-start gap-2">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-gold/20 border border-brand-gold/60 text-brand-gold text-xs font-heading font-black uppercase tracking-widest rounded-full shadow-glow-gold">
+                  <Sparkles className="w-4 h-4 text-brand-gold" />
+                  <span>Premier Architectural Steel Fabrication • Since 1994</span>
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={() => setIsSliderPaused(!isSliderPaused)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-navy/90 hover:bg-brand-medium border border-brand-light/80 hover:border-brand-gold/60 text-[11px] font-mono font-bold text-slate-200 rounded-full transition-all cursor-pointer shadow"
+                  title={isSliderPaused ? "Resume video 10s auto-slide" : "Pause 10s auto-slide"}
+                >
+                  <span className={`w-2 h-2 rounded-full ${isSliderPaused ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'}`}></span>
+                  <span>{isSliderPaused ? "⏸ Timer Paused" : "▶ 10s Auto-Slide Active"}</span>
+                </button>
               </div>
 
-              <div className="space-y-3">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black text-stone-100 uppercase tracking-tight leading-[1.1] drop-shadow-md">
-                  MUGHAL STEEL <br />
-                  <span className="text-gradient-gold">FABRICATION</span>
-                </h1>
-                <p className="text-sm sm:text-base text-slate-200 font-sans max-w-xl leading-relaxed drop-shadow">
-                  Engineered entrance gates, classical hand-forged wrought iron, custom stair railings, and modern aluminum & glass systems built with 10-year structural integrity.
-                </p>
-              </div>
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-black text-stone-100 uppercase tracking-tight leading-[1.1] drop-shadow-2xl">
+                MUGHAL STEEL <br className="hidden sm:inline" />
+                <span className="text-gradient-gold">FABRICATION</span>
+              </h1>
+
+              <p className="text-sm sm:text-base md:text-lg text-slate-200 font-sans max-w-xl leading-relaxed drop-shadow">
+                Engineered entrance gates, classical hand-forged wrought iron, custom stair railings, and modern aluminum & glass systems built with 10-year structural integrity.
+              </p>
 
               {/* Verified Trust Badges */}
-              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-300 font-mono">
-                <span className="flex items-center gap-1.5 text-brand-gold font-bold">
+              <div className="flex flex-wrap items-center justify-start gap-2.5 sm:gap-4 text-xs text-slate-300 font-mono pt-1">
+                <span className="flex items-center gap-1.5 text-brand-gold font-bold bg-brand-navy/90 px-3 py-1.5 rounded-full border border-brand-gold/40 shadow-md">
                   <CheckCircle2 className="w-4 h-4 text-brand-gold" />
                   30+ Years Craftsmanship
                 </span>
-                <span>•</span>
-                <span>±0.1mm CNC Fiber Laser</span>
-                <span>•</span>
-                <span>Rawalpindi & Islamabad</span>
+                <span className="flex items-center gap-1.5 text-slate-200 bg-brand-navy/90 px-3 py-1.5 rounded-full border border-brand-light/80 shadow-md">
+                  <CheckCircle2 className="w-4 h-4 text-brand-gold" />
+                  ±0.1mm CNC Fiber Laser
+                </span>
+                <span className="flex items-center gap-1.5 text-slate-200 bg-brand-navy/90 px-3 py-1.5 rounded-full border border-brand-light/80 shadow-md">
+                  <CheckCircle2 className="w-4 h-4 text-brand-gold" />
+                  Rawalpindi & Islamabad Workshop
+                </span>
               </div>
 
               {/* Hero Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
+              <div className="flex flex-wrap items-center justify-start gap-3 pt-2">
                 <Link 
                   to="/items" 
                   className="btn-gold text-xs py-3.5 px-6 uppercase tracking-wider font-bold shadow-lg hover:shadow-glow-gold flex items-center gap-2"
@@ -360,79 +424,145 @@ export const HomePage: React.FC = () => {
                 >
                   <span>Request a Quote</span>
                 </Link>
+
+                <a 
+                  href="tel:03005197825"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-brand-gold/15 hover:bg-brand-gold text-brand-gold hover:text-brand-dark border border-brand-gold/80 font-heading font-bold text-xs uppercase tracking-wider rounded transition-all duration-300 shadow-md backdrop-blur-sm"
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>0300-5197825</span>
+                </a>
               </div>
 
             </div>
 
-            {/* Right Hero Image Showcase (6 cols) */}
-            <div className="lg:col-span-6">
-              <div className="relative rounded-lg overflow-hidden border-2 border-brand-gold/60 shadow-2xl bg-black group">
-                <img 
-                  src="/image/mughal-steel-team.png" 
-                  alt="Mughal Steel Fabrication Rawalpindi Team & Engineers" 
-                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 shadow-2xl" 
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/mughal-steel-team.png';
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-4 inset-x-4 text-center">
-                  <span className="inline-block bg-brand-navy/95 text-brand-gold border border-brand-gold/50 text-[11px] font-heading font-bold uppercase tracking-wider px-4 py-1.5 rounded shadow">
-                    Master Fabricators & Engineers • Mughal Steel Workshop Rawalpindi
+            {/* Right Side: Interactive Video Control Card & 10s Timer */}
+            <div className="w-full lg:w-80 shrink-0 space-y-3 lg:self-end">
+              <div className="bg-[#05080E]/90 backdrop-blur-md border border-brand-gold/50 rounded-xl p-4 sm:p-5 shadow-2xl space-y-3">
+                
+                {/* Active Video Header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span className="text-[11px] font-mono font-bold text-brand-gold uppercase tracking-wider">
+                      Video {String(currentSlide + 1).padStart(2, '0')} / {String(bgSliderVideos.length).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-400">
+                    10s Auto-Slide
                   </span>
                 </div>
+
+                {/* Video Info */}
+                <div className="space-y-1">
+                  <h4 className="font-heading font-bold text-sm text-stone-100 leading-tight">
+                    {bgSliderVideos[currentSlide]?.title}
+                  </h4>
+                  <span className="inline-block text-[10px] font-mono font-bold text-brand-gold bg-brand-navy/90 border border-brand-gold/30 px-2 py-0.5 rounded">
+                    {bgSliderVideos[currentSlide]?.tag}
+                  </span>
+                </div>
+
+                {/* 10-Second Progress Bar */}
+                <div className="space-y-1">
+                  <div className="w-full h-1.5 bg-stone-800 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-brand-gold-dark via-brand-gold to-amber-400 transition-all duration-100 ease-linear rounded-full"
+                      style={{ width: `${slideProgress}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between text-[10px] font-mono text-slate-400">
+                    <span>{((100 - slideProgress) * 0.1).toFixed(0)}s remaining</span>
+                    <span>Slides left automatically</span>
+                  </div>
+                </div>
+
+                {/* Slider Controls: Prev, Next & Watch in HD */}
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={prevSlide}
+                    className="flex-1 py-2 bg-brand-navy hover:bg-brand-medium border border-brand-light hover:border-brand-gold/60 text-stone-200 font-mono text-xs font-bold rounded flex items-center justify-center gap-1 transition-all cursor-pointer shadow"
+                    title="Slide to Previous Video"
+                  >
+                    <span>◀ Prev</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={nextSlide}
+                    className="flex-1 py-2 bg-brand-navy hover:bg-brand-medium border border-brand-light hover:border-brand-gold/60 text-stone-200 font-mono text-xs font-bold rounded flex items-center justify-center gap-1 transition-all cursor-pointer shadow"
+                    title="Slide to Next Video"
+                  >
+                    <span>Next ▶</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveVideoModal({
+                      title: bgSliderVideos[currentSlide].title,
+                      videoUrl: bgSliderVideos[currentSlide].src,
+                      description: bgSliderVideos[currentSlide].description
+                    })}
+                    className="px-3 py-2 bg-brand-gold hover:bg-brand-gold-dark text-brand-dark font-mono text-xs font-bold rounded flex items-center justify-center gap-1 transition-all cursor-pointer shadow"
+                    title="Watch current video in full HD with sound"
+                  >
+                    <Play className="w-3 h-3 fill-brand-dark" />
+                    <span>HD</span>
+                  </button>
+                </div>
+
               </div>
             </div>
 
           </div>
 
-          {/* Bottom 3 Video Showcase Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-            {videoShowcases.map((vid) => (
-              <div 
-                key={vid.id}
-                onClick={() => setActiveVideoModal({
-                  title: vid.title,
-                  videoUrl: vid.videoUrl,
-                  description: vid.description
-                })}
-                className="group relative h-48 rounded-lg overflow-hidden border border-brand-light/60 hover:border-brand-gold/80 cursor-pointer shadow-xl transition-all duration-300 bg-brand-navy backdrop-blur-sm"
-              >
-                <img 
-                  src={vid.thumbnail} 
-                  alt={vid.title} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-[0.4]" 
-                />
-                
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-5 text-center space-y-2.5">
-                  <div className="w-12 h-12 rounded-full bg-brand-gold text-brand-dark flex items-center justify-center shadow-glow-gold group-hover:scale-125 transition-transform">
-                    <Play className="w-5 h-5 fill-brand-dark ml-0.5" />
-                  </div>
-                  
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-stone-100 uppercase tracking-wide group-hover:text-brand-gold transition-colors">
-                      {vid.title}
-                    </h3>
-                    <p className="text-[11px] text-slate-300 font-sans line-clamp-1">
-                      {vid.subtitle}
-                    </p>
-                  </div>
-
-                  {vid.rating && (
-                    <div className="flex text-amber-400 gap-0.5 pt-0.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-                      ))}
-                    </div>
-                  )}
+          {/* Floating Live Workshop & Engineering Credentials Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 max-w-5xl mx-auto">
+            
+            {/* Card 1: Live Fabrication Floor */}
+            <div className="bg-brand-navy/85 border border-brand-gold/40 hover:border-brand-gold backdrop-blur-md p-4 rounded-lg shadow-xl flex items-center gap-3.5 transition-all group">
+              <div className="relative flex items-center justify-center shrink-0">
+                <span className="absolute w-3.5 h-3.5 rounded-full bg-emerald-400 animate-ping opacity-75"></span>
+                <span className="relative w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              </div>
+              <div className="space-y-0.5">
+                <div className="text-xs font-heading font-black text-brand-gold uppercase tracking-wide">
+                  Active Workshop Floor
                 </div>
-
-                <div className="absolute top-3 right-3 bg-black/80 text-brand-gold text-[9px] font-mono font-bold px-2 py-0.5 rounded border border-brand-gold/30 flex items-center gap-1">
-                  <Video className="w-3 h-3" />
-                  <span>PLAY VIDEO</span>
+                <div className="text-[11px] text-slate-300 font-sans">
+                  Rawalpindi Industrial Fabrication Yard • Live On-Site
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Card 2: Heritage & Client Rating */}
+            <div className="bg-brand-navy/85 border border-brand-gold/40 hover:border-brand-gold backdrop-blur-md p-4 rounded-lg shadow-xl flex items-center gap-3.5 transition-all group">
+              <Award className="w-5 h-5 text-brand-gold shrink-0" />
+              <div className="space-y-0.5">
+                <div className="text-xs font-heading font-black text-stone-100 uppercase tracking-wide flex items-center gap-1.5">
+                  <span>30+ Years Heritage</span>
+                  <span className="text-amber-400 text-xs">★★★★★</span>
+                </div>
+                <div className="text-[11px] text-slate-300 font-sans">
+                  5,000+ Precision MS Projects in Twin Cities
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3: Engineering Assurance */}
+            <div className="bg-brand-navy/85 border border-brand-gold/40 hover:border-brand-gold backdrop-blur-md p-4 rounded-lg shadow-xl flex items-center gap-3.5 transition-all group">
+              <ShieldCheck className="w-5 h-5 text-brand-gold shrink-0" />
+              <div className="space-y-0.5">
+                <div className="text-xs font-heading font-black text-stone-100 uppercase tracking-wide">
+                  10-Year Warranty
+                </div>
+                <div className="text-[11px] text-slate-300 font-sans">
+                  Anti-Sag Structural Warranty & Multi-Stage Primer
+                </div>
+              </div>
+            </div>
+
           </div>
 
         </div>
@@ -559,6 +689,8 @@ export const HomePage: React.FC = () => {
               ))}
             </div>
           </div>
+
+
 
         </div>
       </section>

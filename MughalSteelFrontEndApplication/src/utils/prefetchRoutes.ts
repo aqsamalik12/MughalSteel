@@ -19,13 +19,13 @@ export const prefetchRoute = (routeName: string) => {
         import('../pages/ShopPage');
         break;
       case 'categories':
-      case 'portfolio':
         import('../pages/CategoriesPage');
         break;
       case 'services':
         import('../pages/ServicesPage');
         break;
       case 'projects':
+      case 'portfolio':
         import('../pages/ProjectsPage');
         break;
       case 'quote':

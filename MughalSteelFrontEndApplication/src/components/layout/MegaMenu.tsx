@@ -51,6 +51,15 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ type, onClose, onMouseEnter,
               </div>
               <div className="flex items-center gap-3">
                 <Link 
+                  to="/projects" 
+                  onClick={onClose}
+                  className="hidden md:flex text-[11px] font-heading font-bold text-slate-300 hover:text-brand-gold items-center gap-1 uppercase tracking-wide"
+                >
+                  <Layers className="w-3.5 h-3.5 text-brand-gold" />
+                  <span>All Projects & Sites</span>
+                </Link>
+                <span className="hidden md:inline text-slate-600">|</span>
+                <Link 
                   to="/categories" 
                   onClick={onClose}
                   className="text-[11px] font-heading font-bold text-brand-gold hover:underline flex items-center gap-1 uppercase tracking-wide"

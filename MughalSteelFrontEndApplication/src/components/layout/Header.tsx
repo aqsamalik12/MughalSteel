@@ -164,7 +164,10 @@ export const Header: React.FC = () => {
     setMobileMenuOpen(false);
 
     if (location.pathname === '/' || location.pathname === '') {
-      scrollToSection(sectionId);
+      const didScroll = scrollToSection(sectionId);
+      if (!didScroll && fallbackPath) {
+        navigate(fallbackPath);
+      }
       return;
     }
 
@@ -342,7 +345,21 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* PORTFOLIO (Dropdown/MegaMenu) */}
+              {/* PORTFOLIO (Single Direct Link) */}
+              <button 
+                type="button"
+                onClick={() => handleNavClick('portfolio', '/portfolio')}
+                onMouseEnter={() => prefetchRoute('portfolio')}
+                className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center whitespace-nowrap ${
+                  isNavActive('portfolio', '/portfolio') 
+                    ? 'text-brand-gold font-bold' 
+                    : 'text-stone-300 hover:text-brand-gold'
+                }`}
+              >
+                PORTFOLIO
+              </button>
+
+              {/* PROJECTS (Dropdown/MegaMenu - Project Categories) */}
               <div 
                 className="relative group/nav"
                 onMouseEnter={() => { handleMouseEnterMega('categories'); prefetchRoute('categories'); }}
@@ -355,29 +372,15 @@ export const Header: React.FC = () => {
                     handleToggleMega('categories');
                   }}
                   className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center gap-1 whitespace-nowrap ${
-                    isNavActive('portfolio', '/categories') || isNavActive('portfolio', '/portfolio') || activeMegaType === 'categories'
+                    isNavActive('projects', '/projects') || isNavActive('projects', '/categories') || activeMegaType === 'categories'
                       ? 'text-brand-gold font-bold' 
                       : 'text-stone-300 hover:text-brand-gold'
                   }`}
                 >
-                  <span>PORTFOLIO</span>
+                  <span>PROJECTS</span>
                   <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${activeMegaType === 'categories' ? 'rotate-180 text-brand-gold' : 'text-stone-400 group-hover/nav:text-brand-gold'}`} />
                 </button>
               </div>
-
-              {/* PROJECTS (Single Page Link) */}
-              <button 
-                type="button"
-                onClick={() => handleNavClick('projects', '/projects')}
-                onMouseEnter={() => prefetchRoute('projects')}
-                className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center whitespace-nowrap ${
-                  isNavActive('projects', '/projects') 
-                    ? 'text-brand-gold font-bold' 
-                    : 'text-stone-300 hover:text-brand-gold'
-                }`}
-              >
-                PROJECTS
-              </button>
 
               {/* REVIEWS (Direct Link to Reviews) */}
               <button 
@@ -608,7 +611,24 @@ export const Header: React.FC = () => {
                 )}
               </div>
 
-              {/* 5. PORTFOLIO Accordion (10 Categories) */}
+              {/* 5. PORTFOLIO (Single Direct Link) */}
+              <div className="py-2">
+                <button 
+                  type="button"
+                  onClick={() => handleNavClick('portfolio', '/portfolio')}
+                  className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
+                    isNavActive('portfolio', '/portfolio') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
+                  }`}
+                >
+                  <span className="flex items-center gap-2.5">
+                    <Layers className="w-4 h-4 text-brand-gold" />
+                    <span>PORTFOLIO</span>
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-slate-500" />
+                </button>
+              </div>
+
+              {/* 6. PROJECTS Accordion (Project Categories) */}
               <div className="py-2 space-y-2">
                 <button 
                   onClick={() => setMobileExpandedSection(mobileExpandedSection === 'projects' ? null : 'projects')}
@@ -616,7 +636,7 @@ export const Header: React.FC = () => {
                 >
                   <span className="flex items-center gap-2.5">
                     <Grid className="w-4 h-4 text-brand-gold" />
-                    <span>PORTFOLIO (10 CATEGORIES)</span>
+                    <span>PROJECTS (CATEGORIES)</span>
                   </span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${mobileExpandedSection === 'projects' ? 'rotate-180 text-brand-gold' : 'text-slate-500'}`} />
                 </button>
@@ -625,11 +645,18 @@ export const Header: React.FC = () => {
                   <div className="pl-6 space-y-1 font-sans text-xs normal-case border-l-2 border-brand-gold/40 my-2">
                     <button 
                       type="button"
-                      onClick={() => handleNavClick('portfolio', '/categories')} 
+                      onClick={() => handleNavClick('projects', '/categories')} 
                       className="block w-full text-left py-1 text-brand-gold font-bold font-heading uppercase text-[11px]"
                     >
-                      ★ View All Categories →
+                      ★ View All Project Categories →
                     </button>
+                    <Link 
+                      to="/projects" 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block py-1 text-amber-300 font-semibold"
+                    >
+                      ▸ Completed Project Sites & Gallery →
+                    </Link>
                     {(categories && categories.length > 0 ? categories : PROJECT_CATEGORIES_DATA).map((cat) => (
                       <Link 
                         key={cat.id} 
@@ -642,23 +669,6 @@ export const Header: React.FC = () => {
                     ))}
                   </div>
                 )}
-              </div>
-
-              {/* 6. PROJECTS (Completed Installations) */}
-              <div className="py-2">
-                <button 
-                  type="button"
-                  onClick={() => handleNavClick('projects', '/projects')}
-                  className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
-                    isNavActive('projects', '/projects') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
-                  }`}
-                >
-                  <span className="flex items-center gap-2.5">
-                    <Layers className="w-4 h-4 text-brand-gold" />
-                    <span>PROJECTS (COMPLETED SITES)</span>
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-slate-500" />
-                </button>
               </div>
 
               {/* 7. REVIEWS */}

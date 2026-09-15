@@ -6,7 +6,8 @@ import {
   Upload, Sparkles, Move, ZoomIn, ZoomOut, RotateCw, 
   Trash2, MessageCircle, Calculator, CheckCircle2, 
   Layers, RefreshCw, Eye, Download, Info, Search, Filter, 
-  SlidersHorizontal, Check, ArrowRight, CornerDownRight, Maximize2, FileText
+  SlidersHorizontal, Check, ArrowRight, CornerDownRight, Maximize2, FileText,
+  FlipHorizontal, FlipVertical, Lock, Unlock, Image as ImageIcon, Compass, Sliders
 } from 'lucide-react';
 
 export const VirtualTryOnPage: React.FC = () => {
@@ -63,6 +64,7 @@ export const VirtualTryOnPage: React.FC = () => {
       slug: 'metropolis-cnc-laser-cut-geometric-main-gate',
       category: 'Modern Home',
       item: 'Front Gates',
+      description: 'Heavy gauge steel fabrication engineered for architectural elevations.',
       images: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'],
       materials: ['Mild Steel', 'CNC Laser Plate'],
       finishes: ['Matte Black Powder Coat'],
@@ -99,17 +101,35 @@ export const VirtualTryOnPage: React.FC = () => {
   const [catalogCategory, setCatalogCategory] = useState<string>('All');
   const [catalogSearch, setCatalogSearch] = useState<string>('');
 
-  // Overlay Manipulation States
+  // Overlay Manipulation & Multi-Angle Distortion States
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 50, y: 55 });
-  const [scale, setScale] = useState<number>(1);
-  const [opacity, setOpacity] = useState<number>(1);
+  const [overlayWidth, setOverlayWidth] = useState<number>(280);
+  const [overlayHeight, setOverlayHeight] = useState<number>(330);
   const [rotation, setRotation] = useState<number>(0);
-  const [skewX, setSkewX] = useState<number>(0);
-  const [skewY, setSkewY] = useState<number>(0);
+  const [rotateX, setRotateX] = useState<number>(0); // 3D Pitch / Elevation Tilt
+  const [rotateY, setRotateY] = useState<number>(0); // 3D Yaw / Wall Perspective
+  const [skewX, setSkewX] = useState<number>(0);     // Horizontal shear / ramp angle
+  const [skewY, setSkewY] = useState<number>(0);     // Vertical shear
+  const [opacity, setOpacity] = useState<number>(1);
+  const [flipH, setFlipH] = useState<boolean>(false);
+  const [flipV, setFlipV] = useState<boolean>(false);
+  const [lockAspectRatio, setLockAspectRatio] = useState<boolean>(false);
 
-  // Dragging states (Mouse & Touch)
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  // Active Drag / Resize Handle State ('move' | 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'rotate')
+  const [activeHandle, setActiveHandle] = useState<string | null>(null);
+  const dragStartRef = useRef<{
+    clientX: number;
+    clientY: number;
+    posX: number;
+    posY: number;
+    width: number;
+    height: number;
+    rotation: number;
+    aspectRatio: number;
+  }>({ clientX: 0, clientY: 0, posX: 50, posY: 55, width: 280, height: 330, rotation: 0, aspectRatio: 280 / 330 });
+
+  // Custom Gate / Door Picture Upload
+  const customDesignInputRef = useRef<HTMLInputElement>(null);
 
   // Sizing & Calculator inputs
   const [width, setWidth] = useState<number>(12);
@@ -157,7 +177,7 @@ export const VirtualTryOnPage: React.FC = () => {
     });
   }, [products, catalogCategory, catalogSearch]);
 
-  // Image Upload Handler
+  // Background House Image Upload Handler
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -170,8 +190,11 @@ export const VirtualTryOnPage: React.FC = () => {
         setHouseImage(reader.result as string);
         setHouseImageName(file.name);
         setPosition({ x: 50, y: 55 });
-        setScale(1);
+        setOverlayWidth(280);
+        setOverlayHeight(330);
         setRotation(0);
+        setRotateX(0);
+        setRotateY(0);
         setSkewX(0);
         setSkewY(0);
       };
@@ -179,50 +202,159 @@ export const VirtualTryOnPage: React.FC = () => {
     }
   };
 
-  // Mouse Drag Events
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-    setDragStart({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    const deltaX = (e.clientX - dragStart.x) * 0.18;
-    const deltaY = (e.clientY - dragStart.y) * 0.18;
-    setPosition(prev => ({
-      x: Math.min(95, Math.max(5, prev.x + deltaX)),
-      y: Math.min(95, Math.max(5, prev.y + deltaY))
-    }));
-    setDragStart({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  // Touch Drag Events (Mobile)
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      setIsDragging(true);
-      setDragStart({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+  // Custom Product / Cutout Image Upload Handler (Supports Any Picture)
+  const handleCustomDesignUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload a valid image file (PNG, JPG, WEBP).');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const url = reader.result as string;
+        const cleanName = file.name.replace(/\.[^/.]+$/, "") || 'Custom Gate / Door Photo';
+        setSelectedProduct({
+          id: 'custom-' + Date.now(),
+          productCode: 'CUSTOM-PIC',
+          name: cleanName,
+          slug: 'custom-picture',
+          category: 'Custom Fabrication',
+          item: 'Custom Gate / Door',
+          description: 'Custom architectural metal fabrication design.',
+          images: [url],
+          frontImage: url,
+          materials: ['Mild Steel / Laser Plate', 'Custom Fabrication'],
+          finishes: ['Custom Electrostatic Finish'],
+          pricePerSqFt: 2500,
+          price: 130000
+        });
+        setSelectedSide('front');
+        setPosition({ x: 50, y: 55 });
+        setOverlayWidth(280);
+        setOverlayHeight(330);
+        setRotation(0);
+        setRotateX(0);
+        setRotateY(0);
+        setSkewX(0);
+        setSkewY(0);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || e.touches.length !== 1) return;
-    const deltaX = (e.touches[0].clientX - dragStart.x) * 0.18;
-    const deltaY = (e.touches[0].clientY - dragStart.y) * 0.18;
-    setPosition(prev => ({
-      x: Math.min(95, Math.max(5, prev.x + deltaX)),
-      y: Math.min(95, Math.max(5, prev.y + deltaY))
-    }));
-    setDragStart({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+  // Global Pointer Down for Move, Rotate & 8-Directional Stretch Pins
+  const handlePointerDown = (
+    e: React.MouseEvent | React.TouchEvent,
+    handle: 'move' | 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'rotate'
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+
+    setActiveHandle(handle);
+    dragStartRef.current = {
+      clientX,
+      clientY,
+      posX: position.x,
+      posY: position.y,
+      width: overlayWidth,
+      height: overlayHeight,
+      rotation: rotation,
+      aspectRatio: overlayWidth / (overlayHeight || 1)
+    };
   };
 
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-  };
+  // 60FPS Continuous Pointer Drag & Stretch Engine
+  useEffect(() => {
+    if (!activeHandle) return;
+
+    const handlePointerMove = (e: MouseEvent | TouchEvent) => {
+      const clientX = 'touches' in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+      const clientY = 'touches' in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
+      const container = canvasContainerRef.current;
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      const dx = clientX - dragStartRef.current.clientX;
+      const dy = clientY - dragStartRef.current.clientY;
+
+      if (activeHandle === 'move') {
+        const deltaPercentX = (dx / rect.width) * 100;
+        const deltaPercentY = (dy / rect.height) * 100;
+        setPosition({
+          x: Math.min(95, Math.max(5, dragStartRef.current.posX + deltaPercentX)),
+          y: Math.min(95, Math.max(5, dragStartRef.current.posY + deltaPercentY))
+        });
+      } else if (activeHandle === 'rotate') {
+        const centerX = rect.left + (dragStartRef.current.posX / 100) * rect.width;
+        const centerY = rect.top + (dragStartRef.current.posY / 100) * rect.height;
+        const rad = Math.atan2(clientY - centerY, clientX - centerX);
+        const deg = Math.round((rad * 180) / Math.PI + 90);
+        setRotation(((deg % 360) + 360) % 360);
+      } else {
+        // Free stretch & shape adjustment from any of the 8 pins
+        let newW = dragStartRef.current.width;
+        let newH = dragStartRef.current.height;
+        let newPosX = dragStartRef.current.posX;
+        let newPosY = dragStartRef.current.posY;
+
+        // East / West (Width)
+        if (activeHandle.includes('e')) {
+          newW = Math.max(45, dragStartRef.current.width + dx);
+          newPosX = dragStartRef.current.posX + ((dx / 2) / rect.width) * 100;
+        } else if (activeHandle.includes('w')) {
+          newW = Math.max(45, dragStartRef.current.width - dx);
+          newPosX = dragStartRef.current.posX + ((dx / 2) / rect.width) * 100;
+        }
+
+        // North / South (Height)
+        if (activeHandle.includes('s')) {
+          newH = Math.max(45, dragStartRef.current.height + dy);
+          newPosY = dragStartRef.current.posY + ((dy / 2) / rect.height) * 100;
+        } else if (activeHandle.includes('n')) {
+          newH = Math.max(45, dragStartRef.current.height - dy);
+          newPosY = dragStartRef.current.posY + ((dy / 2) / rect.height) * 100;
+        }
+
+        // Lock aspect ratio constraint if enabled
+        if (lockAspectRatio && (activeHandle === 'se' || activeHandle === 'nw' || activeHandle === 'ne' || activeHandle === 'sw')) {
+          newH = Math.round(newW / dragStartRef.current.aspectRatio);
+        }
+
+        const roundedW = Math.round(newW);
+        const roundedH = Math.round(newH);
+        setOverlayWidth(roundedW);
+        setOverlayHeight(roundedH);
+        setPosition({
+          x: Math.min(95, Math.max(5, newPosX)),
+          y: Math.min(95, Math.max(5, newPosY))
+        });
+
+        // Synchronize with ft dimensions in calculator
+        setWidth(parseFloat(((roundedW / 280) * 12).toFixed(1)));
+        setHeight(parseFloat(((roundedH / 330) * 7.5).toFixed(1)));
+      }
+    };
+
+    const handlePointerUp = () => {
+      setActiveHandle(null);
+    };
+
+    window.addEventListener('mousemove', handlePointerMove, { passive: false });
+    window.addEventListener('mouseup', handlePointerUp);
+    window.addEventListener('touchmove', handlePointerMove, { passive: false });
+    window.addEventListener('touchend', handlePointerUp);
+
+    return () => {
+      window.removeEventListener('mousemove', handlePointerMove);
+      window.removeEventListener('mouseup', handlePointerUp);
+      window.removeEventListener('touchmove', handlePointerMove);
+      window.removeEventListener('touchend', handlePointerUp);
+    };
+  }, [activeHandle, lockAspectRatio]);
 
   // Dynamic Price Calculations
   const area = parseFloat((width * height).toFixed(2));
@@ -257,6 +389,7 @@ export const VirtualTryOnPage: React.FC = () => {
 
 
   // Save / Export Rendered Visualization (HTML5 Canvas)
+  // Save / Export Rendered Visualization (HTML5 Canvas)
   const handleSavePreview = () => {
     setExportingPreview(true);
     const canvas = document.createElement('canvas');
@@ -280,7 +413,7 @@ export const VirtualTryOnPage: React.FC = () => {
       // Draw Overlay Product
       const prodImg = new Image();
       prodImg.crossOrigin = 'anonymous';
-      prodImg.src = selectedProduct.images[0];
+      prodImg.src = activeOverlayImage || selectedProduct.images[0];
 
       prodImg.onload = () => {
         ctx.save();
@@ -292,11 +425,17 @@ export const VirtualTryOnPage: React.FC = () => {
         ctx.rotate((rotation * Math.PI) / 180);
         ctx.transform(1, (skewY * Math.PI) / 180, (skewX * Math.PI) / 180, 1, 0, 0);
 
-        const prodWidth = (canvas.width * 0.38) * scale;
-        const prodHeight = (prodImg.naturalHeight / prodImg.naturalWidth) * prodWidth;
+        if (flipH || flipV) {
+          ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+        }
+
+        const containerW = canvasContainerRef.current?.clientWidth || 700;
+        const containerH = canvasContainerRef.current?.clientHeight || 500;
+        const exportW = overlayWidth * (canvas.width / containerW);
+        const exportH = overlayHeight * (canvas.height / containerH);
 
         ctx.globalAlpha = opacity;
-        ctx.drawImage(prodImg, -prodWidth / 2, -prodHeight / 2, prodWidth, prodHeight);
+        ctx.drawImage(prodImg, -exportW / 2, -exportH / 2, exportW, exportH);
         ctx.restore();
 
         // Draw Mughal Steel Branding Badge at Bottom
@@ -331,14 +470,29 @@ export const VirtualTryOnPage: React.FC = () => {
     };
   };
 
+  // Zoom / Scale Helper
+  const handleZoom = (factor: number) => {
+    setOverlayWidth(prev => Math.max(50, Math.round(prev * factor)));
+    setOverlayHeight(prev => Math.max(50, Math.round(prev * factor)));
+    setWidth(prev => parseFloat(Math.max(2, prev * factor).toFixed(1)));
+    setHeight(prev => parseFloat(Math.max(2, prev * factor).toFixed(1)));
+  };
+
   // Reset Adjustments
   const handleResetAdjustments = () => {
     setPosition({ x: 50, y: 55 });
-    setScale(1);
+    setOverlayWidth(280);
+    setOverlayHeight(330);
     setRotation(0);
+    setRotateX(0);
+    setRotateY(0);
     setSkewX(0);
     setSkewY(0);
     setOpacity(1);
+    setFlipH(false);
+    setFlipV(false);
+    setWidth(12);
+    setHeight(7.5);
   };
 
   return (
@@ -372,10 +526,25 @@ export const VirtualTryOnPage: React.FC = () => {
             />
             <button 
               onClick={() => fileInputRef.current?.click()}
-              className="btn-gold text-xs py-3 px-5 uppercase font-bold tracking-wider shadow-lg hover:shadow-glow-gold flex items-center gap-2"
+              className="btn-gold text-xs py-2.5 px-4 uppercase font-bold tracking-wider shadow-lg hover:shadow-glow-gold flex items-center gap-2"
             >
               <Upload className="w-4 h-4" />
-              <span>Upload Your House Photo</span>
+              <span>Upload House Photo</span>
+            </button>
+
+            <input 
+              ref={customDesignInputRef}
+              type="file" 
+              accept="image/*" 
+              onChange={handleCustomDesignUpload} 
+              className="hidden" 
+            />
+            <button 
+              onClick={() => customDesignInputRef.current?.click()}
+              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded font-heading text-xs uppercase font-bold tracking-wider shadow-lg flex items-center gap-2 border border-emerald-400/50"
+            >
+              <ImageIcon className="w-4 h-4" />
+              <span>Add Custom Gate / Door Pic</span>
             </button>
           </div>
         </div>
@@ -420,12 +589,7 @@ export const VirtualTryOnPage: React.FC = () => {
             {/* Canvas Frame */}
             <div 
               ref={canvasContainerRef}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              className="relative w-full h-[400px] sm:h-[500px] md:h-[560px] bg-black border-2 border-brand-gold/50 rounded-lg overflow-hidden select-none shadow-2xl relative"
+              className="relative w-full h-[400px] sm:h-[500px] md:h-[560px] bg-black border-2 border-brand-gold/50 rounded-lg overflow-hidden select-none shadow-2xl"
             >
               {/* Background House Image */}
               <img 
@@ -437,82 +601,198 @@ export const VirtualTryOnPage: React.FC = () => {
               {/* Grid / Vignette Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
 
-              {/* LIVE DRAGGABLE & RESIZABLE PRODUCT OVERLAY */}
+              {/* LIVE DRAGGABLE, RESIZABLE & FREE-STRETCHABLE PRODUCT OVERLAY */}
               {selectedProduct && (
                 <div
-                  onMouseDown={handleMouseDown}
-                  onTouchStart={handleTouchStart}
                   style={{
                     left: `${position.x}%`,
                     top: `${position.y}%`,
-                    transform: `translate(-50%, -50%) scale(${scale}) rotate(${rotation}deg) skew(${skewX}deg, ${skewY}deg)`,
-                    opacity: opacity
+                    width: `${overlayWidth}px`,
+                    height: `${overlayHeight}px`,
+                    transform: `translate(-50%, -50%) perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotation}deg) skew(${skewX}deg, ${skewY}deg) scale(${flipH ? -1 : 1}, ${flipV ? -1 : 1})`,
+                    opacity: opacity,
+                    zIndex: 20
                   }}
-                  className="absolute cursor-grab active:cursor-grabbing transition-shadow duration-75 group"
+                  className="absolute select-none group"
                 >
-                  <div className="relative border border-brand-gold/60 hover:border-brand-gold bg-transparent p-0 rounded shadow-2xl group-hover:ring-1 group-hover:ring-brand-gold/40">
+                  <div className="relative w-full h-full border-2 border-brand-gold/80 hover:border-brand-gold bg-transparent p-0 rounded shadow-2xl group-hover:ring-2 group-hover:ring-brand-gold/50 transition-colors">
                     
-                    {/* Live Product Image (Clean Cutout & Active Side/Angle) */}
-                    <img 
-                      src={activeOverlayImage} 
-                      alt={`${selectedProduct.name} - ${selectedSide}`}
-                      className="max-h-56 sm:max-h-72 md:max-h-84 w-auto object-contain pointer-events-none drop-shadow-[0_15px_25px_rgba(0,0,0,0.85)]" 
-                    />
-
-                    {/* Drag Handle Label Badge */}
-                    <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-brand-dark/95 border border-brand-gold/60 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded shadow whitespace-nowrap flex items-center gap-1 opacity-90 group-hover:opacity-100">
-                      <Move className="w-3 h-3" />
-                      <span>{selectedProduct.productCode} • {productFourSides.find(s => s.id === selectedSide)?.label} • Drag to Position</span>
+                    {/* Move / Drag Central Surface */}
+                    <div 
+                      onMouseDown={(e) => handlePointerDown(e, 'move')}
+                      onTouchStart={(e) => handlePointerDown(e, 'move')}
+                      className="w-full h-full cursor-move active:cursor-grabbing relative"
+                      title="Click & drag to move gate/door on elevation"
+                    >
+                      {/* Live Stretched Image (Fully Adjustable Into Any Shape) */}
+                      <img 
+                        src={activeOverlayImage} 
+                        alt={`${selectedProduct.name} - ${selectedSide}`}
+                        className="w-full h-full object-fill pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.9)] select-none" 
+                        draggable={false}
+                      />
                     </div>
 
-                    {/* Corner Scale Pins */}
-                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-gold rounded-full border border-black" />
-                    <div className="absolute -top-1 -left-1 w-3 h-3 bg-brand-gold rounded-full border border-black" />
+                    {/* Top Info Badge & Move Handle */}
+                    <div 
+                      onMouseDown={(e) => handlePointerDown(e, 'move')}
+                      onTouchStart={(e) => handlePointerDown(e, 'move')}
+                      className="absolute -top-8 left-1/2 -translate-x-1/2 bg-brand-dark/95 border border-brand-gold/80 text-brand-gold text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-md shadow-lg whitespace-nowrap flex items-center gap-1.5 cursor-move active:cursor-grabbing z-30"
+                    >
+                      <Move className="w-3 h-3 text-brand-gold" />
+                      <span>{selectedProduct.productCode} • {width}ft × {height}ft • Drag to Position</span>
+                    </div>
+
+                    {/* 360° Rotation Stem & Interactive Knob */}
+                    <div className="absolute -top-7 left-1/2 -translate-x-1/2 w-0.5 h-7 bg-brand-gold pointer-events-none" />
+                    <button
+                      type="button"
+                      onMouseDown={(e) => handlePointerDown(e, 'rotate')}
+                      onTouchStart={(e) => handlePointerDown(e, 'rotate')}
+                      className="absolute -top-11 left-1/2 -translate-x-1/2 w-6 h-6 bg-brand-gold text-brand-dark border-2 border-black rounded-full shadow-lg flex items-center justify-center cursor-grab active:cursor-grabbing hover:scale-125 transition-transform z-30"
+                      title={`Drag to Rotate (Current: ${rotation}°)`}
+                    >
+                      <RotateCw className="w-3 h-3 stroke-[2.5]" />
+                    </button>
+
+                    {/* 8 INTERACTIVE PULL & STRETCH PINS (HER ANGLE SE KHINCHNE KE LIYE) */}
+                    {/* 1. Top-Left Corner (NW) */}
+                    <div 
+                      onMouseDown={(e) => handlePointerDown(e, 'nw')}
+                      onTouchStart={(e) => handlePointerDown(e, 'nw')}
+                      className="absolute -top-2 -left-2 w-4 h-4 bg-brand-gold hover:bg-amber-300 border-2 border-brand-dark rounded-sm shadow cursor-nwse-resize hover:scale-125 z-30 transition-transform"
+                      title="Pull NW corner to stretch diagonally"
+                    />
+
+                    {/* 2. Top-Center Edge (N) */}
+                    <div 
+                      onMouseDown={(e) => handlePointerDown(e, 'n')}
+                      onTouchStart={(e) => handlePointerDown(e, 'n')}
+                      className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-brand-gold hover:bg-amber-300 border-2 border-brand-dark rounded-sm shadow cursor-ns-resize hover:scale-125 z-30 transition-transform"
+                      title="Pull Up to stretch height"
+                    />
+
+                    {/* 3. Top-Right Corner (NE) */}
+                    <div 
+                      onMouseDown={(e) => handlePointerDown(e, 'ne')}
+                      onTouchStart={(e) => handlePointerDown(e, 'ne')}
+                      className="absolute -top-2 -right-2 w-4 h-4 bg-brand-gold hover:bg-amber-300 border-2 border-brand-dark rounded-sm shadow cursor-nesw-resize hover:scale-125 z-30 transition-transform"
+                      title="Pull NE corner to stretch diagonally"
+                    />
+
+                    {/* 4. Right-Center Edge (E) */}
+                    <div 
+                      onMouseDown={(e) => handlePointerDown(e, 'e')}
+                      onTouchStart={(e) => handlePointerDown(e, 'e')}
+                      className="absolute top-1/2 -translate-y-1/2 -right-2 w-4 h-4 bg-brand-gold hover:bg-amber-300 border-2 border-brand-dark rounded-sm shadow cursor-ew-resize hover:scale-125 z-30 transition-transform"
+                      title="Pull Right to stretch width"
+                    />
+
+                    {/* 5. Bottom-Right Corner (SE) */}
+                    <div 
+                      onMouseDown={(e) => handlePointerDown(e, 'se')}
+                      onTouchStart={(e) => handlePointerDown(e, 'se')}
+                      className="absolute -bottom-2 -right-2 w-4 h-4 bg-brand-gold hover:bg-amber-300 border-2 border-brand-dark rounded-sm shadow cursor-nwse-resize hover:scale-125 z-30 transition-transform"
+                      title="Pull SE corner to stretch diagonally"
+                    />
+
+                    {/* 6. Bottom-Center Edge (S) */}
+                    <div 
+                      onMouseDown={(e) => handlePointerDown(e, 's')}
+                      onTouchStart={(e) => handlePointerDown(e, 's')}
+                      className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-brand-gold hover:bg-amber-300 border-2 border-brand-dark rounded-sm shadow cursor-ns-resize hover:scale-125 z-30 transition-transform"
+                      title="Pull Down to stretch height"
+                    />
+
+                    {/* 7. Bottom-Left Corner (SW) */}
+                    <div 
+                      onMouseDown={(e) => handlePointerDown(e, 'sw')}
+                      onTouchStart={(e) => handlePointerDown(e, 'sw')}
+                      className="absolute -bottom-2 -left-2 w-4 h-4 bg-brand-gold hover:bg-amber-300 border-2 border-brand-dark rounded-sm shadow cursor-nesw-resize hover:scale-125 z-30 transition-transform"
+                      title="Pull SW corner to stretch diagonally"
+                    />
+
+                    {/* 8. Left-Center Edge (W) */}
+                    <div 
+                      onMouseDown={(e) => handlePointerDown(e, 'w')}
+                      onTouchStart={(e) => handlePointerDown(e, 'w')}
+                      className="absolute top-1/2 -translate-y-1/2 -left-2 w-4 h-4 bg-brand-gold hover:bg-amber-300 border-2 border-brand-dark rounded-sm shadow cursor-ew-resize hover:scale-125 z-30 transition-transform"
+                      title="Pull Left to stretch width"
+                    />
+
                   </div>
                 </div>
               )}
 
               {/* Canvas Overlay Badges & Quick Tools */}
-              <div className="absolute top-3 left-3 bg-brand-dark/90 border border-brand-light text-stone-200 text-[10px] font-mono px-2.5 py-1 rounded shadow backdrop-blur-sm flex items-center gap-1.5">
+              <div className="absolute top-3 left-3 bg-brand-dark/90 border border-brand-light text-stone-200 text-[10px] font-mono px-2.5 py-1 rounded shadow backdrop-blur-sm flex items-center gap-1.5 z-10">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span>Active Elevation: {houseImageName}</span>
               </div>
 
               {/* Live Position & Transform Status */}
-              <div className="absolute top-3 right-3 bg-brand-dark/90 border border-brand-light text-brand-gold text-[10px] font-mono px-2.5 py-1 rounded shadow backdrop-blur-sm hidden sm:flex items-center gap-2">
-                <span>X: {Math.round(position.x)}%</span>
-                <span>Y: {Math.round(position.y)}%</span>
-                <span>Scale: {scale.toFixed(1)}x</span>
+              <div className="absolute top-3 right-3 bg-brand-dark/90 border border-brand-light text-brand-gold text-[10px] font-mono px-2.5 py-1 rounded shadow backdrop-blur-sm hidden sm:flex items-center gap-2 z-10">
+                <span>W: {width}ft ({overlayWidth}px)</span>
+                <span>H: {height}ft ({overlayHeight}px)</span>
                 {rotation !== 0 && <span>Rot: {rotation}°</span>}
+                {rotateY !== 0 && <span>Perspective: {rotateY}°</span>}
               </div>
 
               {/* Bottom Quick Action Bar over Canvas */}
-              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 bg-brand-dark/90 border border-brand-light/70 p-2 rounded-md backdrop-blur-md">
-                <div className="flex items-center gap-1 sm:gap-2">
+              <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2 bg-brand-dark/90 border border-brand-light/70 p-2 rounded-md backdrop-blur-md z-10">
+                <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
                   <button 
-                    onClick={() => setScale(prev => Math.max(0.4, prev - 0.1))} 
+                    onClick={() => handleZoom(0.9)} 
                     className="p-1.5 bg-brand-navy hover:bg-brand-medium text-stone-300 rounded border border-brand-light"
-                    title="Scale Down"
+                    title="Shrink Size (-10%)"
                   >
                     <ZoomOut className="w-3.5 h-3.5" />
                   </button>
-                  <span className="text-[11px] font-mono font-bold text-brand-gold px-1">
-                    {Math.round(scale * 100)}%
+                  <span className="text-[10px] font-mono font-bold text-brand-gold px-1">
+                    {overlayWidth}×{overlayHeight}px
                   </span>
                   <button 
-                    onClick={() => setScale(prev => Math.min(2.2, prev + 0.1))} 
+                    onClick={() => handleZoom(1.1)} 
                     className="p-1.5 bg-brand-navy hover:bg-brand-medium text-stone-300 rounded border border-brand-light"
-                    title="Scale Up"
+                    title="Enlarge Size (+10%)"
                   >
                     <ZoomIn className="w-3.5 h-3.5" />
                   </button>
 
                   <button 
-                    onClick={() => setRotation(prev => (prev + 5) % 360)} 
-                    className="p-1.5 bg-brand-navy hover:bg-brand-medium text-stone-300 rounded border border-brand-light ml-1"
-                    title="Rotate 5°"
+                    onClick={() => setRotation(prev => (prev + 15) % 360)} 
+                    className="p-1.5 bg-brand-navy hover:bg-brand-medium text-stone-300 rounded border border-brand-light ml-0.5"
+                    title="Rotate +15°"
                   >
                     <RotateCw className="w-3.5 h-3.5" />
+                  </button>
+
+                  {/* Mirror Horizontally */}
+                  <button 
+                    onClick={() => setFlipH(prev => !prev)} 
+                    className={`p-1.5 rounded border transition-colors ${flipH ? 'bg-brand-gold text-brand-dark border-brand-gold' : 'bg-brand-navy text-stone-300 hover:text-white border-brand-light'}`}
+                    title="Flip Horizontally (Mirror)"
+                  >
+                    <FlipHorizontal className="w-3.5 h-3.5" />
+                  </button>
+
+                  {/* Mirror Vertically */}
+                  <button 
+                    onClick={() => setFlipV(prev => !prev)} 
+                    className={`p-1.5 rounded border transition-colors ${flipV ? 'bg-brand-gold text-brand-dark border-brand-gold' : 'bg-brand-navy text-stone-300 hover:text-white border-brand-light'}`}
+                    title="Flip Vertically"
+                  >
+                    <FlipVertical className="w-3.5 h-3.5" />
+                  </button>
+
+                  {/* Lock Aspect Ratio Toggle */}
+                  <button 
+                    onClick={() => setLockAspectRatio(prev => !prev)} 
+                    className={`p-1.5 rounded border text-[10px] font-mono flex items-center gap-1 transition-colors ${lockAspectRatio ? 'bg-amber-600/30 text-amber-300 border-amber-500' : 'bg-brand-navy text-stone-300 hover:text-white border-brand-light'}`}
+                    title={lockAspectRatio ? "Aspect Ratio Locked (Proportional)" : "Free Stretch Active (Khinchein kisi bhi shape mein)"}
+                  >
+                    {lockAspectRatio ? <Lock className="w-3 h-3 text-amber-400" /> : <Unlock className="w-3 h-3 text-emerald-400" />}
+                    <span className="hidden md:inline">{lockAspectRatio ? 'Locked' : 'Free Stretch'}</span>
                   </button>
                 </div>
 
@@ -521,7 +801,7 @@ export const VirtualTryOnPage: React.FC = () => {
                     onClick={handleResetAdjustments}
                     className="text-[10px] text-slate-300 hover:text-white bg-brand-navy hover:bg-brand-medium px-2.5 py-1.5 rounded border border-brand-light font-heading font-bold"
                   >
-                    Reset Position
+                    Reset
                   </button>
                   <button 
                     onClick={handleSavePreview}
@@ -655,47 +935,163 @@ export const VirtualTryOnPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Fine Tuning Sliders Accordion */}
-            <div className="bg-brand-navy border border-brand-light p-4 rounded-lg space-y-3">
+            {/* Fine Tuning Studio: Free Stretch, 3D Wall Perspective & Angle Presets */}
+            <div className="bg-brand-navy border border-brand-light p-4 rounded-lg space-y-3.5">
               <div className="flex items-center justify-between border-b border-brand-light/40 pb-2">
                 <span className="font-heading font-bold text-xs text-stone-200 uppercase tracking-wide flex items-center gap-1.5">
                   <SlidersHorizontal className="w-3.5 h-3.5 text-brand-gold" />
-                  <span>Perspective, Tilt & Opacity Controls</span>
+                  <span>3D Perspective, Wall Angle & Shape Distortion Controls</span>
                 </span>
-                <span className="text-[10px] text-slate-400">Fine Architectural Tuning</span>
+                <span className="text-[10px] text-brand-gold font-mono">Har Angle Se Khinchein</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              {/* Quick Angle Presets Bar */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                <span className="text-[10px] text-slate-400 font-mono font-bold mr-1">Quick Angles:</span>
+                <button
+                  type="button"
+                  onClick={() => { setRotateY(0); setRotateX(0); setSkewX(0); setSkewY(0); }}
+                  className="px-2 py-1 bg-brand-dark hover:bg-brand-gold hover:text-brand-dark text-slate-300 border border-brand-light rounded text-[10px] font-mono font-bold transition"
+                >
+                  0° Flat Face
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setRotateY(-25); setSkewY(4); }}
+                  className="px-2 py-1 bg-brand-dark hover:bg-brand-gold hover:text-brand-dark text-slate-300 border border-brand-light rounded text-[10px] font-mono font-bold transition"
+                >
+                  ◀ Left Wall Angle (-25°)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setRotateY(25); setSkewY(-4); }}
+                  className="px-2 py-1 bg-brand-dark hover:bg-brand-gold hover:text-brand-dark text-slate-300 border border-brand-light rounded text-[10px] font-mono font-bold transition"
+                >
+                  Right Wall Angle (+25°) ▶
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setSkewX(12); }}
+                  className="px-2 py-1 bg-brand-dark hover:bg-brand-gold hover:text-brand-dark text-slate-300 border border-brand-light rounded text-[10px] font-mono font-bold transition"
+                >
+                  📐 Sloped Driveway (+12°)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setRotateX(-20); }}
+                  className="px-2 py-1 bg-brand-dark hover:bg-brand-gold hover:text-brand-dark text-slate-300 border border-brand-light rounded text-[10px] font-mono font-bold transition"
+                >
+                  ▲ Arch Top Tilt
+                </button>
+              </div>
+
+              {/* Sliders Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs pt-1">
+                {/* 1. Horizontal Width Stretch */}
                 <div>
                   <div className="flex justify-between text-[11px] text-slate-300 mb-1">
-                    <span>Horizontal Angle (Skew X):</span>
+                    <span>Width Stretch (Width):</span>
+                    <span className="font-mono text-brand-gold">{overlayWidth}px ({width}ft)</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="80" 
+                    max="650" 
+                    value={overlayWidth} 
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      setOverlayWidth(val);
+                      setWidth(parseFloat(((val / 280) * 12).toFixed(1)));
+                    }} 
+                    className="w-full accent-amber-500" 
+                  />
+                </div>
+
+                {/* 2. Vertical Height Stretch */}
+                <div>
+                  <div className="flex justify-between text-[11px] text-slate-300 mb-1">
+                    <span>Height Stretch (Height):</span>
+                    <span className="font-mono text-brand-gold">{overlayHeight}px ({height}ft)</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="80" 
+                    max="650" 
+                    value={overlayHeight} 
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      setOverlayHeight(val);
+                      setHeight(parseFloat(((val / 330) * 7.5).toFixed(1)));
+                    }} 
+                    className="w-full accent-amber-500" 
+                  />
+                </div>
+
+                {/* 3. 3D Wall Angle (Rotate Y) */}
+                <div>
+                  <div className="flex justify-between text-[11px] text-slate-300 mb-1">
+                    <span>3D Perspective (Wall Angle):</span>
+                    <span className="font-mono text-brand-gold">{rotateY}°</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="-45" 
+                    max="45" 
+                    value={rotateY} 
+                    onChange={(e) => setRotateY(parseInt(e.target.value))} 
+                    className="w-full accent-amber-500" 
+                  />
+                </div>
+
+                {/* 4. 3D Elevation Tilt (Rotate X) */}
+                <div>
+                  <div className="flex justify-between text-[11px] text-slate-300 mb-1">
+                    <span>3D Elevation Pitch (Tilt):</span>
+                    <span className="font-mono text-brand-gold">{rotateX}°</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="-45" 
+                    max="45" 
+                    value={rotateX} 
+                    onChange={(e) => setRotateX(parseInt(e.target.value))} 
+                    className="w-full accent-amber-500" 
+                  />
+                </div>
+
+                {/* 5. Horizontal Shear (Skew X) */}
+                <div>
+                  <div className="flex justify-between text-[11px] text-slate-300 mb-1">
+                    <span>Horizontal Shear (Skew X):</span>
                     <span className="font-mono text-brand-gold">{skewX}°</span>
                   </div>
                   <input 
                     type="range" 
-                    min="-25" 
-                    max="25" 
+                    min="-30" 
+                    max="30" 
                     value={skewX} 
                     onChange={(e) => setSkewX(parseInt(e.target.value))} 
                     className="w-full accent-amber-500" 
                   />
                 </div>
 
+                {/* 6. Vertical Shear (Skew Y) */}
                 <div>
                   <div className="flex justify-between text-[11px] text-slate-300 mb-1">
-                    <span>Vertical Angle (Skew Y):</span>
+                    <span>Vertical Shear (Skew Y):</span>
                     <span className="font-mono text-brand-gold">{skewY}°</span>
                   </div>
                   <input 
                     type="range" 
-                    min="-25" 
-                    max="25" 
+                    min="-30" 
+                    max="30" 
                     value={skewY} 
                     onChange={(e) => setSkewY(parseInt(e.target.value))} 
                     className="w-full accent-amber-500" 
                   />
                 </div>
 
+                {/* 7. Opacity */}
                 <div>
                   <div className="flex justify-between text-[11px] text-slate-300 mb-1">
                     <span>Overlay Opacity:</span>
@@ -710,6 +1106,27 @@ export const VirtualTryOnPage: React.FC = () => {
                     onChange={(e) => setOpacity(parseFloat(e.target.value))} 
                     className="w-full accent-amber-500" 
                   />
+                </div>
+
+                {/* 8. Rotation */}
+                <div>
+                  <div className="flex justify-between text-[11px] text-slate-300 mb-1">
+                    <span>Rotation Angle:</span>
+                    <span className="font-mono text-brand-gold">{rotation}°</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="360" 
+                    value={rotation} 
+                    onChange={(e) => setRotation(parseInt(e.target.value))} 
+                    className="w-full accent-amber-500" 
+                  />
+                </div>
+
+                {/* Tip Badge */}
+                <div className="flex items-center justify-center p-2 rounded bg-brand-dark border border-brand-gold/30 text-[10px] text-slate-300 font-sans">
+                  <span>💡 Direct: Khainchne ke liye canvas per mojood 8 gold pins ko pakar kar kisi bhi simt mein drag karein!</span>
                 </div>
               </div>
             </div>
@@ -768,7 +1185,11 @@ export const VirtualTryOnPage: React.FC = () => {
                       step={0.5} 
                       min={1} 
                       value={width} 
-                      onChange={(e) => setWidth(parseFloat(e.target.value) || 1)}
+                      onChange={(e) => {
+                        const val = parseFloat(e.target.value) || 1;
+                        setWidth(val);
+                        setOverlayWidth(Math.round((val / 12) * 280));
+                      }}
                       className="w-full bg-brand-navy border border-brand-light rounded p-2 text-xs text-center font-mono font-bold text-stone-100 focus:border-brand-gold outline-none"
                     />
                   </div>
@@ -779,7 +1200,11 @@ export const VirtualTryOnPage: React.FC = () => {
                       step={0.5} 
                       min={1} 
                       value={height} 
-                      onChange={(e) => setHeight(parseFloat(e.target.value) || 1)}
+                      onChange={(e) => {
+                        const val = parseFloat(e.target.value) || 1;
+                        setHeight(val);
+                        setOverlayHeight(Math.round((val / 7.5) * 330));
+                      }}
                       className="w-full bg-brand-navy border border-brand-light rounded p-2 text-xs text-center font-mono font-bold text-stone-100 focus:border-brand-gold outline-none"
                     />
                   </div>

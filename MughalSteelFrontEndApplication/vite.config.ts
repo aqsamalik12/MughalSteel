@@ -7,6 +7,9 @@ export default defineConfig({
   server: {
     host: '127.0.0.1',
     port: 5173,
+    watch: {
+      ignored: ['**/public/video/**', '**/*.mp4']
+    },
     warmup: {
       clientFiles: ['./src/main.tsx', './src/App.tsx', './src/pages/HomePage.tsx']
     }
