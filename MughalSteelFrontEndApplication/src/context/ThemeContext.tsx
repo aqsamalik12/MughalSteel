@@ -12,54 +12,26 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setThemeState] = useState<ThemeMode>(() => {
-    try {
-      const savedTheme = localStorage.getItem('ms_theme') as ThemeMode;
-      if (savedTheme === 'light' || savedTheme === 'dark') {
-        return savedTheme;
-      }
-      // Check system preference if no saved theme
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        return 'dark'; // Mughal Steel default is luxurious dark
-      }
-    } catch {
-      // ignore
-    }
-    return 'dark';
-  });
-
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-      root.classList.remove('light');
-      root.style.colorScheme = 'dark';
-    } else {
-      root.classList.remove('dark');
-      root.classList.add('light');
-      root.style.colorScheme = 'light';
-    }
+    root.classList.add('dark');
+    root.classList.remove('light');
+    root.style.colorScheme = 'dark';
     try {
-      localStorage.setItem('ms_theme', theme);
+      localStorage.setItem('ms_theme', 'dark');
     } catch {
       // ignore
     }
-  }, [theme]);
+  }, []);
 
-  const toggleTheme = () => {
-    setThemeState(prev => (prev === 'dark' ? 'light' : 'dark'));
-  };
-
-  const setTheme = (newTheme: ThemeMode) => {
-    setThemeState(newTheme);
-  };
+  const noop = () => {};
 
   return (
     <ThemeContext.Provider value={{
-      theme,
-      isDark: theme === 'dark',
-      toggleTheme,
-      setTheme
+      theme: 'dark',
+      isDark: true,
+      toggleTheme: noop,
+      setTheme: noop
     }}>
       {children}
     </ThemeContext.Provider>

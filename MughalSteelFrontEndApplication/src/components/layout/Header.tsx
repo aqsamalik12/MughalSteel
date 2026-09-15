@@ -3,15 +3,13 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useWishlist } from '../../context/WishlistContext';
 import { useData } from '../../context/DataContext';
 import { useCurrency, CURRENCIES, type CurrencyCode } from '../../context/CurrencyContext';
-import { useTheme } from '../../context/ThemeContext';
 import { MegaMenu } from './MegaMenu';
 import { useAuth } from '../../context/AuthContext';
 import { 
   Search, Heart, Menu, X, Phone, MessageCircle, 
   ChevronDown, ChevronRight, Layers, Sparkles, Shield, Compass, 
   FileText, CheckCircle, Globe, MapPin, Eye, Grid, DoorClosed, Star,
-  LogOut, User as UserIcon, Home, Cog, Package, Image as ImageIcon, Mail,
-  Sun, Moon
+  LogOut, User as UserIcon, Home, Cog, Package, Image as ImageIcon, Mail
 } from 'lucide-react';
 import { PROJECT_CATEGORIES_DATA } from '../../data/seedData';
 import { prefetchRoute } from '../../utils/prefetchRoutes';
@@ -23,7 +21,6 @@ export const Header: React.FC = () => {
   const { products, settings, getWhatsAppUrl, categories } = useData();
   const { currency, setCurrency } = useCurrency();
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
 
   // Scroll detection for sticky header transition
   const [isScrolled, setIsScrolled] = useState(false);
@@ -262,7 +259,7 @@ export const Header: React.FC = () => {
                   MUGHAL STEEL
                 </span>
                 <span className="text-[8px] sm:text-[9px] font-mono tracking-[0.2em] text-[#c5a880] font-bold uppercase mt-0.5 leading-none whitespace-nowrap">
-                  FABRICATION COMPLEX
+                  FABRICATION
                 </span>
               </div>
             </Link>
@@ -766,20 +763,6 @@ export const Header: React.FC = () => {
                     <ChevronRight className="w-4 h-4 text-slate-500" />
                   </Link>
                 )}
-              </div>
-
-              {/* Theme Switcher in Mobile Drawer */}
-              <div className="py-3 px-3 border-t border-brand-light/30 flex items-center justify-between">
-                <span className="text-xs font-heading font-bold uppercase tracking-wider text-stone-300 flex items-center gap-2">
-                  {isDark ? <Moon className="w-4 h-4 text-brand-gold" /> : <Sun className="w-4 h-4 text-amber-400" />}
-                  <span>{isDark ? 'Dark Theme' : 'Light Theme'}</span>
-                </span>
-                <button
-                  onClick={toggleTheme}
-                  className="px-3 py-1 bg-brand-gold/15 border border-brand-gold/40 text-brand-gold rounded-full text-[11px] font-bold uppercase tracking-wider hover:bg-brand-gold hover:text-brand-dark transition cursor-pointer"
-                >
-                  {isDark ? 'Switch to Light' : 'Switch to Dark'}
-                </button>
               </div>
 
             </div>
