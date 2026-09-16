@@ -35,10 +35,11 @@ TestResults/
 *.dbmdl
 
 # 3. Heavy Local Raw Video Folders (Frontend uses public/videos)
-videos/
+/videos/
 downloaded_videos/
 videos animation/
 **/videos animation/
+!MughalSteelFrontEndApplication/public/videos/
 
 # 4. OS, Editor & Temp Files
 .vscode/
