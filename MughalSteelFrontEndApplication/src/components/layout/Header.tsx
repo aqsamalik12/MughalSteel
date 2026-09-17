@@ -221,10 +221,10 @@ export const Header: React.FC = () => {
       {/* MAIN NAVIGATION HEADER (PERFECT RESPONSIVE LAYOUT) */}
       {/* ======================================================== */}
       <header 
-        className={`sticky top-0 z-50 w-full bg-[#070D18] transition-all duration-300 ${
+        className={`sticky top-0 z-50 w-full transition-all duration-300 ${
           isScrolled 
-            ? 'shadow-2xl py-2.5 border-b border-brand-gold/30' 
-            : 'py-3 border-b border-brand-gold/25'
+            ? 'bg-[#070D18]/95 backdrop-blur-md shadow-2xl py-2.5 border-b border-brand-gold/40' 
+            : 'bg-[#070D18] py-3 border-b border-brand-gold/25'
         }`}
       >
         <div className="w-full px-3 sm:px-6 lg:px-8 xl:px-10 flex items-center justify-between">

@@ -53,7 +53,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
 
   return (
-    <div className="group relative bg-brand-medium border border-brand-light flex flex-col h-full rounded-sm shadow-premium hover:shadow-premium-hover hover:border-brand-gold/60 transition-all duration-300 animate-fade-in">
+    <div className="group relative bg-brand-medium border border-brand-light flex flex-col h-full rounded-sm shadow-premium hover:shadow-premium-hover hover:border-brand-gold/70 transition-all duration-300 animate-fade-in card-interactive">
       
       {/* Product Code Badge */}
       <div className="absolute top-3 left-3 z-10">
@@ -120,7 +120,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="grid grid-cols-2 gap-2 pt-1">
             <Link 
               to={`/product/${product.slug}`}
-              className="btn-gold text-[10px] py-2 text-center flex items-center justify-center gap-1"
+              className="btn-gold btn-shimmer text-[10px] py-2 text-center flex items-center justify-center gap-1"
             >
               <Calculator className="w-3.5 h-3.5" />
               <span>View & Quote</span>
@@ -138,7 +138,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           {/* WhatsApp Direct Inquiry with Image & Code */}
           <button
             onClick={handleWhatsAppInquire}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/50 hover:border-emerald-400 text-[11px] font-heading font-bold uppercase tracking-wider text-emerald-300 hover:text-emerald-200 rounded transition-all shadow-sm active:scale-[0.99] cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/50 hover:border-emerald-400 text-[11px] font-heading font-bold uppercase tracking-wider text-emerald-300 hover:text-emerald-200 rounded transition-all shadow-sm active:scale-[0.99] cursor-pointer btn-shimmer"
           >
             <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
             <span>Inquire on WhatsApp (with Photo)</span>

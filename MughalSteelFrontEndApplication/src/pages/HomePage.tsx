@@ -4,11 +4,11 @@ import { useData } from '../context/DataContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { 
   ShieldCheck, Shield, Calculator, ArrowRight, Star, 
-  Sparkles, CheckCircle2, CheckCircle, MessageCircle, MessageSquare, Play,
+  Sparkles, CheckCircle2, CheckCircle, MessageCircle, MessageSquare, Play, Pause,
   Sliders, RefreshCw, X, Video, Award, Clock, 
   MapPin, Check, Heart, Eye, Globe, Compass, 
   Layers, Package, Cog, User as UserIcon, Factory, Hammer,
-  Send, Mail, Phone
+  Send, Mail, Phone, ChevronLeft, ChevronRight, Quote
 } from 'lucide-react';
 import { PROJECT_CATEGORIES_DATA, SEED_PROJECTS } from '../data/seedData';
 import { useSEO } from '../utils/useSEO';
@@ -40,6 +40,45 @@ export const HomePage: React.FC = () => {
   const [isSliderPaused, setIsSliderPaused] = useState(false);
   const [slideProgress, setSlideProgress] = useState(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  // Products horizontal slider state & controls
+  const productsSliderRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkProductScroll = () => {
+    if (productsSliderRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = productsSliderRef.current;
+      setCanScrollLeft(scrollLeft > 10);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  const scrollProducts = (direction: 'left' | 'right') => {
+    if (productsSliderRef.current) {
+      const scrollAmount = Math.max(productsSliderRef.current.clientWidth * 0.75, 300);
+      productsSliderRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Marquee manual scroll ref
+  const marqueeSliderRef = useRef<HTMLDivElement>(null);
+  const scrollMarquee = (direction: 'left' | 'right') => {
+    if (marqueeSliderRef.current) {
+      const scrollAmount = 320;
+      marqueeSliderRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Client Reviews Slider state
+  const [activeReviewIndex, setActiveReviewIndex] = useState(0);
+  const [isReviewsPaused, setIsReviewsPaused] = useState(false);
 
   // =========================================================================
   // HERO VIDEO SLIDER CONFIGURATION
@@ -549,7 +588,7 @@ export const HomePage: React.FC = () => {
           {/* Stats Row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             {aboutStats.map((s, idx) => (
-              <div key={idx} className="bg-brand-navy border border-brand-light/60 p-6 rounded-lg space-y-1 shadow-lg hover:border-brand-gold/60 transition-all">
+              <div key={idx} className="bg-brand-navy border border-brand-light/60 p-6 rounded-lg space-y-1 shadow-lg hover:border-brand-gold transition-all duration-300 card-interactive">
                 <p className="text-3xl sm:text-4xl font-heading font-black text-brand-gold">{s.value}</p>
                 <p className="text-slate-300 text-xs uppercase tracking-wider font-semibold font-mono">{s.label}</p>
               </div>
@@ -905,7 +944,7 @@ export const HomePage: React.FC = () => {
               <div 
                 key={srv.id}
                 onClick={() => setActiveServiceModal(srv)}
-                className="group bg-brand-navy border border-brand-light/60 rounded-lg p-6 hover:border-brand-gold transition-all duration-300 shadow-lg flex flex-col justify-between space-y-4 cursor-pointer hover:bg-brand-medium/60"
+                className="group bg-brand-navy border border-brand-light/60 rounded-lg p-6 hover:border-brand-gold transition-all duration-300 shadow-lg flex flex-col justify-between space-y-4 cursor-pointer hover:bg-brand-medium/60 card-interactive"
               >
                 <div className="flex items-center gap-4">
                   <div className="p-3 rounded-lg bg-brand-gold/15 border border-brand-gold/40 shrink-0 group-hover:scale-110 transition-transform">
@@ -937,7 +976,7 @@ export const HomePage: React.FC = () => {
       <section id="products" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
-          {/* Section Header */}
+          {/* Section Header with Slider Navigation Controls */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
             <div className="space-y-1">
               <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
@@ -947,18 +986,43 @@ export const HomePage: React.FC = () => {
                 Precision CNC laser-cut sheets, heavy structural pipes, and imported roller automation options.
               </p>
             </div>
-            <Link to="/items" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1">
-              <span>View All Products</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+
+            <div className="flex items-center gap-3 shrink-0">
+              {/* Previous / Next Arrow Controls */}
+              <div className="flex items-center gap-1.5">
+                <button 
+                  onClick={() => scrollProducts('left')} 
+                  aria-label="Previous products"
+                  className="p-2 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all duration-300 shadow-md cursor-pointer active:scale-95"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => scrollProducts('right')} 
+                  aria-label="Next products"
+                  className="p-2 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all duration-300 shadow-md cursor-pointer active:scale-95"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              <Link to="/items" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1">
+                <span>View All Products</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
 
-          {/* Product Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.slice(0, 8).map((prod) => (
+          {/* Product Cards Interactive Horizontal Slider */}
+          <div 
+            ref={productsSliderRef}
+            onScroll={checkProductScroll}
+            className="flex gap-6 overflow-x-auto pb-4 pt-1 slider-snap scroll-smooth no-scrollbar"
+          >
+            {products.slice(0, 12).map((prod) => (
               <div 
                 key={prod.id} 
-                className="group bg-brand-navy border border-brand-light/60 rounded-lg overflow-hidden hover:border-brand-gold transition-all duration-300 flex flex-col justify-between shadow-xl"
+                className="w-[280px] sm:w-[310px] md:w-[320px] shrink-0 group bg-brand-navy border border-brand-light/60 rounded-lg overflow-hidden hover:border-brand-gold transition-all duration-300 flex flex-col justify-between shadow-xl card-interactive"
               >
                 <Link to={`/product/${prod.slug}`} className="relative aspect-[4/3] w-full overflow-hidden bg-black block">
                   <img 
@@ -969,7 +1033,7 @@ export const HomePage: React.FC = () => {
                     onError={handleImageError}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
-                  <div className="absolute top-2.5 left-2.5 bg-black/80 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-brand-gold/40">
+                  <div className="absolute top-2.5 left-2.5 bg-black/80 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-brand-gold/40 shadow">
                     {prod.productCode}
                   </div>
                 </Link>
@@ -995,7 +1059,7 @@ export const HomePage: React.FC = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
-                      <Link to={`/product/${prod.slug}`} className="btn-gold text-[10px] py-2 text-center justify-center font-bold">
+                      <Link to={`/product/${prod.slug}`} className="btn-gold btn-shimmer text-[10px] py-2 text-center justify-center font-bold">
                         <span>Details</span>
                       </Link>
                       <Link to={`/try-at-home?product=${prod.productCode}`} className="btn-outline text-[10px] py-2 text-center justify-center font-bold">
@@ -1008,48 +1072,110 @@ export const HomePage: React.FC = () => {
             ))}
           </div>
 
-          {/* 16 Modern Home Items Row */}
+          {/* 16 Modern Home Items Row with Infinite Smooth Marquee & Controls */}
           <div className="space-y-6 pt-4">
             <div className="flex items-center justify-between border-b border-brand-light/40 pb-3">
-              <h3 className="font-heading font-black text-lg text-stone-100 uppercase">
-                16 Modern Home Fabrication Items
-              </h3>
-              <Link to="/categories/modern-home" className="text-xs text-brand-gold font-bold hover:underline">
-                Explore Category →
-              </Link>
+              <div className="space-y-0.5">
+                <h3 className="font-heading font-black text-lg text-stone-100 uppercase">
+                  16 Modern Home Fabrication Items
+                </h3>
+                <p className="text-[11px] text-slate-400 font-sans">
+                  Continuous gliding gallery • Hover to pause and inspect any item
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <button 
+                    onClick={() => scrollMarquee('left')}
+                    aria-label="Scroll left"
+                    className="p-1.5 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all text-xs cursor-pointer shadow active:scale-95"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+                  <button 
+                    onClick={() => scrollMarquee('right')}
+                    aria-label="Scroll right"
+                    className="p-1.5 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all text-xs cursor-pointer shadow active:scale-95"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <Link to="/categories/modern-home" className="text-xs text-brand-gold font-bold hover:underline">
+                  Explore Category →
+                </Link>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-3">
-              {[
-                { name: 'Front Gate', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=300&q=80' },
-                { name: 'Balcony', link: '/items?item=Balcony+Railing', image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=300&q=80' },
-                { name: 'Louvers', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=300&q=80' },
-                { name: 'Duct Covers', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=300&q=80' },
-                { name: 'Spiral Stairs', link: '/items?item=Stair+Railing', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=300&q=80' },
-                { name: 'Railings', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=300&q=80' },
-                { name: 'Front Shade', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=300&q=80' },
-                { name: 'Pivot Doors', link: '/items?item=Doors', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=300&q=80' }
-              ].map((item, idx) => (
-                <Link
-                  key={idx}
-                  to={item.link}
-                  className="group bg-brand-navy border border-brand-light/60 rounded-lg overflow-hidden p-2 space-y-1.5 hover:border-brand-gold transition-all shadow-md text-center block"
-                >
-                  <div className="aspect-[4/3] rounded overflow-hidden bg-black">
-                    <img 
-                      src={item.image || FALLBACK_IMAGE_URL} 
-                      alt={item.name} 
-                      loading="lazy"
-                      decoding="async"
-                      onError={handleImageError}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                    />
-                  </div>
-                  <h4 className="font-heading font-bold text-[11px] text-stone-100 group-hover:text-brand-gold transition-colors truncate uppercase">
-                    {item.name}
-                  </h4>
-                </Link>
-              ))}
+            {/* Continuous Infinite Marquee Track with Double Buffer */}
+            <div 
+              ref={marqueeSliderRef}
+              className="overflow-x-auto no-scrollbar scroll-smooth relative py-2"
+            >
+              <div className="flex gap-4 w-max marquee-track hover:[animation-play-state:paused] animate-marquee">
+                {[
+                  { name: 'Front Gate', subtitle: 'CNC Laser & Heavy MS', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Balcony Railing', subtitle: 'Stainless & Tempered Glass', link: '/items?item=Balcony+Railing', image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Boundary Wall Grills', subtitle: 'Anti-Climb Security Grills', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Window Grills', subtitle: 'Designer Security Frames', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Pivot Front Door', subtitle: 'Heavy Structural Pivot', link: '/items?item=Doors', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Spiral Staircase', subtitle: 'Cantilever & Spiral Steps', link: '/items?item=Stair+Railing', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Stair Railings', subtitle: 'TIG Welded MS & SS 304', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Car Porch Shed', subtitle: 'Heavy Cantilever Canopy', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'AC Outdoor Cage', subtitle: 'Security & Anti-Theft Guard', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Architectural Louvers', subtitle: 'Sunshade Airflow Panels', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Steel Pergola', subtitle: 'Rooftop & Garden Pergola', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Frameless Glass Balustrade', subtitle: '12mm Tempered Core', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Modern Duct Covers', subtitle: 'Laser Cut Floor Trench Grates', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Planters & Trellis', subtitle: 'Vertical Garden Steel Work', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Boundary Spikes', subtitle: 'Laser Precision Security Spikes', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Automated Gate Motors', subtitle: 'Italian Heavy-Duty Automation', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
+                  // Buffer duplicate for infinite loop
+                  { name: 'Front Gate', subtitle: 'CNC Laser & Heavy MS', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Balcony Railing', subtitle: 'Stainless & Tempered Glass', link: '/items?item=Balcony+Railing', image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Boundary Wall Grills', subtitle: 'Anti-Climb Security Grills', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Window Grills', subtitle: 'Designer Security Frames', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Pivot Front Door', subtitle: 'Heavy Structural Pivot', link: '/items?item=Doors', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Spiral Staircase', subtitle: 'Cantilever & Spiral Steps', link: '/items?item=Stair+Railing', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Stair Railings', subtitle: 'TIG Welded MS & SS 304', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Car Porch Shed', subtitle: 'Heavy Cantilever Canopy', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'AC Outdoor Cage', subtitle: 'Security & Anti-Theft Guard', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Architectural Louvers', subtitle: 'Sunshade Airflow Panels', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Steel Pergola', subtitle: 'Rooftop & Garden Pergola', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Frameless Glass Balustrade', subtitle: '12mm Tempered Core', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Modern Duct Covers', subtitle: 'Laser Cut Floor Trench Grates', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Planters & Trellis', subtitle: 'Vertical Garden Steel Work', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Boundary Spikes', subtitle: 'Laser Precision Security Spikes', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Automated Gate Motors', subtitle: 'Italian Heavy-Duty Automation', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' }
+                ].map((item, idx) => (
+                  <Link
+                    key={`${item.name}-${idx}`}
+                    to={item.link}
+                    className="group w-40 sm:w-48 shrink-0 bg-brand-navy border border-brand-light/60 hover:border-brand-gold rounded-lg overflow-hidden p-2.5 space-y-2 transition-all duration-300 shadow-md text-center block card-interactive"
+                  >
+                    <div className="aspect-[4/3] rounded overflow-hidden bg-black relative">
+                      <img 
+                        src={item.image || FALLBACK_IMAGE_URL} 
+                        alt={item.name} 
+                        loading="lazy"
+                        decoding="async"
+                        onError={handleImageError}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <h4 className="font-heading font-bold text-xs text-stone-100 group-hover:text-brand-gold transition-colors truncate uppercase">
+                        {item.name}
+                      </h4>
+                      <p className="text-[10px] text-slate-400 font-mono truncate">
+                        {item.subtitle}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -1122,7 +1248,7 @@ export const HomePage: React.FC = () => {
               <Link 
                 key={cat.id} 
                 to={`/categories/${cat.slug}`}
-                className="group bg-brand-navy border border-brand-light/60 rounded-lg overflow-hidden hover:border-brand-gold transition-all duration-300 shadow-md flex flex-col justify-between"
+                className="group bg-brand-navy border border-brand-light/60 rounded-lg overflow-hidden hover:border-brand-gold transition-all duration-300 shadow-md flex flex-col justify-between card-interactive"
               >
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
                   <img 
@@ -1183,7 +1309,7 @@ export const HomePage: React.FC = () => {
               <Link
                 key={project.id}
                 to={`/portfolio/${project.slug || project.id}`}
-                className="group relative aspect-[4/3] rounded-xl overflow-hidden border border-brand-light/60 hover:border-brand-gold transition-all duration-300 shadow-2xl bg-black flex flex-col justify-between"
+                className="group relative aspect-[4/3] rounded-xl overflow-hidden border border-brand-light/60 hover:border-brand-gold transition-all duration-300 shadow-2xl bg-black flex flex-col justify-between card-interactive"
               >
                 <img 
                   src={project.image || (project as any).coverImage || FALLBACK_IMAGE_URL} 
@@ -1267,13 +1393,14 @@ export const HomePage: React.FC = () => {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
+          {/* Active Review Spotlight Card & Slider Controls */}
+          {(() => {
+            const clientReviews = [
               {
                 name: 'Ch. Tariq Mehmood',
                 location: 'Bahria Town Phase 7, Rawalpindi',
                 project: '14-Gauge CNC Laser Gate (MFG-001)',
-                image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80',
+                image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
                 rating: 5,
                 text: 'The laser-cut precision on our 14ft main gate and electrostatic matte charcoal powder coating has zero flaws. Flawless execution from laser surveying to final installation.'
               },
@@ -1281,7 +1408,7 @@ export const HomePage: React.FC = () => {
                 name: 'Engr. Bilal Aslam',
                 location: 'Sector F-7/2, Islamabad',
                 project: 'Oversized Pivot Entrance Door (MFD-004)',
-                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80',
+                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
                 rating: 5,
                 text: 'The 5x10 ft pivot door swings effortlessly with a single finger touch. Structural anchoring completed with laser leveling and heavy duty German hinges. Exceptional quality.'
               },
@@ -1289,61 +1416,141 @@ export const HomePage: React.FC = () => {
                 name: 'Malik Faisal',
                 location: 'DHA Phase 2, Islamabad',
                 project: 'Frameless Glass & Steel Railing (MFR-002)',
-                image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=600&q=80',
+                image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=800&q=80',
                 rating: 5,
                 text: 'Master craftsmanship and durable powder coating. The entire villa boundary grills, spiral stairs, and 60 running feet of tempered glass railings were installed right on schedule.'
+              },
+              {
+                name: 'Col. (R) Tariq Niazi',
+                location: 'Naval Anchorage, Islamabad',
+                project: 'Double-Leaf Heavy Security Gate',
+                image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80',
+                rating: 5,
+                text: 'Impeccable structural rigidity with 12-gauge mild steel. Mughal Steel delivered on time and ensured automated Italian motor syncing without any vibration.'
+              },
+              {
+                name: 'Dr. Shahzad Mir',
+                location: 'Gulberg Greens, Islamabad',
+                project: 'Architectural Louvers & Spiral Stairs',
+                image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80',
+                rating: 5,
+                text: 'The spiral staircase in our central atrium is an absolute work of art. Certified weld quality and zero-flex load capacity even with 6 people on it.'
               }
-            ].map((item, idx) => (
+            ];
+
+            const currentRev = clientReviews[activeReviewIndex % clientReviews.length];
+
+            return (
               <div 
-                key={idx}
-                className="bg-brand-navy border border-brand-light/60 rounded-lg overflow-hidden flex flex-col justify-between shadow-xl group hover:border-brand-gold/60 transition-all duration-300"
+                className="space-y-8"
+                onMouseEnter={() => setIsReviewsPaused(true)}
+                onMouseLeave={() => setIsReviewsPaused(false)}
               >
-                <div className="relative aspect-[16/10] bg-black overflow-hidden">
-                  <img 
-                    src={item.image || FALLBACK_IMAGE_URL} 
-                    alt={item.project} 
-                    loading="lazy"
-                    decoding="async"
-                    onError={handleImageError}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute top-2 left-2 bg-brand-dark/90 text-brand-gold border border-brand-gold/40 text-[9px] font-mono font-bold px-2 py-0.5 rounded">
-                    VERIFIED INSTALLATION
-                  </div>
-                  <div className="absolute bottom-2 left-3 right-3 text-white text-[11px] font-heading font-bold truncate">
-                    {item.project}
+                {/* Spotlight Featured Testimonial Card */}
+                <div className="relative bg-brand-navy border border-brand-light/70 hover:border-brand-gold/60 rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 card-interactive">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
+                    
+                    {/* Left: Project Installation Photo with Overlay */}
+                    <div className="lg:col-span-5 relative aspect-[16/11] lg:aspect-auto lg:h-full min-h-[260px] bg-black overflow-hidden">
+                      <img 
+                        src={currentRev.image || FALLBACK_IMAGE_URL} 
+                        alt={currentRev.project} 
+                        onError={handleImageError}
+                        className="w-full h-full object-cover animate-fade-in filter contrast-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/80 via-black/30 to-transparent" />
+                      <div className="absolute top-3 left-3 bg-brand-dark/90 text-brand-gold border border-brand-gold/40 text-[10px] font-mono font-bold px-2.5 py-1 rounded shadow">
+                        VERIFIED ON-SITE INSTALLATION
+                      </div>
+                      <div className="absolute bottom-3 left-4 right-4 text-white text-xs font-heading font-bold truncate">
+                        {currentRev.project}
+                      </div>
+                    </div>
+
+                    {/* Right: Feedback Details with Quote & Author */}
+                    <div className="lg:col-span-7 p-6 sm:p-8 space-y-5 flex flex-col justify-between">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1 text-amber-400">
+                          {[...Array(currentRev.rating)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 fill-amber-400" />
+                          ))}
+                        </div>
+                        <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-950/60 border border-emerald-500/30 px-2.5 py-1 rounded-full">
+                          100% Client Verified
+                        </span>
+                      </div>
+
+                      <div className="relative">
+                        <Quote className="w-10 h-10 text-brand-gold/20 absolute -top-4 -left-2 pointer-events-none" />
+                        <p className="text-sm sm:text-base text-stone-200 font-sans leading-relaxed italic pl-6 animate-fade-in">
+                          &ldquo;{currentRev.text}&rdquo;
+                        </p>
+                      </div>
+
+                      <div className="pt-4 border-t border-brand-light/50 flex items-center justify-between">
+                        <div>
+                          <h4 className="font-heading font-black text-sm text-stone-100 uppercase">
+                            {currentRev.name}
+                          </h4>
+                          <span className="text-xs text-brand-gold font-mono block">
+                            {currentRev.location}
+                          </span>
+                        </div>
+
+                        {/* Slide Navigation Buttons */}
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setActiveReviewIndex((prev) => (prev - 1 + clientReviews.length) % clientReviews.length)}
+                            aria-label="Previous review"
+                            className="p-2 rounded-full border border-brand-gold/40 bg-brand-medium hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all cursor-pointer shadow active:scale-95"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                          </button>
+                          <span className="text-xs font-mono font-bold text-slate-400 px-1">
+                            {activeReviewIndex + 1} / {clientReviews.length}
+                          </span>
+                          <button
+                            onClick={() => setActiveReviewIndex((prev) => (prev + 1) % clientReviews.length)}
+                            aria-label="Next review"
+                            className="p-2 rounded-full border border-brand-gold/40 bg-brand-medium hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all cursor-pointer shadow active:scale-95"
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+
                   </div>
                 </div>
 
-                <div className="p-5 space-y-3 flex-1 flex flex-col justify-between">
-                  <div className="flex items-center gap-1 text-amber-400">
-                    {[...Array(item.rating)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-                    ))}
-                  </div>
-
-                  <p className="text-xs text-slate-300 font-sans leading-relaxed flex-1 italic">
-                    &ldquo;{item.text}&rdquo;
-                  </p>
-
-                  <div className="pt-3 border-t border-brand-light/40 flex items-center justify-between">
-                    <div>
-                      <h4 className="font-heading font-black text-xs text-stone-100 uppercase">
-                        {item.name}
-                      </h4>
-                      <span className="text-[10px] text-slate-400 font-sans block">
-                        {item.location}
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                      100% Certified
-                    </span>
-                  </div>
+                {/* Thumbnail Strip: Click any review to jump directly */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 pt-2">
+                  {clientReviews.map((rev, idx) => {
+                    const isActive = idx === activeReviewIndex;
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveReviewIndex(idx)}
+                        className={`text-left p-3 rounded-lg border transition-all duration-300 cursor-pointer ${
+                          isActive 
+                            ? 'bg-brand-medium border-brand-gold shadow-glow-gold' 
+                            : 'bg-brand-navy/60 border-brand-light/50 hover:border-brand-gold/50 opacity-70 hover:opacity-100'
+                        }`}
+                      >
+                        <p className={`text-xs font-heading font-bold truncate ${isActive ? 'text-brand-gold' : 'text-stone-200'}`}>
+                          {rev.name}
+                        </p>
+                        <p className="text-[10px] text-slate-400 truncate">
+                          {rev.project}
+                        </p>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })()}
 
           <div className="flex justify-center pt-2">
             <Link 

@@ -116,6 +116,59 @@
     @apply transition-all duration-300 hover:-translate-y-1 hover:border-brand-gold/50 hover:shadow-premium-hover;
   }
 
+  .card-interactive {
+    @apply transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-gold/70 hover:shadow-premium-hover;
+    transform: translate3d(0, 0, 0);
+    will-change: transform, box-shadow, border-color;
+  }
+
+  .btn-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transform: skewX(-20deg);
+    pointer-events: none;
+  }
+  .btn-shimmer:hover::after {
+    left: 200%;
+    transition: left 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .gold-glow-hover {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  }
+  .gold-glow-hover:hover {
+    box-shadow: 0 0 30px rgba(197, 168, 128, 0.35);
+    border-color: rgba(197, 168, 128, 0.8);
+  }
+
+  /* Smooth slider scroll snapping */
+  .slider-snap {
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .slider-snap::-webkit-scrollbar {
+    display: none;
+  }
+  .slider-snap > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  .marquee-track:hover {
+    animation-play-state: paused !important;
+  }
+
   .text-gradient-gold {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-[#e2d5c3] via-[#d4af37] to-[#c5a880];
   }
