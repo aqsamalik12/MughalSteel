@@ -13,6 +13,7 @@ import {
 import { PROJECT_CATEGORIES_DATA, SEED_PROJECTS } from '../data/seedData';
 import { useSEO } from '../utils/useSEO';
 import { openDirectEmail } from '../utils/emailHelper';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 
 export const HomePage: React.FC = () => {
@@ -401,6 +402,7 @@ export const HomePage: React.FC = () => {
                 <img 
                   src="/mughal-steel-team.png" 
                   alt="Mughal Steel Team" 
+                  onError={handleImageError}
                   className="w-full h-full object-cover object-top opacity-85 group-hover:opacity-100 transition-opacity duration-500 filter contrast-105 brightness-100"
                 />
                 {/* Subtle bottom gradient to ensure action buttons and trust badges have crisp contrast */}
@@ -597,6 +599,7 @@ export const HomePage: React.FC = () => {
                   alt="Master fabricators at Mughal Steel" 
                   loading="lazy"
                   decoding="async"
+                  onError={handleImageError}
                   className="w-full h-full object-cover" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-5">
@@ -959,10 +962,11 @@ export const HomePage: React.FC = () => {
               >
                 <Link to={`/product/${prod.slug}`} className="relative aspect-[4/3] w-full overflow-hidden bg-black block">
                   <img 
-                    src={prod.images[0]} 
+                    src={prod.images?.[0] || prod.frontImage || FALLBACK_IMAGE_URL} 
                     alt={prod.name} 
                     loading="lazy"
                     decoding="async"
+                    onError={handleImageError}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
                   <div className="absolute top-2.5 left-2.5 bg-black/80 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-brand-gold/40">
@@ -1033,10 +1037,11 @@ export const HomePage: React.FC = () => {
                 >
                   <div className="aspect-[4/3] rounded overflow-hidden bg-black">
                     <img 
-                      src={item.image} 
+                      src={item.image || FALLBACK_IMAGE_URL} 
                       alt={item.name} 
                       loading="lazy"
                       decoding="async"
+                      onError={handleImageError}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                     />
                   </div>
@@ -1075,6 +1080,7 @@ export const HomePage: React.FC = () => {
                   alt="Live visualizer tool" 
                   loading="lazy"
                   decoding="async"
+                  onError={handleImageError}
                   className="w-full h-full object-cover" 
                 />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
@@ -1120,10 +1126,11 @@ export const HomePage: React.FC = () => {
               >
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
                   <img 
-                    src={cat.heroImage} 
+                    src={cat.heroImage || FALLBACK_IMAGE_URL} 
                     alt={cat.name} 
                     loading="lazy"
                     decoding="async"
+                    onError={handleImageError}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
                   />
                 </div>
@@ -1179,10 +1186,11 @@ export const HomePage: React.FC = () => {
                 className="group relative aspect-[4/3] rounded-xl overflow-hidden border border-brand-light/60 hover:border-brand-gold transition-all duration-300 shadow-2xl bg-black flex flex-col justify-between"
               >
                 <img 
-                  src={project.image || (project as any).coverImage} 
+                  src={project.image || (project as any).coverImage || FALLBACK_IMAGE_URL} 
                   alt={project.title}
                   loading="lazy"
                   decoding="async"
+                  onError={handleImageError}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                 />
                 
@@ -1292,10 +1300,11 @@ export const HomePage: React.FC = () => {
               >
                 <div className="relative aspect-[16/10] bg-black overflow-hidden">
                   <img 
-                    src={item.image} 
+                    src={item.image || FALLBACK_IMAGE_URL} 
                     alt={item.project} 
                     loading="lazy"
                     decoding="async"
+                    onError={handleImageError}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -1771,8 +1780,9 @@ export const HomePage: React.FC = () => {
               {/* Service Banner Image */}
               <div className="relative h-44 sm:h-56 w-full rounded-lg overflow-hidden border border-brand-light shadow-lg">
                 <img 
-                  src={activeServiceModal.image} 
+                  src={activeServiceModal.image || FALLBACK_IMAGE_URL} 
                   alt={activeServiceModal.title}
+                  onError={handleImageError}
                   className="w-full h-full object-cover" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A101D] via-black/30 to-transparent" />

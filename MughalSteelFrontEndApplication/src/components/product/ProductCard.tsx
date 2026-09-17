@@ -4,6 +4,7 @@ import type { Product } from '../../types';
 import { useWishlist } from '../../context/WishlistContext';
 import { useData } from '../../context/DataContext';
 import { Heart, Eye, Calculator, ArrowRight, MessageCircle } from 'lucide-react';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../../utils/imageFallback';
 
 interface ProductCardProps {
   product: Product;
@@ -73,8 +74,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Product Image */}
       <Link to={`/product/${product.slug}`} className="block relative aspect-[4/3] w-full overflow-hidden bg-brand-dark border-b border-brand-light">
         <img 
-          src={product.frontImage || product.galleryViews?.front || product.images?.[0] || 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'} 
+          src={product.frontImage || product.galleryViews?.front || product.images?.[0] || FALLBACK_IMAGE_URL} 
           alt={product.name}
+          onError={handleImageError}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">

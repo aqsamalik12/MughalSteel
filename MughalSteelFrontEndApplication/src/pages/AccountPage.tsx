@@ -4,6 +4,7 @@ import { useData } from '../context/DataContext';
 import { Link, useNavigate } from 'react-router-dom';
 import type { CartItem, Quote, Order, CustomDesign, Address } from '../types';
 import { User, ShoppingBag, ClipboardList, PenTool, MapPin, LogOut, CheckCircle, ArrowRight } from 'lucide-react';
+import { handleImageError } from '../utils/imageFallback';
 
 export const AccountPage: React.FC = () => {
   const navigate = useNavigate();
@@ -84,7 +85,12 @@ export const AccountPage: React.FC = () => {
           <div className="text-center space-y-2 pb-4 border-b border-stone-800">
             <div className="w-14 h-14 bg-gradient-to-br from-amber-400 via-brand-gold to-yellow-600 text-brand-dark rounded-2xl flex items-center justify-center font-serif text-xl font-bold mx-auto shadow-md shadow-brand-gold/10 overflow-hidden">
               {user.photoURL ? (
-                <img src={user.photoURL} alt={user.displayName || user.firstName} className="w-full h-full object-cover" />
+                <img 
+                  src={user.photoURL} 
+                  alt={user.displayName || user.firstName} 
+                  onError={handleImageError}
+                  className="w-full h-full object-cover" 
+                />
               ) : (
                 (user.displayName || user.firstName || user.email || 'U')[0].toUpperCase()
               )}

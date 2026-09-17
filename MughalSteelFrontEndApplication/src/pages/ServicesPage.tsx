@@ -7,6 +7,7 @@ import {
   Factory, ArrowRight, MessageCircle, Sparkles, CheckCircle2 
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const ServicesPage: React.FC = () => {
   useSEO({
@@ -61,8 +62,9 @@ export const ServicesPage: React.FC = () => {
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-black">
                 <img 
-                  src={serv.image} 
+                  src={serv.image || FALLBACK_IMAGE_URL} 
                   alt={serv.title} 
+                  onError={handleImageError}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                 />
                 <div className="absolute top-4 left-4 bg-brand-dark/90 backdrop-blur-md border border-brand-gold/40 text-brand-gold text-xs font-mono font-bold px-2.5 py-1 rounded shadow">

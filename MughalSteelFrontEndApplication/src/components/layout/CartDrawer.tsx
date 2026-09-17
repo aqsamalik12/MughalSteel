@@ -5,6 +5,7 @@ import {
   X, Trash2, Plus, Minus, MessageCircle, ArrowRight, 
   ShoppingBag, ShieldCheck, Calculator, Sparkles 
 } from 'lucide-react';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../../utils/imageFallback';
 
 export const CartDrawer: React.FC = () => {
   const { 
@@ -109,8 +110,9 @@ export const CartDrawer: React.FC = () => {
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-3">
                         <img 
-                          src={item.productImage} 
+                          src={item.productImage || FALLBACK_IMAGE_URL} 
                           alt={item.productName} 
+                          onError={handleImageError}
                           className="w-16 h-16 object-cover rounded border border-brand-light shrink-0" 
                         />
                         <div>

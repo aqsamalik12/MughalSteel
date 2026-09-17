@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useWishlist } from '../context/WishlistContext';
 import { useData } from '../context/DataContext';
 import { Heart, Trash2, Calculator, ArrowRight, MessageCircle } from 'lucide-react';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const WishlistPage: React.FC = () => {
   const { wishlist, removeFromWishlist } = useWishlist();
@@ -84,8 +85,9 @@ export const WishlistPage: React.FC = () => {
               >
                 <div className="relative aspect-[4/3] bg-brand-dark overflow-hidden">
                   <img 
-                    src={item.images[0]} 
+                    src={item.frontImage || item.images?.[0] || FALLBACK_IMAGE_URL} 
                     alt={item.name}
+                    onError={handleImageError}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
                   <div className="absolute top-3 left-3 bg-brand-navy/90 border border-brand-gold/40 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded shadow">

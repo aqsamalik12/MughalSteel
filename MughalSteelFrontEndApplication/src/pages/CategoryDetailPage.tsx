@@ -7,6 +7,7 @@ import {
   ArrowRight, Sparkles, MessageCircle, Calculator, 
   Ruler, Eye, CheckCircle2, Filter, Compass
 } from 'lucide-react';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const CategoryDetailPage: React.FC = () => {
   const { categorySlug, category: routeCategoryParam } = useParams<{ categorySlug?: string; category?: string }>();
@@ -121,8 +122,9 @@ export const CategoryDetailPage: React.FC = () => {
           {/* Right Villa Elevation Photo */}
           <div className="w-full md:w-80 lg:w-96 aspect-[16/9] rounded overflow-hidden border border-brand-gold/40 shadow-xl shrink-0">
             <img 
-              src={category.heroImage} 
+              src={category.heroImage || FALLBACK_IMAGE_URL} 
               alt={category.name} 
+              onError={handleImageError}
               className="w-full h-full object-cover" 
             />
           </div>
@@ -163,8 +165,9 @@ export const CategoryDetailPage: React.FC = () => {
                 ) : (
                   <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-200 border border-slate-200 shadow-sm group-hover:shadow-md group-hover:border-brand-gold/60 transition-all">
                     <img 
-                      src={item.image} 
+                      src={item.image || FALLBACK_IMAGE_URL} 
                       alt={item.name} 
+                      onError={handleImageError}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                     />
                   </div>
@@ -199,8 +202,9 @@ export const CategoryDetailPage: React.FC = () => {
               >
                 <Link to={`/product/${prod.slug}`} className="relative aspect-[4/3] w-full overflow-hidden bg-brand-dark block">
                   <img 
-                    src={prod.images[0]} 
+                    src={prod.images?.[0] || prod.frontImage || FALLBACK_IMAGE_URL} 
                     alt={prod.name} 
+                    onError={handleImageError}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
                   <div className="absolute top-2.5 left-2.5 bg-brand-navy/90 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-brand-gold/30">

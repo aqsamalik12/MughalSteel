@@ -6,6 +6,7 @@ import {
   Sparkles, Send, Check, ThumbsUp, MapPin 
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const ReviewsPage: React.FC = () => {
   useSEO({
@@ -107,8 +108,9 @@ export const ReviewsPage: React.FC = () => {
               {/* Top Author Row */}
               <div className="flex items-center gap-3.5">
                 <img 
-                  src={userAvatars[idx % userAvatars.length]} 
+                  src={userAvatars[idx % userAvatars.length] || FALLBACK_IMAGE_URL} 
                   alt={item.name} 
+                  onError={handleImageError}
                   className="w-12 h-12 rounded-full object-cover border border-slate-200 shrink-0" 
                 />
                 <div className="space-y-0.5">

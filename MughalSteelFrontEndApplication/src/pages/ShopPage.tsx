@@ -8,6 +8,7 @@ import {
   Sparkles, Eye, Calculator, ArrowRight, X, CheckCircle, MessageCircle 
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const ShopPage: React.FC = () => {
   useSEO({
@@ -322,8 +323,9 @@ export const ShopPage: React.FC = () => {
                     {/* Image */}
                     <div className="relative h-60 overflow-hidden bg-brand-dark">
                       <img 
-                        src={prod.images[0]} 
+                        src={prod.images?.[0] || prod.frontImage || FALLBACK_IMAGE_URL} 
                         alt={prod.name} 
+                        onError={handleImageError}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                       />
                       <div className="absolute top-3 left-3 bg-brand-navy/90 border border-brand-gold/40 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded shadow">

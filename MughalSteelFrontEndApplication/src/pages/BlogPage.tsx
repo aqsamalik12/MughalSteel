@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { Search, Calendar, User, ArrowRight } from 'lucide-react';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const BlogPage: React.FC = () => {
   const { blogs } = useData();
@@ -70,8 +71,9 @@ export const BlogPage: React.FC = () => {
           <div className="border border-brand-light bg-brand-medium/20 grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 rounded items-center">
             <div className="lg:col-span-7 aspect-[16/10] bg-brand-dark overflow-hidden border border-brand-light/60">
               <img 
-                src={featuredPost.featuredImage} 
+                src={featuredPost.featuredImage || FALLBACK_IMAGE_URL} 
                 alt={featuredPost.title} 
+                onError={handleImageError}
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
               />
             </div>
@@ -115,8 +117,9 @@ export const BlogPage: React.FC = () => {
                 <div key={post.id} className="border border-brand-light bg-brand-medium flex flex-col h-full rounded shadow-premium hover:shadow-premium-hover transition-all duration-300">
                   <Link to={`/blog/${post.slug}`} className="block aspect-[16/10] overflow-hidden bg-brand-dark border-b border-brand-light">
                     <img 
-                      src={post.featuredImage} 
+                      src={post.featuredImage || FALLBACK_IMAGE_URL} 
                       alt={post.title} 
+                      onError={handleImageError}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                     />
                   </Link>

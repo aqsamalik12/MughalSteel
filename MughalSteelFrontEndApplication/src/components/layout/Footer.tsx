@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 import { Phone, MessageCircle, Mail, MapPin, ArrowRight, ShieldCheck, Clock, Award } from 'lucide-react';
 import { openDirectEmail } from '../../utils/emailHelper';
+import { handleImageError } from '../../utils/imageFallback';
 
 export const Footer: React.FC = () => {
   const { getWhatsAppUrl } = useData();
@@ -70,6 +71,7 @@ export const Footer: React.FC = () => {
               <img 
                 src="/mughal-steel-logo.png" 
                 alt="Mughal Steel Fabrication" 
+                onError={handleImageError}
                 className="h-14 sm:h-16 w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-300"
               />
             </Link>

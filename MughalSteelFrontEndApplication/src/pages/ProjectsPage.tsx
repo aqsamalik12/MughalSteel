@@ -8,8 +8,9 @@ import {
   X, ChevronLeft, ChevronRight, Building2, Factory,
   Star, Quote, ThumbsUp, Check, MessageSquare
 } from 'lucide-react';
-import type { PortfolioProject } from '../types';
 import { useSEO } from '../utils/useSEO';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
+import type { PortfolioProject } from '../types';
 
 export const ProjectsPage: React.FC = () => {
   useSEO({
@@ -339,9 +340,10 @@ export const ProjectsPage: React.FC = () => {
                   className="relative aspect-[4/3] overflow-hidden bg-black cursor-pointer block"
                 >
                   <img 
-                    src={proj.image} 
+                    src={proj.image || FALLBACK_IMAGE_URL} 
                     alt={`${proj.title} installed for ${proj.projectType || 'client project'}`}
                     loading="lazy"
+                    onError={handleImageError}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                   />
                   
@@ -503,8 +505,9 @@ export const ProjectsPage: React.FC = () => {
                 {item.image && (
                   <div className="relative aspect-[16/10] bg-black overflow-hidden">
                     <img 
-                      src={item.image} 
+                      src={item.image || FALLBACK_IMAGE_URL} 
                       alt={item.name} 
+                      onError={handleImageError}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                     />
                     <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/80 px-2 py-0.5 rounded text-[9px] font-mono text-emerald-400 border border-emerald-500/40">

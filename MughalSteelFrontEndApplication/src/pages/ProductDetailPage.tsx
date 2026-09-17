@@ -13,6 +13,7 @@ import {
   User, Phone, MapPin
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -142,10 +143,10 @@ export const ProductDetailPage: React.FC = () => {
 
   // Dedicated 4-Angle Product Views (Only authentic images added/edited by admin)
   const defaultImages = (product.images || []).filter(img => Boolean(img && img.trim()));
-  const primaryFront = (product.frontImage || product.galleryViews?.front || defaultImages[0] || '').trim();
-  const primaryBack = (product.backImage || product.galleryViews?.back || (defaultImages.length > 1 ? defaultImages[1] : '') || '').trim();
-  const primaryLeft = (product.leftSideImage || product.galleryViews?.leftSide || (defaultImages.length > 2 ? defaultImages[2] : '') || '').trim();
-  const primaryRight = (product.rightSideImage || product.galleryViews?.rightSide || (defaultImages.length > 3 ? defaultImages[3] : '') || '').trim();
+  const primaryFront = (product.frontImage || product.galleryViews?.front || defaultImages[0] || FALLBACK_IMAGE_URL).trim();
+  const primaryBack = (product.backImage || product.galleryViews?.back || (defaultImages.length > 1 ? defaultImages[1] : '') || primaryFront).trim();
+  const primaryLeft = (product.leftSideImage || product.galleryViews?.leftSide || (defaultImages.length > 2 ? defaultImages[2] : '') || primaryFront).trim();
+  const primaryRight = (product.rightSideImage || product.galleryViews?.rightSide || (defaultImages.length > 3 ? defaultImages[3] : '') || primaryBack || primaryFront).trim();
 
   const fourSideViews = [
     {
@@ -197,7 +198,18 @@ export const ProductDetailPage: React.FC = () => {
     url: url.trim()
   }));
 
-  const galleryViews = [...fourSideViews, ...extraImages].filter(v => Boolean(v.url && v.url.length > 5));
+  const rawGalleryViews = [...fourSideViews, ...extraImages].filter(v => Boolean(v.url && v.url.length > 5));
+  const galleryViews = rawGalleryViews.length > 0 ? rawGalleryViews : [
+    {
+      id: 'front',
+      label: 'Front View',
+      shortLabel: 'Front',
+      fullTitle: 'Front Elevation & Face Profile',
+      tag: 'Front View • 1/4',
+      icon: '🌟',
+      url: FALLBACK_IMAGE_URL
+    }
+  ];
 
   const handleWhatsAppInquiry = () => {
 
@@ -372,8 +384,9 @@ export const ProductDetailPage: React.FC = () => {
             {/* Main Stage Image */}
             <div className="relative aspect-[4/3] bg-black rounded-xl overflow-hidden border border-brand-gold/30 shadow-2xl group select-none">
               <img 
-                src={galleryViews[activeImageIndex]?.url || galleryViews[0].url} 
-                alt={`${product.name} - ${galleryViews[activeImageIndex]?.label}`} 
+                src={galleryViews[activeImageIndex]?.url || galleryViews[0]?.url || FALLBACK_IMAGE_URL} 
+                alt={`${product.name} - ${galleryViews[activeImageIndex]?.label || 'View'}`} 
+                onError={handleImageError}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
               />
               
@@ -437,7 +450,7 @@ export const ProductDetailPage: React.FC = () => {
                   }`}
                 >
                   <div className="aspect-[4/3] rounded-lg overflow-hidden relative bg-black">
-                    <img src={view.url} alt={view.label} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                    <img src={view.url || FALLBACK_IMAGE_URL} alt={view.label} onError={handleImageError} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                     <span className="absolute top-1 left-1 bg-black/80 text-[8px] text-brand-gold font-mono px-1 rounded">
                       {view.icon} {idx + 1}/4
                     </span>
@@ -717,8 +730,9 @@ export const ProductDetailPage: React.FC = () => {
                 {/* Attached Product Photo Indicator */}
                 <div className="flex items-center gap-3 p-2 bg-brand-dark/90 border border-brand-gold/40 rounded-md">
                   <img 
-                    src={galleryViews[activeImageIndex]?.url || galleryViews[0]?.url || product.frontImage || product.images[0]} 
+                    src={galleryViews[activeImageIndex]?.url || galleryViews[0]?.url || product.frontImage || product.images?.[0] || FALLBACK_IMAGE_URL} 
                     alt={product.name} 
+                    onError={handleImageError}
                     className="w-12 h-12 object-cover rounded border border-brand-gold/60 shrink-0 shadow" 
                   />
                   <div className="flex-1 min-w-0">
@@ -889,7 +903,7 @@ export const ProductDetailPage: React.FC = () => {
                   className="group bg-brand-navy border border-brand-light/60 rounded-lg overflow-hidden hover:border-brand-gold transition-all duration-300 shadow-md flex flex-col justify-between"
                 >
                   <div className="aspect-[4/3] bg-black overflow-hidden relative">
-                    <img src={rel.images[0]} alt={rel.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img src={rel.images?.[0] || rel.frontImage || FALLBACK_IMAGE_URL} alt={rel.name} onError={handleImageError} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <span className="absolute top-2 left-2 bg-black/80 text-[9px] font-mono text-brand-gold px-2 py-0.5 rounded border border-brand-gold/30">
                       {rel.productCode}
                     </span>
@@ -946,8 +960,9 @@ export const ProductDetailPage: React.FC = () => {
               </button>
 
               <img 
-                src={galleryViews[activeImageIndex]?.url || galleryViews[0].url} 
+                src={galleryViews[activeImageIndex]?.url || galleryViews[0]?.url || FALLBACK_IMAGE_URL} 
                 alt={product.name} 
+                onError={handleImageError}
                 className="max-w-full max-h-[72vh] object-contain rounded-xl shadow-2xl border border-stone-800"
               />
 

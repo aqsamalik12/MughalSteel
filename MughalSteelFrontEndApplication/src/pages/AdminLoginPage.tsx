@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { ArchitecturalAuthBackground } from '../components/auth/ArchitecturalAuthBackground';
 import { Lock, Mail, AlertTriangle, CheckCircle, Eye, EyeOff, RefreshCw, ArrowLeft, ShieldCheck, KeyRound } from 'lucide-react';
 import { apiRequest } from '../utils/api';
+import { handleImageError } from '../utils/imageFallback';
 
 export const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -161,6 +162,7 @@ export const AdminLoginPage: React.FC = () => {
               <img 
                 src="/mughal-steel-logo.png" 
                 alt="Mughal Steel Fabrication" 
+                onError={handleImageError}
                 className="h-16 sm:h-20 w-auto object-contain mx-auto drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-300"
               />
             </Link>

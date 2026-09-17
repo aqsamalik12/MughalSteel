@@ -6,6 +6,7 @@ import {
   MapPin, CheckCircle2, MessageCircle, ArrowRight 
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const AboutPage: React.FC = () => {
   useSEO({
@@ -126,6 +127,7 @@ export const AboutPage: React.FC = () => {
               <img 
                 src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80" 
                 alt="Mughal Steel Workshop" 
+                onError={handleImageError}
                 className="w-full h-full object-cover" 
               />
               <div className="absolute bottom-4 left-4 right-4 bg-black/85 backdrop-blur-md p-3.5 rounded border border-brand-light/60 flex items-center justify-between text-xs">

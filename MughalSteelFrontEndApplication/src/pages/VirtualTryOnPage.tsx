@@ -9,6 +9,7 @@ import {
   SlidersHorizontal, Check, ArrowRight, CornerDownRight, Maximize2, FileText,
   FlipHorizontal, FlipVertical, Lock, Unlock, Image as ImageIcon, Compass, Sliders
 } from 'lucide-react';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const VirtualTryOnPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -593,8 +594,9 @@ export const VirtualTryOnPage: React.FC = () => {
             >
               {/* Background House Image */}
               <img 
-                src={houseImage} 
+                src={houseImage || FALLBACK_IMAGE_URL} 
                 alt="House Front Elevation" 
+                onError={handleImageError}
                 className="w-full h-full object-cover pointer-events-none"
               />
 
@@ -626,8 +628,9 @@ export const VirtualTryOnPage: React.FC = () => {
                     >
                       {/* Live Stretched Image (Fully Adjustable Into Any Shape) */}
                       <img 
-                        src={activeOverlayImage} 
+                        src={activeOverlayImage || FALLBACK_IMAGE_URL} 
                         alt={`${selectedProduct.name} - ${selectedSide}`}
+                        onError={handleImageError}
                         className="w-full h-full object-fill pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.9)] select-none" 
                         draggable={false}
                       />
@@ -849,6 +852,7 @@ export const VirtualTryOnPage: React.FC = () => {
                           <img 
                             src={side.url} 
                             alt={side.label} 
+                            onError={handleImageError}
                             className="w-full h-full object-contain p-1 group-hover:scale-105 transition-transform duration-300" 
                           />
                         ) : (
@@ -920,8 +924,9 @@ export const VirtualTryOnPage: React.FC = () => {
                   >
                     <div className="aspect-[4/3] w-full rounded overflow-hidden bg-black/40 mb-1.5 border border-stone-800">
                       <img 
-                        src={prod.frontImage || prod.galleryViews?.front || prod.images?.[0]} 
+                        src={prod.frontImage || prod.galleryViews?.front || prod.images?.[0] || FALLBACK_IMAGE_URL} 
                         alt={prod.name} 
+                        onError={handleImageError}
                         className="w-full h-full object-contain" 
                       />
                     </div>
@@ -1154,7 +1159,7 @@ export const VirtualTryOnPage: React.FC = () => {
                   </p>
                 </div>
                 <div className="w-14 h-14 rounded bg-black border border-brand-light overflow-hidden shrink-0">
-                  <img src={selectedProduct.images[0]} alt={selectedProduct.name} className="w-full h-full object-cover" />
+                  <img src={selectedProduct.images?.[0] || selectedProduct.frontImage || FALLBACK_IMAGE_URL} alt={selectedProduct.name} onError={handleImageError} className="w-full h-full object-cover" />
                 </div>
               </div>
 
@@ -1314,7 +1319,7 @@ export const VirtualTryOnPage: React.FC = () => {
                     }`}
                   >
                     <div className="aspect-[4/3] w-full rounded overflow-hidden bg-black mb-1.5 relative">
-                      <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      <img src={p.images?.[0] || p.frontImage || FALLBACK_IMAGE_URL} alt={p.name} onError={handleImageError} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                       <div className="absolute top-1 left-1 bg-black/80 text-[9px] font-mono text-brand-gold px-1 rounded">
                         {p.productCode}
                       </div>

@@ -169,7 +169,11 @@ namespace MughalSteelApi.Data
                     TagsList = "CNC Laser,Main Gate,14G Steel,Modern Gate",
                     Featured = true,
                     NewArrival = true,
-                    FrontImage = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80"
+                    FrontImage = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80",
+                    BackImage = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80",
+                    SideImage = "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=80",
+                    DetailImage = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+                    InstallationImage = "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=600&q=80"
                 };
 
                 var prod2 = new Product
@@ -197,7 +201,11 @@ namespace MughalSteelApi.Data
                     CustomizationList = "Integrated LED Strip Channel,Magnetic Lock Receiver",
                     TagsList = "Pivot Door,Grand Foyer,Architectural Steel",
                     Featured = true,
-                    FrontImage = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80"
+                    FrontImage = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+                    BackImage = "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=600&q=80",
+                    SideImage = "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=80",
+                    DetailImage = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80",
+                    InstallationImage = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80"
                 };
 
                 var prod3 = new Product
@@ -224,7 +232,11 @@ namespace MughalSteelApi.Data
                     HardwareList = "Standard Pull Handle",
                     TagsList = "Floating Stairs,Mono Stringer,Luxury Interior",
                     Featured = true,
-                    FrontImage = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80"
+                    FrontImage = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80",
+                    BackImage = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+                    SideImage = "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=600&q=80",
+                    DetailImage = "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=80",
+                    InstallationImage = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80"
                 };
 
                 var prod4 = new Product
@@ -250,7 +262,11 @@ namespace MughalSteelApi.Data
                     HardwareList = "Heavy Duty Italian Hydraulic Self-Closer,Standard Pull Handle",
                     TagsList = "Cast Iron,Hand Forged,Classical,Estate Gate",
                     Featured = true,
-                    FrontImage = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80"
+                    FrontImage = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80",
+                    BackImage = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+                    SideImage = "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=80",
+                    DetailImage = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80",
+                    InstallationImage = "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=600&q=80"
                 };
 
                 var prod5 = new Product
@@ -276,7 +292,11 @@ namespace MughalSteelApi.Data
                     HardwareList = "Smart Digital Keypad / Biometric Lockset",
                     TagsList = "Automated,Sliding Gate,Cantilever,Commercial",
                     Featured = true,
-                    FrontImage = "https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=600&q=80"
+                    FrontImage = "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80",
+                    BackImage = "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80",
+                    SideImage = "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=80",
+                    DetailImage = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80",
+                    InstallationImage = "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=600&q=80"
                 };
 
                 var prod6 = new Product
@@ -303,7 +323,11 @@ namespace MughalSteelApi.Data
                     HardwareList = "60-inch Architectural Stainless Pull Bar,Smart Digital Keypad / Biometric Lockset",
                     TagsList = "Double Door,French Steel,Divided Lite,Security",
                     Featured = true,
-                    FrontImage = "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=600&q=80"
+                    FrontImage = "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=600&q=80",
+                    BackImage = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+                    SideImage = "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=80",
+                    DetailImage = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80",
+                    InstallationImage = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80"
                 };
 
                 var prod7 = new Product
@@ -328,22 +352,27 @@ namespace MughalSteelApi.Data
                     FinishesList = "Electrostatic Matte Charcoal,Pure White Gloss Epoxy",
                     TagsList = "Carport,Canopy,Structural Steel,Solar Mounting",
                     Featured = true,
-                    FrontImage = "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80"
+                    FrontImage = "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80",
+                    BackImage = "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80",
+                    SideImage = "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=80",
+                    DetailImage = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80",
+                    InstallationImage = "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=600&q=80"
                 };
 
                 await context.Products.AddRangeAsync(prod1, prod2, prod3, prod4, prod5, prod6, prod7);
                 await context.SaveChangesAsync();
 
                 // Add Images
-                await context.ProductImages.AddRangeAsync(
-                    new ProductImage { ProductId = prod1.Id, ImageUrl = prod1.FrontImage, ImageType = "Front", IsPrimary = true, SortOrder = 1 },
-                    new ProductImage { ProductId = prod2.Id, ImageUrl = prod2.FrontImage, ImageType = "Front", IsPrimary = true, SortOrder = 1 },
-                    new ProductImage { ProductId = prod3.Id, ImageUrl = prod3.FrontImage, ImageType = "Front", IsPrimary = true, SortOrder = 1 },
-                    new ProductImage { ProductId = prod4.Id, ImageUrl = prod4.FrontImage, ImageType = "Front", IsPrimary = true, SortOrder = 1 },
-                    new ProductImage { ProductId = prod5.Id, ImageUrl = prod5.FrontImage, ImageType = "Front", IsPrimary = true, SortOrder = 1 },
-                    new ProductImage { ProductId = prod6.Id, ImageUrl = prod6.FrontImage, ImageType = "Front", IsPrimary = true, SortOrder = 1 },
-                    new ProductImage { ProductId = prod7.Id, ImageUrl = prod7.FrontImage, ImageType = "Front", IsPrimary = true, SortOrder = 1 }
-                );
+                var imagesToAdd = new List<ProductImage>();
+                foreach (var p in new[] { prod1, prod2, prod3, prod4, prod5, prod6, prod7 })
+                {
+                    if (!string.IsNullOrEmpty(p.FrontImage)) imagesToAdd.Add(new ProductImage { ProductId = p.Id, ImageUrl = p.FrontImage, ImageType = "Front", IsPrimary = true, SortOrder = 1 });
+                    if (!string.IsNullOrEmpty(p.BackImage)) imagesToAdd.Add(new ProductImage { ProductId = p.Id, ImageUrl = p.BackImage, ImageType = "Back", IsPrimary = false, SortOrder = 2 });
+                    if (!string.IsNullOrEmpty(p.SideImage)) imagesToAdd.Add(new ProductImage { ProductId = p.Id, ImageUrl = p.SideImage, ImageType = "Side", IsPrimary = false, SortOrder = 3 });
+                    if (!string.IsNullOrEmpty(p.DetailImage)) imagesToAdd.Add(new ProductImage { ProductId = p.Id, ImageUrl = p.DetailImage, ImageType = "Detail", IsPrimary = false, SortOrder = 4 });
+                    if (!string.IsNullOrEmpty(p.InstallationImage)) imagesToAdd.Add(new ProductImage { ProductId = p.Id, ImageUrl = p.InstallationImage, ImageType = "Installation", IsPrimary = false, SortOrder = 5 });
+                }
+                await context.ProductImages.AddRangeAsync(imagesToAdd);
                 await context.SaveChangesAsync();
 
                 // Seed Reviews

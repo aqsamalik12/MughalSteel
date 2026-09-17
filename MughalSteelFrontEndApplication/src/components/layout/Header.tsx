@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { PROJECT_CATEGORIES_DATA } from '../../data/seedData';
 import { prefetchRoute } from '../../utils/prefetchRoutes';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../../utils/imageFallback';
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -249,6 +250,7 @@ export const Header: React.FC = () => {
                 <img 
                   src="/mughal-steel-logo.png" 
                   alt="Mughal Steel Logo" 
+                  onError={handleImageError}
                   className="h-9 sm:h-10 md:h-11 w-auto object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
@@ -421,7 +423,7 @@ export const Header: React.FC = () => {
             >
               <div className="w-5 h-5 rounded-full bg-brand-gold/15 flex items-center justify-center text-brand-gold border border-brand-gold/30 shrink-0 overflow-hidden">
                 {user?.photoURL ? (
-                  <img src={user.photoURL} alt={user?.displayName || user?.firstName || 'User'} className="w-full h-full object-cover rounded-full" />
+                  <img src={user.photoURL} alt={user?.displayName || user?.firstName || 'User'} onError={handleImageError} className="w-full h-full object-cover rounded-full" />
                 ) : isAdmin ? (
                   <Shield className="w-3 h-3 text-amber-400" />
                 ) : (
@@ -494,7 +496,7 @@ export const Header: React.FC = () => {
             {/* Drawer Header */}
             <div className="p-4 border-b border-brand-light/40 flex items-center justify-between bg-brand-navy">
               <Link to="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2.5">
-                <img src="/mughal-steel-logo.png" alt="Mughal Steel Logo" className="h-10 w-auto object-contain drop-shadow" />
+                <img src="/mughal-steel-logo.png" alt="Mughal Steel Logo" onError={handleImageError} className="h-10 w-auto object-contain drop-shadow" />
               </Link>
 
               <div className="flex items-center gap-2">
@@ -727,7 +729,7 @@ export const Header: React.FC = () => {
                       <span className="flex items-center gap-2 truncate pr-2">
                         <div className="w-5 h-5 rounded-full bg-brand-gold/15 flex items-center justify-center text-brand-gold border border-brand-gold/30 shrink-0 overflow-hidden">
                           {user?.photoURL ? (
-                            <img src={user.photoURL} alt={user?.displayName || user?.firstName || 'User'} className="w-full h-full object-cover rounded-full" />
+                            <img src={user.photoURL} alt={user?.displayName || user?.firstName || 'User'} onError={handleImageError} className="w-full h-full object-cover rounded-full" />
                           ) : (
                             <UserIcon className="w-3 h-3" />
                           )}
@@ -849,7 +851,7 @@ export const Header: React.FC = () => {
                       onClick={() => setSearchOpen(false)}
                       className="flex items-center gap-3 p-2.5 bg-brand-dark/90 hover:bg-brand-medium border border-brand-light/60 rounded transition-colors"
                     >
-                      <img src={prod.images[0]} alt={prod.name} className="w-12 h-12 object-cover rounded shrink-0 bg-black" />
+                      <img src={prod.images?.[0] || prod.frontImage || FALLBACK_IMAGE_URL} alt={prod.name} onError={handleImageError} className="w-12 h-12 object-cover rounded shrink-0 bg-black" />
                       <div className="space-y-0.5 overflow-hidden">
                         <span className="text-[9px] font-mono text-brand-gold font-bold block">{prod.productCode}</span>
                         <h4 className="font-heading font-bold text-xs text-stone-100 truncate">{prod.name}</h4>

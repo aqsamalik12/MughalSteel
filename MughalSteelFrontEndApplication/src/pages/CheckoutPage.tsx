@@ -8,6 +8,7 @@ import {
   ShieldCheck, Lock, CheckCircle2, MessageCircle, 
   ShoppingBag
 } from 'lucide-react';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const CheckoutPage: React.FC = () => {
   const { cart, cartTotal, clearCart } = useCart();
@@ -269,7 +270,12 @@ export const CheckoutPage: React.FC = () => {
                 {cart.map(item => (
                   <div key={item.id} className="flex items-center justify-between gap-3 p-2 bg-brand-dark/70 rounded border border-brand-light">
                     <div className="flex items-center gap-2.5">
-                      <img src={item.productImage} alt={item.productName} className="w-10 h-10 object-cover rounded border border-brand-light" />
+                      <img 
+                        src={item.productImage || FALLBACK_IMAGE_URL} 
+                        alt={item.productName} 
+                        onError={handleImageError}
+                        className="w-10 h-10 object-cover rounded border border-brand-light" 
+                      />
                       <div>
                         <span className="text-[9px] font-mono text-brand-gold font-bold">{item.productCode}</span>
                         <h4 className="text-xs font-bold text-stone-100 line-clamp-1">{item.productName}</h4>

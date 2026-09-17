@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import type { PortfolioProject } from '../types';
 import { useSEO } from '../utils/useSEO';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const ProjectDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -105,7 +106,7 @@ export const ProjectDetailPage: React.FC = () => {
         name: 'Mughal Steel Fabrication',
         logo: {
           '@type': 'ImageObject',
-          url: 'https://mughalsteelfabrication.com/mughal-steel-logo.png'
+          url: typeof window !== 'undefined' ? `${window.location.origin}/mughal-steel-logo.png` : '/mughal-steel-logo.png'
         }
       }
     } : undefined
@@ -231,8 +232,9 @@ export const ProjectDetailPage: React.FC = () => {
       {/* 3. MAIN SHOWCASE IMAGE */}
       <div className="relative aspect-[16/9] sm:aspect-[21/9] md:aspect-[16/8] w-full rounded-2xl overflow-hidden border border-brand-light/60 shadow-2xl bg-black group">
         <img 
-          src={galleryImages[0]} 
+          src={galleryImages[0] || FALLBACK_IMAGE_URL} 
           alt={`${project.title} - Main View`}
+          onError={handleImageError}
           className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700" 
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
@@ -448,9 +450,10 @@ export const ProjectDetailPage: React.FC = () => {
               className="group relative aspect-[4/3] rounded-xl overflow-hidden border border-brand-light/60 hover:border-brand-gold transition-all duration-300 bg-black cursor-pointer shadow-lg"
             >
               <img 
-                src={imgUrl} 
+                src={imgUrl || FALLBACK_IMAGE_URL} 
                 alt={`${project.title} - Angle ${idx + 1}`}
                 loading="lazy"
+                onError={handleImageError}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
               />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -536,8 +539,9 @@ export const ProjectDetailPage: React.FC = () => {
             {/* Main Lightbox Image */}
             <div className="relative w-full h-[65vh] sm:h-[75vh] rounded-xl overflow-hidden bg-black flex items-center justify-center border border-brand-light/60 shadow-2xl">
               <img 
-                src={galleryImages[activePhotoIndex]} 
+                src={galleryImages[activePhotoIndex] || FALLBACK_IMAGE_URL} 
                 alt={`${project.title} view ${activePhotoIndex + 1}`}
+                onError={handleImageError}
                 className="max-w-full max-h-full object-contain" 
               />
 
@@ -584,7 +588,7 @@ export const ProjectDetailPage: React.FC = () => {
                       activePhotoIndex === idx ? 'border-brand-gold scale-105 shadow-glow-gold' : 'border-stone-700 opacity-60 hover:opacity-100'
                     }`}
                   >
-                    <img src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
+                    <img src={img || FALLBACK_IMAGE_URL} alt={`Thumb ${idx + 1}`} onError={handleImageError} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

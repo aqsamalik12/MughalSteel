@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <!-- Dark Metal Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070C15" />
+      <stop offset="50%" stop-color="#0E1726" />
+      <stop offset="100%" stop-color="#05080E" />
+    </linearGradient>
+
+    <!-- Metallic Gold Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3E7C4" />
+      <stop offset="35%" stop-color="#D4AF37" />
+      <stop offset="70%" stop-color="#AA820A" />
+      <stop offset="100%" stop-color="#F5DA86" />
+    </linearGradient>
+
+    <!-- Steel Gray Gradient -->
+    <linearGradient id="steelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+
+    <!-- Geometric Grid Pattern (Architectural Laser-Cut Motif) -->
+    <pattern id="laserGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 40 M 0 0 L 40 40" fill="none" stroke="#D4AF37" stroke-width="0.75" stroke-opacity="0.08" />
+      <rect x="0" y="0" width="40" height="40" fill="none" stroke="#1E293B" stroke-width="0.5" stroke-opacity="0.25" />
+    </pattern>
+
+    <!-- Radial Glow Effect -->
+    <radialGradient id="goldGlow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" stop-color="#D4AF37" stop-opacity="0.18" />
+      <stop offset="60%" stop-color="#D4AF37" stop-opacity="0.03" />
+      <stop offset="100%" stop-color="#070C15" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="800" height="600" fill="url(#bgGrad)" />
+
+  <!-- Laser Pattern Overlay -->
+  <rect width="800" height="600" fill="url(#laserGrid)" />
+
+  <!-- Central Glow -->
+  <circle cx="400" cy="270" r="260" fill="url(#goldGlow)" />
+
+  <!-- Outer Elegant Frame -->
+  <rect x="30" y="30" width="740" height="540" rx="8" fill="none" stroke="url(#steelGrad)" stroke-width="1.5" stroke-opacity="0.7" />
+  <rect x="40" y="40" width="720" height="520" rx="6" fill="none" stroke="url(#goldGrad)" stroke-width="0.8" stroke-opacity="0.4" stroke-dasharray="8 6" />
+
+  <!-- Decorative Corner Accents -->
+  <path d="M 30 55 L 55 30 M 30 75 L 75 30" stroke="url(#goldGrad)" stroke-width="1.5" stroke-opacity="0.6" />
+  <path d="M 770 55 L 745 30 M 770 75 L 725 30" stroke="url(#goldGrad)" stroke-width="1.5" stroke-opacity="0.6" />
+  <path d="M 30 545 L 55 570 M 30 525 L 75 570" stroke="url(#goldGrad)" stroke-width="1.5" stroke-opacity="0.6" />
+  <path d="M 770 545 L 745 570 M 770 525 L 725 570" stroke="url(#goldGrad)" stroke-width="1.5" stroke-opacity="0.6" />
+
+  <!-- Center Graphic: Architectural Gate & Steelwork Emblem -->
+  <g transform="translate(400, 240)">
+    <!-- Outer Shield / Hexagon -->
+    <polygon points="0,-100 86,-50 86,50 0,100 -86,50 -86,-50" fill="#0A101D" stroke="url(#goldGrad)" stroke-width="2.5" filter="drop-shadow(0px 8px 24px rgba(0,0,0,0.8))" />
+    <polygon points="0,-88 75,-44 75,44 0,88 -75,44 -75,-44" fill="none" stroke="#334155" stroke-width="1" stroke-opacity="0.5" />
+
+    <!-- Stylized Architectural Gate Silhouette -->
+    <!-- Outer Arch -->
+    <path d="M -45,45 L -45,-15 C -45,-50 45,-50 45,-15 L 45,45 Z" fill="none" stroke="url(#goldGrad)" stroke-width="2.5" />
+    <!-- Center Split Line -->
+    <line x1="0" y1="-42" x2="0" y2="45" stroke="url(#goldGrad)" stroke-width="1.8" />
+    <!-- Horizontal Structural Rails -->
+    <line x1="-45" y1="15" x2="45" y2="15" stroke="url(#goldGrad)" stroke-width="1.5" />
+    <line x1="-45" y1="-15" x2="45" y2="-15" stroke="url(#goldGrad)" stroke-width="1.5" />
+    <!-- Vertical Bars -->
+    <line x1="-30" y1="-15" x2="-30" y2="45" stroke="#94A3B8" stroke-width="1" />
+    <line x1="-15" y1="-15" x2="-15" y2="45" stroke="#94A3B8" stroke-width="1" />
+    <line x1="15" y1="-15" x2="15" y2="45" stroke="#94A3B8" stroke-width="1" />
+    <line x1="30" y1="-15" x2="30" y2="45" stroke="#94A3B8" stroke-width="1" />
+    <!-- Arch Top Sunburst / Star Motif -->
+    <path d="M 0,-42 L -15,-25 M 0,-42 L 15,-25 M 0,-42 L -30,-20 M 0,-42 L 30,-20" stroke="url(#goldGrad)" stroke-width="1" stroke-opacity="0.7" />
+    <!-- Base Plate -->
+    <rect x="-55" y="45" width="110" height="6" rx="2" fill="url(#goldGrad)" />
+  </g>
+
+  <!-- Typography: Brand Name & Title -->
+  <text x="400" y="390" text-anchor="middle" font-family="'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif" font-weight="800" font-size="20" letter-spacing="4" fill="url(#goldGrad)">
+    MUGHAL STEEL FABRICATION
+  </text>
+  <text x="400" y="420" text-anchor="middle" font-family="'Inter', 'Segoe UI', Arial, sans-serif" font-weight="600" font-size="12" letter-spacing="3" fill="#94A3B8">
+    ARCHITECTURAL METALWORK &amp; CNC WORKS
+  </text>
+
+  <!-- Quality Badge Subtitle -->
+  <rect x="290" y="450" width="220" height="28" rx="14" fill="#0A101D" stroke="url(#goldGrad)" stroke-width="1" stroke-opacity="0.5" />
+  <circle cx="310" cy="464" r="4" fill="#D4AF37" />
+  <text x="408" y="468" text-anchor="middle" font-family="'Inter', monospace" font-weight="600" font-size="10" letter-spacing="1.5" fill="#E2E8F0">
+    PREMIUM WORKMANSHIP
+  </text>
+</svg>

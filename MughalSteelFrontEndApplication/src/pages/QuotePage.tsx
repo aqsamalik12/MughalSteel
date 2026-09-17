@@ -6,6 +6,7 @@ import {
   FileText, CheckCircle2, MessageCircle, 
   Calculator, Sparkles, AlertCircle, ArrowRight 
 } from 'lucide-react';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const QuotePage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -425,8 +426,9 @@ export const QuotePage: React.FC = () => {
               {matchedProduct && (
                 <div className="flex items-center gap-3 p-3 bg-brand-dark rounded-md border border-brand-gold/40 shadow-sm">
                   <img 
-                    src={productPhoto || matchedProduct.images[0]} 
+                    src={productPhoto || matchedProduct.frontImage || matchedProduct.images?.[0] || FALLBACK_IMAGE_URL} 
                     alt={matchedProduct.name} 
+                    onError={handleImageError}
                     className="w-14 h-14 object-cover rounded border border-brand-gold/60 shrink-0" 
                   />
                   <div className="flex-1 min-w-0">

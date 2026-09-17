@@ -4,6 +4,7 @@ import { SEED_PROJECTS, PROJECT_CATEGORIES_DATA } from '../data/seedData';
 import { useData } from '../context/DataContext';
 import { Sparkles, MapPin, Eye, MessageCircle, ArrowRight, Filter } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const GalleryPage: React.FC = () => {
   useSEO({
@@ -86,8 +87,9 @@ export const GalleryPage: React.FC = () => {
             >
               <div className="relative h-64 overflow-hidden bg-brand-dark">
                 <img 
-                  src={proj.image} 
+                  src={proj.image || FALLBACK_IMAGE_URL} 
                   alt={proj.title} 
+                  onError={handleImageError}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                 />
                 <div className="absolute top-3 left-3 bg-brand-navy/90 border border-brand-gold/40 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded shadow">
@@ -128,7 +130,7 @@ export const GalleryPage: React.FC = () => {
           <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
             <div className="bg-brand-medium border border-brand-light rounded-sm max-w-2xl w-full overflow-hidden space-y-4 shadow-2xl">
               <div className="relative h-80 bg-brand-dark">
-                <img src={lightboxProject.image} alt={lightboxProject.title} className="w-full h-full object-cover" />
+                <img src={lightboxProject.image || FALLBACK_IMAGE_URL} alt={lightboxProject.title} onError={handleImageError} className="w-full h-full object-cover" />
                 <button 
                   onClick={() => setLightboxProject(null)}
                   className="absolute top-3 right-3 p-2 bg-black/80 hover:bg-black text-stone-200 hover:text-white rounded-full transition-colors"

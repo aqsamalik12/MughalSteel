@@ -6,6 +6,7 @@ import {
   ArrowRight, MessageCircle, RefreshCw
 } from 'lucide-react';
 import type { Product } from '../../types';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../../utils/imageFallback';
 
 interface ChatMessage {
   id: string;
@@ -487,8 +488,9 @@ export const MughalChatbot: React.FC = () => {
                     <div className="bg-[#05080E] border border-brand-light/60 rounded-xl overflow-hidden shadow-lg p-2.5 space-y-2">
                       <div className="aspect-[16/9] rounded-lg overflow-hidden bg-black relative">
                         <img 
-                          src={msg.productCard.frontImage || msg.productCard.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80'} 
+                          src={msg.productCard.frontImage || msg.productCard.images?.[0] || FALLBACK_IMAGE_URL} 
                           alt={msg.productCard.name}
+                          onError={handleImageError}
                           className="w-full h-full object-cover" 
                         />
                         <span className="absolute top-2 left-2 bg-brand-dark/90 text-brand-gold text-[9px] font-mono font-bold px-2 py-0.5 rounded">

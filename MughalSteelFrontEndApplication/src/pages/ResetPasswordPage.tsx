@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, useLocation, Link } from 'react-router-do
 import { useAuth } from '../context/AuthContext';
 import { ArchitecturalAuthBackground } from '../components/auth/ArchitecturalAuthBackground';
 import { Lock, CheckCircle, AlertTriangle, Eye, EyeOff, RefreshCw, ArrowLeft, ShieldCheck, KeyRound, ArrowRight } from 'lucide-react';
+import { handleImageError } from '../utils/imageFallback';
 
 export const ResetPasswordPage: React.FC = () => {
   const navigate = useNavigate();
@@ -145,6 +146,7 @@ export const ResetPasswordPage: React.FC = () => {
               <img 
                 src="/mughal-steel-logo.png" 
                 alt="Mughal Steel Fabrication" 
+                onError={handleImageError}
                 className="h-16 sm:h-20 w-auto object-contain mx-auto drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-300"
               />
             </Link>

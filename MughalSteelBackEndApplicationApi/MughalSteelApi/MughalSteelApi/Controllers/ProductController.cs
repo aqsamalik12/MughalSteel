@@ -23,11 +23,12 @@ namespace MughalSteelApi.Controllers
 
         private static ProductResponseDTO MapToDTO(Product p)
         {
-            var images = p.Images?.Select(i => i.ImageUrl).ToList() ?? new List<string>();
-            if (images.Count == 0 && !string.IsNullOrEmpty(p.FrontImage))
-            {
-                images.Add(p.FrontImage);
-            }
+            var images = p.Images?.OrderBy(i => i.SortOrder).Select(i => i.ImageUrl).Where(u => !string.IsNullOrEmpty(u)).ToList() ?? new List<string>();
+            if (!string.IsNullOrEmpty(p.FrontImage) && !images.Contains(p.FrontImage)) images.Insert(0, p.FrontImage);
+            if (!string.IsNullOrEmpty(p.BackImage) && !images.Contains(p.BackImage)) images.Add(p.BackImage);
+            if (!string.IsNullOrEmpty(p.SideImage) && !images.Contains(p.SideImage)) images.Add(p.SideImage);
+            if (!string.IsNullOrEmpty(p.DetailImage) && !images.Contains(p.DetailImage)) images.Add(p.DetailImage);
+            if (!string.IsNullOrEmpty(p.InstallationImage) && !images.Contains(p.InstallationImage)) images.Add(p.InstallationImage);
 
             var widths = (p.Widths ?? "")
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)

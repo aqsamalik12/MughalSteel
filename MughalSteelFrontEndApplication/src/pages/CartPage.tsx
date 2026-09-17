@@ -8,6 +8,7 @@ import {
   ShoppingBag, ShieldCheck, Calculator, Sparkles, Tag, CheckCircle2, 
   X, Paperclip, Mic, Send, Check, RefreshCw
 } from 'lucide-react';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const CartPage: React.FC = () => {
   const { 
@@ -145,7 +146,12 @@ export const CartPage: React.FC = () => {
                           <td className="py-4 px-4">
                             <div className="flex items-center gap-3">
                               <div className="w-14 h-14 rounded overflow-hidden bg-black border border-brand-light/60 shrink-0">
-                                <img src={item.productImage} alt={item.productName} className="w-full h-full object-cover" />
+                                <img 
+                                  src={item.productImage || FALLBACK_IMAGE_URL} 
+                                  alt={item.productName} 
+                                  onError={handleImageError}
+                                  className="w-full h-full object-cover" 
+                                />
                               </div>
                               <div className="space-y-0.5 max-w-xs">
                                 <span className="text-[10px] font-mono text-brand-gold font-bold block">{item.productCode}</span>

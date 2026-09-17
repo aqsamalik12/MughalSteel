@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { User, Calendar, ArrowLeft, Send } from 'lucide-react';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const BlogDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -76,7 +77,12 @@ export const BlogDetailPage: React.FC = () => {
 
         {/* Featured Image */}
         <div className="aspect-[16/9] w-full bg-brand-dark overflow-hidden border border-brand-light/75">
-          <img src={post.featuredImage} alt={post.title} className="w-full h-full object-cover" />
+          <img 
+            src={post.featuredImage || FALLBACK_IMAGE_URL} 
+            alt={post.title} 
+            onError={handleImageError}
+            className="w-full h-full object-cover" 
+          />
         </div>
 
         {/* Article Content */}
@@ -150,7 +156,12 @@ export const BlogDetailPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {relatedPosts.map(p => (
                 <div key={p.id} className="bg-brand-medium border border-brand-light/50 p-4 rounded flex space-x-3 items-center">
-                  <img src={p.featuredImage} alt={p.title} className="w-20 h-16 object-cover border border-brand-light" />
+                  <img 
+                    src={p.featuredImage || FALLBACK_IMAGE_URL} 
+                    alt={p.title} 
+                    onError={handleImageError}
+                    className="w-20 h-16 object-cover border border-brand-light" 
+                  />
                   <div className="min-w-0 flex-1">
                     <span className="text-[8px] text-brand-gold font-bold uppercase tracking-wider">{p.category}</span>
                     <h4 className="font-serif text-sm text-stone-250 truncate hover:text-brand-gold transition-colors mt-0.5">

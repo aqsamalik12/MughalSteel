@@ -13,6 +13,7 @@ import {
   DollarSign, CheckCircle, Clock, AlertCircle, Sparkles, SlidersHorizontal, ArrowUpRight,
   Hammer, Factory, Wrench, ShieldCheck, Maximize2, Upload, FolderUp, Camera, RotateCw, Building2
 } from 'lucide-react';
+import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const AdminPage: React.FC = () => {
   const navigate = useNavigate();
@@ -1262,8 +1263,9 @@ export const AdminPage: React.FC = () => {
                     <tr key={p.id} className="hover:bg-white/5 transition">
                       <td className="py-3 flex items-center gap-3">
                         <img 
-                          src={p.images?.[0] || p.frontImage || 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'} 
+                          src={p.images?.[0] || p.frontImage || FALLBACK_IMAGE_URL} 
                           alt={p.name} 
+                          onError={handleImageError}
                           className="w-12 h-12 object-cover rounded-lg border border-brand-light/50 shrink-0" 
                         />
                         <div>
@@ -1354,7 +1356,12 @@ export const AdminPage: React.FC = () => {
                 <div key={cat.id || idx} className="bg-[#070C15] border border-brand-light/60 rounded-xl overflow-hidden shadow flex flex-col justify-between">
                   <div>
                     <div className="h-36 relative overflow-hidden">
-                      <img src={cat.heroImage} alt={cat.name} className="w-full h-full object-cover" />
+                      <img 
+                        src={cat.heroImage || FALLBACK_IMAGE_URL} 
+                        alt={cat.name} 
+                        onError={handleImageError}
+                        className="w-full h-full object-cover" 
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#070C15] via-transparent to-black/40"></div>
                       <span className="absolute top-2 left-2 px-2 py-0.5 bg-brand-gold/90 text-brand-dark font-mono text-[9px] font-black uppercase rounded shadow">
                         #{idx + 1}
@@ -1788,7 +1795,12 @@ export const AdminPage: React.FC = () => {
                 <div key={serv.id} className="bg-[#070C15] border border-brand-light/60 rounded-xl overflow-hidden shadow flex flex-col justify-between">
                   <div>
                     <div className="h-40 relative overflow-hidden">
-                      <img src={serv.image} alt={serv.title} className="w-full h-full object-cover" />
+                      <img 
+                        src={serv.image || FALLBACK_IMAGE_URL} 
+                        alt={serv.title} 
+                        onError={handleImageError}
+                        className="w-full h-full object-cover" 
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#070C15] via-transparent to-black/30"></div>
                       <span className="absolute top-2.5 right-2.5 px-2 py-0.5 bg-black/70 border border-brand-gold/40 text-brand-gold font-mono text-[9px] font-bold uppercase rounded">
                         {serv.icon || 'Fabrication'}
@@ -1966,8 +1978,9 @@ export const AdminPage: React.FC = () => {
                       {/* Image Thumbnail with Featured & Status Badge */}
                       <div className="h-44 relative overflow-hidden bg-black">
                         <img 
-                          src={proj.image || (proj as any).coverImage} 
+                          src={proj.image || (proj as any).coverImage || FALLBACK_IMAGE_URL} 
                           alt={proj.title} 
+                          onError={handleImageError}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#070C15] via-transparent to-black/30"></div>
@@ -2208,8 +2221,9 @@ export const AdminPage: React.FC = () => {
                       {/* Main Cover */}
                       <div className="relative aspect-[16/10] rounded-lg overflow-hidden bg-black">
                         <img 
-                          src={gallery[0]} 
+                          src={gallery[0] || FALLBACK_IMAGE_URL} 
                           alt={proj.title} 
+                          onError={handleImageError}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                         />
                         <div className="absolute top-2 left-2 bg-black/80 px-2 py-0.5 rounded text-[10px] font-mono text-brand-gold font-bold border border-brand-gold/40">
@@ -2225,7 +2239,12 @@ export const AdminPage: React.FC = () => {
                         <div className="grid grid-cols-4 gap-1.5">
                           {gallery.slice(0, 4).map((img, idx) => (
                             <div key={idx} className="aspect-square rounded overflow-hidden border border-stone-800 bg-black">
-                              <img src={img} alt={`Angle ${idx + 1}`} className="w-full h-full object-cover" />
+                              <img 
+                                src={img || FALLBACK_IMAGE_URL} 
+                                alt={`Angle ${idx + 1}`} 
+                                onError={handleImageError}
+                                className="w-full h-full object-cover" 
+                              />
                             </div>
                           ))}
                         </div>
@@ -2920,7 +2939,12 @@ export const AdminPage: React.FC = () => {
 
                     {productForm.frontImage ? (
                       <div className="relative aspect-[4/3] rounded-lg overflow-hidden border border-stone-700 group bg-black">
-                        <img src={productForm.frontImage} alt="Front View" className="w-full h-full object-cover" />
+                        <img 
+                          src={productForm.frontImage || FALLBACK_IMAGE_URL} 
+                          alt="Front View" 
+                          onError={handleImageError}
+                          className="w-full h-full object-cover" 
+                        />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2 p-2">
                           <label className="p-1.5 bg-brand-gold text-brand-dark rounded text-[10px] font-bold cursor-pointer hover:brightness-110">
                             Change
@@ -2981,7 +3005,12 @@ export const AdminPage: React.FC = () => {
 
                     {productForm.backImage ? (
                       <div className="relative aspect-[4/3] rounded-lg overflow-hidden border border-stone-700 group bg-black">
-                        <img src={productForm.backImage} alt="Back View" className="w-full h-full object-cover" />
+                        <img 
+                          src={productForm.backImage || FALLBACK_IMAGE_URL} 
+                          alt="Back View" 
+                          onError={handleImageError}
+                          className="w-full h-full object-cover" 
+                        />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2 p-2">
                           <label className="p-1.5 bg-brand-gold text-brand-dark rounded text-[10px] font-bold cursor-pointer hover:brightness-110">
                             Change
@@ -3042,7 +3071,12 @@ export const AdminPage: React.FC = () => {
 
                     {productForm.leftSideImage ? (
                       <div className="relative aspect-[4/3] rounded-lg overflow-hidden border border-stone-700 group bg-black">
-                        <img src={productForm.leftSideImage} alt="Left Side View" className="w-full h-full object-cover" />
+                        <img 
+                          src={productForm.leftSideImage || FALLBACK_IMAGE_URL} 
+                          alt="Left Side View" 
+                          onError={handleImageError}
+                          className="w-full h-full object-cover" 
+                        />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2 p-2">
                           <label className="p-1.5 bg-brand-gold text-brand-dark rounded text-[10px] font-bold cursor-pointer hover:brightness-110">
                             Change
@@ -3103,7 +3137,12 @@ export const AdminPage: React.FC = () => {
 
                     {productForm.rightSideImage ? (
                       <div className="relative aspect-[4/3] rounded-lg overflow-hidden border border-stone-700 group bg-black">
-                        <img src={productForm.rightSideImage} alt="Right Side View" className="w-full h-full object-cover" />
+                        <img 
+                          src={productForm.rightSideImage || FALLBACK_IMAGE_URL} 
+                          alt="Right Side View" 
+                          onError={handleImageError}
+                          className="w-full h-full object-cover" 
+                        />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2 p-2">
                           <label className="p-1.5 bg-brand-gold text-brand-dark rounded text-[10px] font-bold cursor-pointer hover:brightness-110">
                             Change
@@ -3265,7 +3304,12 @@ export const AdminPage: React.FC = () => {
                   </div>
                   {categoryForm.heroImage && (
                     <div className="relative h-28 w-full rounded-lg overflow-hidden border border-stone-700 bg-black">
-                      <img src={categoryForm.heroImage} alt="Preview" className="w-full h-full object-cover" />
+                      <img 
+                        src={categoryForm.heroImage || FALLBACK_IMAGE_URL} 
+                        alt="Preview" 
+                        onError={handleImageError}
+                        className="w-full h-full object-cover" 
+                      />
                       <button 
                         type="button" 
                         onClick={() => setCategoryForm(prev => ({ ...prev, heroImage: '' }))}
@@ -3546,7 +3590,12 @@ export const AdminPage: React.FC = () => {
                         <div className="relative aspect-[4/3] rounded overflow-hidden bg-black border border-stone-700">
                           {currentImg ? (
                             <>
-                              <img src={currentImg} alt={label} className="w-full h-full object-cover" />
+                              <img 
+                                src={currentImg || FALLBACK_IMAGE_URL} 
+                                alt={label} 
+                                onError={handleImageError}
+                                className="w-full h-full object-cover" 
+                              />
                               <button
                                 type="button"
                                 onClick={() => {
