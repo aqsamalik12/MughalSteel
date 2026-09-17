@@ -209,7 +209,13 @@ export const Footer: React.FC = () => {
       {/* Bottom Copyright Strip */}
       <div className="w-full border-t border-brand-light/30 bg-[#030508] py-5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} Mughal Steel Fabrication (MSF). All rights reserved.</p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-center sm:text-left">
+            <p>© {new Date().getFullYear()} Mughal Steel Fabrication (MSF). All rights reserved.</p>
+            <span className="hidden sm:inline text-stone-700">|</span>
+            <p className="text-[11px] text-slate-400">
+              Developer: <span className="text-stone-200 font-semibold tracking-wide">AQSA RASOOL</span> • <a href="tel:03356730649" className="text-brand-gold hover:underline font-mono">03356730649</a>
+            </p>
+          </div>
           <div className="flex items-center gap-6 text-[11px]">
             <Link to="/warranty" className="hover:text-brand-gold transition-colors">Warranty</Link>
             <Link to="/terms" className="hover:text-brand-gold transition-colors">Terms & Conditions</Link>
