@@ -82,7 +82,7 @@ export const HomePage: React.FC = () => {
   // =========================================================================
   // HERO SLIDER CONFIGURATION (Full-Width Cinematic Carousel)
   // Slide 0: Mughal Steel Rawalpindi Fabrication Team Photo (Uploaded by User)
-  // Slides 1-6: 6 Official Mughal Steel Clean Native MP4 Showcase Videos (No YouTube UI/Clutter)
+  // Slides 1-6: 6 Official Mughal Steel YouTube Showcase Videos
   // =========================================================================
   const heroSlides = [
     {
@@ -98,10 +98,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/items'
     },
     {
-      id: 'slide-vid-0',
-      type: 'video' as const,
-      videoSrc: '/videos/hero_video_0.mp4',
-      poster: '/videos/hero_poster_0.jpg',
+      id: 'slide-yt-fQZGXcWxw0Q',
+      type: 'youtube' as const,
+      youtubeId: 'fQZGXcWxw0Q',
       badge: 'Project Showcase • Structural Steel & Railings',
       title: 'Overview of Completed Projects & Railings',
       description: 'Site walkthrough of completed heavy architectural steel fabrication, precision laser-cut balustrades, and master metal engineering.',
@@ -111,10 +110,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/items'
     },
     {
-      id: 'slide-vid-1',
-      type: 'video' as const,
-      videoSrc: '/videos/hero_video_1.mp4',
-      poster: '/videos/hero_poster_1.jpg',
+      id: 'slide-yt-YHK1SWPQpoA',
+      type: 'youtube' as const,
+      youtubeId: 'YHK1SWPQpoA',
       badge: 'Site Handover • Gulberg Greens Islamabad',
       title: 'Gulberg Greens Luxury Villa Project',
       description: 'Turnkey architectural steel installation at Gulberg Greens featuring heavy entrance gates, security grills, and modern balcony railings.',
@@ -124,10 +122,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/items'
     },
     {
-      id: 'slide-vid-2',
-      type: 'video' as const,
-      videoSrc: '/videos/hero_video_2.mp4',
-      poster: '/videos/hero_poster_2.jpg',
+      id: 'slide-yt-2bw7KK7sVFg',
+      type: 'youtube' as const,
+      youtubeId: '2bw7KK7sVFg',
       badge: 'Live Workshop • CNC Fiber Laser Cutting',
       title: 'Precision CNC Laser Cutting & Heavy Fabrication',
       description: 'Live fabrication floor showcase: high-precision ±0.1mm CNC fiber laser cutting, certified structural welding, and anti-sag gate assembly.',
@@ -137,10 +134,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/custom-design'
     },
     {
-      id: 'slide-vid-3',
-      type: 'video' as const,
-      videoSrc: '/videos/hero_video_3.mp4',
-      poster: '/videos/hero_poster_3.jpg',
+      id: 'slide-yt-fTgElLgHO1s',
+      type: 'youtube' as const,
+      youtubeId: 'fTgElLgHO1s',
       badge: 'Architectural Showcase • DHA Islamabad',
       title: 'Crafting Excellence in Steel & Cast Iron at DHA',
       description: 'Premium estate metalwork completed at DHA Islamabad: classical cast iron balustrades, modern steel gates, and multi-stage powder coating.',
@@ -150,10 +146,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/projects'
     },
     {
-      id: 'slide-vid-4',
-      type: 'video' as const,
-      videoSrc: '/videos/hero_video_4.mp4',
-      poster: '/videos/hero_poster_4.jpg',
+      id: 'slide-yt-9ccCSDyRn4Q',
+      type: 'youtube' as const,
+      youtubeId: '9ccCSDyRn4Q',
       badge: 'Turnkey Handover • Cast Iron & Custom Doors',
       title: 'Luxury Cast Iron Railings & Custom Iron Doors',
       description: 'Custom hand-forged cast iron balustrades, heavy structural entrance doors, and ornamental architectural metal decor completed Alhamdulillah.',
@@ -163,10 +158,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/items'
     },
     {
-      id: 'slide-vid-5',
-      type: 'video' as const,
-      videoSrc: '/videos/hero_video_5.mp4',
-      poster: '/videos/hero_poster_5.jpg',
+      id: 'slide-yt-tdK_xYFThrI',
+      type: 'youtube' as const,
+      youtubeId: 'tdK_xYFThrI',
       badge: 'Engineering Precision • Stair Systems',
       title: 'Architectural Staircase & Spiral Steps Engineering',
       description: 'Engineered floating cantilever and spiral steel staircases designed to strict structural standards with zero deflection.',
@@ -429,35 +423,15 @@ export const HomePage: React.FC = () => {
                     />
                   </div>
                 ) : (
-                  <div className="relative w-full h-full overflow-hidden bg-[#05080E]">
-                    {/* Instant visual fallback image so there is NEVER a black flash */}
-                    <img 
-                      src={slide.poster}
-                      alt={slide.title}
-                      className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
-                    />
-                    {/* Active Native Video: autoplays smoothly when slide is active */}
+                  <div className="relative w-full h-full overflow-hidden bg-black">
+                    {/* Active YouTube Embed: plays the exact video URL provided */}
                     {isActive && (
-                      <video
-                        key={slide.videoSrc}
-                        src={slide.videoSrc}
-                        poster={slide.poster}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
-                        ref={(el) => {
-                          if (el) {
-                            el.muted = true;
-                            el.defaultMuted = true;
-                            el.play().catch(() => {});
-                          }
-                        }}
-                        onCanPlay={(e) => {
-                          e.currentTarget.muted = true;
-                          e.currentTarget.play().catch(() => {});
-                        }}
+                      <iframe
+                        src={`https://www.youtube.com/embed/${slide.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${slide.youtubeId}&controls=1&rel=0&playsinline=1&modestbranding=1&enablejsapi=1`}
+                        title={slide.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        className="absolute inset-0 w-full h-full border-0 object-cover z-0"
                       />
                     )}
                   </div>
