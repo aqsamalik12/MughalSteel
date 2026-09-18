@@ -39,7 +39,6 @@ export const HomePage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
   const [slideProgress, setSlideProgress] = useState(0);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   // Products horizontal slider state & controls
   const productsSliderRef = useRef<HTMLDivElement>(null);
@@ -81,44 +80,105 @@ export const HomePage: React.FC = () => {
   const [isReviewsPaused, setIsReviewsPaused] = useState(false);
 
   // =========================================================================
-  // HERO VIDEO SLIDER CONFIGURATION
-  // Place your MP4 files in the public/videos folder and list their paths below.
-  // Example: ['/videos/video1.mp4', '/videos/video2.mp4', ...]
+  // HERO SLIDER CONFIGURATION (Full-Width Cinematic Carousel)
+  // Slide 0: Mughal Steel Rawalpindi Fabrication Team Photo (Uploaded by User)
+  // Slides 1-6: 6 Official Mughal Steel YouTube Showcase Videos
   // =========================================================================
-  const heroVideos = [
-    "/videos/video1.mp4",
-    "/videos/video2.mp4",
-    "/videos/video3.mp4",
-    "/videos/video4.mp4"
-  ];
-
-  // Optional display metadata for right-side control card info & modal
-  const heroVideoMetadata = [
+  const heroSlides = [
     {
-      title: 'Modern Front Gate Fabrication',
-      tag: 'Laser Cut Main Gate',
-      description: 'Heavy-gauge CNC laser-cut entrance gate fabrication with forge-welded hinges and electrostatic powder coating.'
+      id: 'slide-mughal-team',
+      type: 'image' as const,
+      src: '/mughal-steel-team-hero.png',
+      badge: '30+ Years Metal Heritage • Rawalpindi Yard',
+      title: 'Specializing in Heavy Fabrication & Custom Solutions',
+      description: 'Delivering high-tensile architectural CNC laser gates, luxury balustrades, and certified structural steel engineering across Islamabad & Rawalpindi.',
+      ctaText: 'Get A Quote',
+      ctaLink: '/quote',
+      secondaryText: 'Explore Products',
+      secondaryLink: '/items'
     },
     {
-      title: 'Heavy Structural Balustrade & Railing',
-      tag: 'Stainless & MS Railing',
-      description: 'Precision engineered stair and balcony balustrades built with solid core steel balusters and flawless TIG welding.'
+      id: 'slide-yt-fQZGXcWxw0Q',
+      type: 'youtube' as const,
+      youtubeId: 'fQZGXcWxw0Q',
+      startTime: 3,
+      badge: 'Project Showcase • Structural Steel & Railings',
+      title: 'Overview of Completed Projects & Railings',
+      description: 'Site walkthrough of completed heavy architectural steel fabrication, precision laser-cut balustrades, and master metal engineering.',
+      ctaText: 'Get A Quote',
+      ctaLink: '/quote',
+      secondaryText: 'View Railings',
+      secondaryLink: '/items'
     },
     {
-      title: 'Hand-Forged Wrought Iron Craftsmanship',
-      tag: 'Artisan Heritage',
-      description: 'Traditional blacksmith craftsmanship combined with modern durability for luxury classical estates.'
+      id: 'slide-yt-YHK1SWPQpoA',
+      type: 'youtube' as const,
+      youtubeId: 'YHK1SWPQpoA',
+      startTime: 3,
+      badge: 'Site Handover • Gulberg Greens Islamabad',
+      title: 'Gulberg Greens Luxury Villa Project',
+      description: 'Turnkey architectural steel installation at Gulberg Greens featuring heavy entrance gates, security grills, and modern balcony railings.',
+      ctaText: 'Get A Quote',
+      ctaLink: '/quote',
+      secondaryText: 'Explore Gates',
+      secondaryLink: '/items'
     },
     {
-      title: 'Architectural Staircase & Spiral Steps',
-      tag: 'Stair Systems',
-      description: 'Floating cantilever and spiral steel staircases designed to engineering code with zero flex.'
+      id: 'slide-yt-2bw7KK7sVFg',
+      type: 'youtube' as const,
+      youtubeId: '2bw7KK7sVFg',
+      startTime: 3,
+      badge: 'Live Workshop • CNC Fiber Laser Cutting',
+      title: 'Precision CNC Laser Cutting & Heavy Fabrication',
+      description: 'Live fabrication floor showcase: high-precision ±0.1mm CNC fiber laser cutting, certified structural welding, and anti-sag gate assembly.',
+      ctaText: 'Get A Quote',
+      ctaLink: '/quote',
+      secondaryText: 'Custom Design',
+      secondaryLink: '/custom-design'
+    },
+    {
+      id: 'slide-yt-fTgElLgHO1s',
+      type: 'youtube' as const,
+      youtubeId: 'fTgElLgHO1s',
+      startTime: 3,
+      badge: 'Architectural Showcase • DHA Islamabad',
+      title: 'Crafting Excellence in Steel & Cast Iron at DHA',
+      description: 'Premium estate metalwork completed at DHA Islamabad: classical cast iron balustrades, modern steel gates, and multi-stage powder coating.',
+      ctaText: 'Get A Quote',
+      ctaLink: '/quote',
+      secondaryText: 'View Projects',
+      secondaryLink: '/projects'
+    },
+    {
+      id: 'slide-yt-9ccCSDyRn4Q',
+      type: 'youtube' as const,
+      youtubeId: '9ccCSDyRn4Q',
+      startTime: 3,
+      badge: 'Turnkey Handover • Cast Iron & Custom Doors',
+      title: 'Luxury Cast Iron Railings & Custom Iron Doors',
+      description: 'Custom hand-forged cast iron balustrades, heavy structural entrance doors, and ornamental architectural metal decor completed Alhamdulillah.',
+      ctaText: 'Get A Quote',
+      ctaLink: '/quote',
+      secondaryText: 'Explore Doors',
+      secondaryLink: '/items'
+    },
+    {
+      id: 'slide-yt-tdK_xYFThrI',
+      type: 'youtube' as const,
+      youtubeId: 'tdK_xYFThrI',
+      startTime: 3,
+      badge: 'Engineering Precision • Stair Systems',
+      title: 'Architectural Staircase & Spiral Steps Engineering',
+      description: 'Engineered floating cantilever and spiral steel staircases designed to strict structural standards with zero deflection.',
+      ctaText: 'Get A Quote',
+      ctaLink: '/quote',
+      secondaryText: 'View Stairs',
+      secondaryLink: '/items'
     }
   ];
 
   const [previousSlide, setPreviousSlide] = useState<number | null>(null);
   const slideTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const pauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Helper to transition to a target slide with smooth crossfade
   const goToSlide = (nextIndex: number) => {
@@ -129,14 +189,14 @@ export const HomePage: React.FC = () => {
   };
 
   const nextSlide = () => {
-    goToSlide((currentSlide + 1) % heroVideos.length);
+    goToSlide((currentSlide + 1) % heroSlides.length);
   };
 
   const prevSlide = () => {
-    goToSlide((currentSlide - 1 + heroVideos.length) % heroVideos.length);
+    goToSlide((currentSlide - 1 + heroSlides.length) % heroSlides.length);
   };
 
-  // 10-Second interval for hero video auto-slider
+  // 12-Second interval for hero auto-slider
   useEffect(() => {
     if (isSliderPaused) {
       if (slideTimerRef.current) {
@@ -147,12 +207,12 @@ export const HomePage: React.FC = () => {
     }
 
     const intervalTime = 100; // update progress every 100ms
-    const step = 100 / (10000 / intervalTime); // 10,000ms = 10 sec
+    const step = 100 / (12000 / intervalTime); // 12,000ms = 12 sec per slide
 
     slideTimerRef.current = setInterval(() => {
       setSlideProgress((prev) => {
         if (prev >= 100) {
-          goToSlide((currentSlide + 1) % heroVideos.length);
+          goToSlide((currentSlide + 1) % heroSlides.length);
           return 0;
         }
         return prev + step;
@@ -165,64 +225,15 @@ export const HomePage: React.FC = () => {
         slideTimerRef.current = null;
       }
     };
-  }, [isSliderPaused, currentSlide, heroVideos.length]);
+  }, [isSliderPaused, currentSlide, heroSlides.length]);
 
-  // Video playback lifecycle management:
-  // - Start newly active video from beginning (currentTime = 0)
-  // - Autoplay muted and inline
-  // - Pause inactive videos and reset currentTime to 0 after crossfade transition completes
-  useEffect(() => {
-    const activeVid = videoRefs.current[currentSlide];
-    if (activeVid) {
-      activeVid.muted = true;
-      activeVid.currentTime = 0;
-      activeVid.play().catch(() => {
-        // Fallback for strict browser autoplay policies
-        activeVid.muted = true;
-        activeVid.play().catch(() => {});
-      });
-    }
-
-    // Previous video fades out over 1000ms.
-    // Pause and reset previous video AFTER fade completes to prevent blank frames / flash:
-    if (previousSlide !== null && previousSlide !== currentSlide) {
-      if (pauseTimeoutRef.current) {
-        clearTimeout(pauseTimeoutRef.current);
-      }
-      const prevIdx = previousSlide;
-      pauseTimeoutRef.current = setTimeout(() => {
-        const prevVid = videoRefs.current[prevIdx];
-        if (prevVid) {
-          prevVid.pause();
-          prevVid.currentTime = 0;
-        }
-      }, 1050);
-    }
-
-    return () => {
-      if (pauseTimeoutRef.current) {
-        clearTimeout(pauseTimeoutRef.current);
-      }
-    };
-  }, [currentSlide, previousSlide]);
-
-  // Component unmount cleanup: clear all timers and pause all videos
+  // Component unmount cleanup
   useEffect(() => {
     return () => {
       if (slideTimerRef.current) {
         clearInterval(slideTimerRef.current);
         slideTimerRef.current = null;
       }
-      if (pauseTimeoutRef.current) {
-        clearTimeout(pauseTimeoutRef.current);
-        pauseTimeoutRef.current = null;
-      }
-      videoRefs.current.forEach((vid) => {
-        if (vid) {
-          vid.pause();
-          vid.currentTime = 0;
-        }
-      });
     };
   }, []);
 
@@ -376,28 +387,30 @@ export const HomePage: React.FC = () => {
   return (
     <div className="w-full bg-[#05080E] text-stone-100 font-sans">
             {/* ======================================================== */}
-      {/* 1. HOME SECTION: HERO WITH FULL-VIDEO 10-SEC LEFT SLIDER */}
+      {/* 1. HOME SECTION: FULL-WIDTH CINEMATIC HERO SLIDER        */}
+      {/* Slide 0: Glowing Hot Steel Rolling Mill Image            */}
+      {/* Slides 1-4: 4 Workshop Fabrication Videos Sequentially  */}
       {/* ======================================================== */}
-      <section id="home" className="relative scroll-mt-24 w-full border-b border-brand-light/40 py-12 md:py-20 overflow-hidden bg-[#05080E]">
-        
-        {/* Full-Screen Left-Sliding Video Track: Each separate video is full width & height with cinematic crossfade */}
-        <div 
-          className="absolute inset-0 z-0 overflow-hidden select-none"
-          style={{ transform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden' }}
-          role="region"
-          aria-roledescription="carousel"
-          aria-label="Hero Video Slider"
-        >
-          {heroVideos.map((videoSrc, idx) => {
+      <section 
+        id="home" 
+        className="relative scroll-mt-24 w-full h-[82vh] min-h-[580px] max-h-[850px] overflow-hidden bg-[#05080E] flex flex-col justify-between select-none"
+        onMouseEnter={() => setIsSliderPaused(true)}
+        onMouseLeave={() => setIsSliderPaused(false)}
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="Mughal Steel Production & Fabrication Showcase"
+      >
+        {/* Full-Width Slide Track: Edge-to-Edge Image & Videos with Smooth Crossfade */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {heroSlides.map((slide, idx) => {
             const isActive = idx === currentSlide;
             const isPrev = idx === previousSlide;
-            const isNext = idx === (currentSlide + 1) % heroVideos.length;
 
             return (
               <div 
-                key={`hero-vid-${idx}`}
+                key={slide.id}
                 aria-hidden={!isActive}
-                aria-label={`Mughal Steel Video Slide ${idx + 1} of ${heroVideos.length}`}
+                aria-label={`Slide ${idx + 1} of ${heroSlides.length}: ${slide.title}`}
                 className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out motion-reduce:transition-none ${
                   isActive 
                     ? 'opacity-100 z-10' 
@@ -406,162 +419,262 @@ export const HomePage: React.FC = () => {
                       : 'opacity-0 -z-10 pointer-events-none'
                 }`}
               >
-                <video
-                  ref={(el) => {
-                    if (el) el.muted = true;
-                    videoRefs.current[idx] = el;
-                  }}
-                  autoPlay={idx === 0}
-                  loop 
-                  muted 
-                  playsInline 
-                  preload={isActive ? 'auto' : isNext ? 'auto' : 'none'}
-                  className="w-full h-full object-cover object-center filter brightness-[0.98] contrast-[1.05] saturate-[1.1]"
-                >
-                  <source src={videoSrc} type="video/mp4" />
-                </video>
+                {slide.type === 'image' ? (
+                  <div className="relative w-full h-full overflow-hidden bg-[#05080E]">
+                    <img 
+                      src={slide.src}
+                      alt={slide.title}
+                      onError={handleImageError}
+                      className="w-full h-full object-cover object-top sm:object-[center_25%] filter brightness-[0.92] contrast-[1.06]"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative w-full h-full overflow-hidden bg-black pointer-events-none select-none">
+                    {/* High-res YouTube thumbnail poster */}
+                    <img 
+                      src={`https://img.youtube.com/vi/${slide.youtubeId}/hqdefault.jpg`}
+                      alt={slide.title}
+                      className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.82] contrast-[1.05] scale-110 pointer-events-none"
+                    />
+                    {/* Active YouTube Embed (Cropped top and bottom so YouTube title, controls & branding are 100% invisible) */}
+                    {isActive && (
+                      <div className="absolute inset-0 w-full h-full overflow-hidden">
+                        <iframe
+                          src={`https://www.youtube-nocookie.com/embed/${slide.youtubeId}?autoplay=1&mute=1&controls=0&rel=0&playsinline=1&modestbranding=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0&start=${slide.startTime ?? 3}`}
+                          title={slide.title}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          tabIndex={-1}
+                          style={{ pointerEvents: 'none', userSelect: 'none' }}
+                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-h-[125%] min-w-[178vh] scale-125 md:scale-[1.32] pointer-events-none select-none border-0"
+                        />
+                        {/* Direct iframe touch/click blocker with physical hit-testable layer */}
+                        <div 
+                          className="absolute inset-0 z-10 bg-black/[0.001] cursor-default select-none pointer-events-auto touch-manipulation"
+                          style={{ pointerEvents: 'auto' }}
+                          aria-hidden="true"
+                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                          onTouchStart={(e) => { e.stopPropagation(); }}
+                          onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}
 
-          {/* Lowest Transparency Overlays: Minimal dark vignetting to keep videos bright, vivid & prominent */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#05080E]/20 via-transparent to-[#05080E]/40 pointer-events-none z-10" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#05080E]/30 via-transparent to-transparent pointer-events-none z-10" />
+          {/* Transparent Full-Bleed Interaction Shield:
+              Absorbs 100% of user taps/clicks so the background video can never be paused or display YouTube OSD controls */}
+          <div 
+            className="absolute inset-0 z-10 bg-black/[0.001] cursor-default select-none pointer-events-auto touch-manipulation"
+            style={{ pointerEvents: 'auto' }}
+            aria-hidden="true"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            onTouchStart={(e) => { e.stopPropagation(); }}
+            onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+          />
+
+          {/* Cinematic Dark Gradient Overlays:
+              - Left side gradient: Guarantees 100% crisp typography legibility matching FF Steel reference
+              - Top & bottom vignettes: Seamlessly masks headers and footers for pure cinematic video background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#05080E]/95 via-[#05080E]/80 to-transparent w-full md:w-3/4 lg:w-3/5 pointer-events-none z-10" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#05080E] via-[#05080E]/50 to-transparent pointer-events-none z-10" />
+          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#05080E]/90 via-[#05080E]/40 to-transparent pointer-events-none z-10" />
         </div>
 
-        <div className="relative z-10 w-full space-y-8">
-          
-          <div className="flex flex-col lg:flex-row items-start justify-between gap-8 pt-4">
+        {/* Global Section Touch & Click Interceptor (z-15) */}
+        <div 
+          className="absolute inset-0 z-15 bg-black/[0.001] cursor-default select-none pointer-events-auto touch-manipulation"
+          style={{ pointerEvents: 'auto' }}
+          aria-hidden="true"
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+          onTouchStart={(e) => { e.stopPropagation(); }}
+          onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        />
+
+        {/* Desktop Previous / Next Navigation Arrows */}
+        <button 
+          onClick={prevSlide}
+          aria-label="Previous Slide"
+          className="hidden md:flex absolute left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 hover:bg-black/75 border border-white/20 hover:border-brand-gold text-white hover:text-brand-gold items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-110 active:scale-95 cursor-pointer"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <button 
+          onClick={nextSlide}
+          aria-label="Next Slide"
+          className="hidden md:flex absolute right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 hover:bg-black/75 border border-white/20 hover:border-brand-gold text-white hover:text-brand-gold items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-110 active:scale-95 cursor-pointer"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+
+        {/* Hero Content Area: Clean Left-Aligned Enterprise Typography matching FF Steel */}
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 flex-1 flex flex-col justify-center py-10 sm:py-16">
+          <div className="max-w-2xl lg:max-w-3xl space-y-5 sm:space-y-6 text-left">
             
-            {/* Left-Aligned Hero Box with Transparent Mughal Steel Team Photo Background */}
-            <div className="group text-left max-w-xl lg:max-w-2xl min-h-[420px] sm:min-h-[460px] lg:min-h-[500px] flex flex-col justify-end bg-black/10 hover:bg-black/20 border-y border-r border-brand-gold/40 p-6 sm:p-8 pl-4 sm:pl-8 lg:pl-10 rounded-r-2xl shadow-2xl relative overflow-hidden ml-0 backdrop-blur-[1px] transition-all duration-500">
-              
-              {/* Transparent Mughal Steel Team Photo in this box */}
-              <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden select-none">
-                <img 
-                  src="/mughal-steel-team.png" 
-                  alt="Mughal Steel Team" 
-                  onError={handleImageError}
-                  className="w-full h-full object-cover object-top opacity-85 group-hover:opacity-100 transition-opacity duration-500 filter contrast-105 brightness-100"
-                />
-                {/* Subtle bottom gradient to ensure action buttons and trust badges have crisp contrast */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-transparent pointer-events-none" />
-              </div>
+            {/* Active Reel / Certification Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-brand-gold/50 text-brand-gold text-xs font-mono font-bold uppercase tracking-wider backdrop-blur-md shadow-md">
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-gold opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-gold"></span>
+              </span>
+              <span>{heroSlides[currentSlide].badge}</span>
+              <span className="text-white/40">|</span>
+              <span className="text-stone-300 font-mono text-[11px]">0{currentSlide + 1} / 0{heroSlides.length}</span>
+            </div>
 
-              {/* Ambient metallic line */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand-gold/60 to-transparent z-10" />
+            {/* Fixed Main Brand Headline: MughalSteel Fabrication (does not change with slides) */}
+            <div className="space-y-1.5 sm:space-y-2">
+              <h1 className="text-3xl sm:text-5xl lg:text-[54px] font-heading font-black text-white uppercase tracking-tight leading-[1.08] drop-shadow-2xl">
+                MughalSteel <span className="text-brand-gold">Fabrication</span>
+              </h1>
+              {/* Dynamic Slide Topic / Project Headline */}
+              <p className="text-sm sm:text-lg lg:text-xl font-heading font-bold text-stone-200 uppercase tracking-wide drop-shadow transition-all">
+                {heroSlides[currentSlide].title}
+              </p>
+            </div>
 
-              {/* Screen reader heading for SEO & Accessibility */}
-              <h1 className="sr-only">Mughal Steel Fabrication Rawalpindi</h1>
+            {/* Descriptive Subtitle */}
+            <p className="text-xs sm:text-sm lg:text-base text-stone-300/95 font-sans font-normal leading-relaxed max-w-2xl drop-shadow-md transition-all">
+              {heroSlides[currentSlide].description}
+            </p>
 
-              {/* Bottom Badges and Action Buttons */}
-              <div className="relative z-10 space-y-4 transition-all duration-500">
-                {/* Verified Trust Badges with Transparency */}
-                <div className="flex flex-wrap items-center justify-start gap-2 sm:gap-3 text-xs font-mono">
-                  <span className="flex items-center gap-1.5 text-brand-gold font-bold bg-black/50 px-3 py-1.5 rounded-full border border-brand-gold/40 shadow-md backdrop-blur-xs">
-                    <CheckCircle2 className="w-4 h-4 text-brand-gold" />
-                    30+ Years Craftsmanship
-                  </span>
-                  <span className="flex items-center gap-1.5 text-slate-200 bg-black/50 px-3 py-1.5 rounded-full border border-white/20 shadow-md backdrop-blur-xs">
-                    <CheckCircle2 className="w-4 h-4 text-brand-gold" />
-                    ±0.1mm CNC Fiber Laser
-                  </span>
-                  <span className="flex items-center gap-1.5 text-slate-200 bg-black/50 px-3 py-1.5 rounded-full border border-white/20 shadow-md backdrop-blur-xs">
-                    <CheckCircle2 className="w-4 h-4 text-brand-gold" />
-                    Rawalpindi &amp; Islamabad Workshop
-                  </span>
-                </div>
+            {/* Hero Action Buttons & Direct Call: Orange "Get A Quote →" matching reference */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1">
+              <Link 
+                to="/quote" 
+                className="inline-flex items-center gap-2 bg-[#f38300] hover:bg-[#ff9514] text-white font-heading font-black text-xs sm:text-sm uppercase tracking-wider px-7 sm:px-8 py-3.5 rounded-full shadow-xl hover:shadow-[0_0_25px_rgba(243,131,0,0.55)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              >
+                <span>Get A Quote</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
 
-                {/* Hero Action Buttons with Transparency */}
-                <div className="flex flex-wrap items-center justify-start gap-2.5 sm:gap-3 pt-1">
-                  <Link 
-                    to="/items" 
-                    className="btn-gold text-xs py-3 px-5 uppercase tracking-wider font-bold shadow-lg hover:shadow-glow-gold flex items-center gap-2 opacity-90 hover:opacity-100"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    <span>Explore Products</span>
-                  </Link>
+              <Link 
+                to="/items" 
+                className="inline-flex items-center gap-2 bg-black/40 hover:bg-black/65 text-stone-100 hover:text-white border border-brand-gold/60 hover:border-brand-gold font-heading font-bold text-xs sm:text-sm uppercase tracking-wider px-6 py-3.5 rounded-full backdrop-blur-md shadow-lg transition-all cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4 text-brand-gold" />
+                <span>Explore Products</span>
+              </Link>
 
-                  <Link 
-                    to="/try-at-home" 
-                    className="bg-black/50 hover:bg-black/70 text-stone-100 hover:text-white border border-brand-gold/60 text-xs py-3 px-5 uppercase tracking-wider font-bold shadow-lg flex items-center gap-2 transition-colors backdrop-blur-sm"
-                  >
-                    <Eye className="w-4 h-4 text-brand-gold" />
-                    <span>Try at Home</span>
-                  </Link>
+              <a 
+                href="tel:03005197825"
+                className="inline-flex items-center gap-2 text-white hover:text-brand-gold font-heading font-bold text-xs sm:text-sm tracking-wider px-3 py-2 transition-colors drop-shadow"
+              >
+                <Phone className="w-4 h-4 text-[#f38300]" />
+                <span className="font-mono font-bold text-stone-100">0300-5197825</span>
+              </a>
+            </div>
 
-                  <Link 
-                    to="/quote" 
-                    className="btn-outline text-xs py-3 px-5 uppercase tracking-wider font-bold opacity-90 hover:opacity-100"
-                  >
-                    <span>Request a Quote</span>
-                  </Link>
-
-                  <a 
-                    href="tel:03005197825"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-brand-gold/20 hover:bg-brand-gold text-brand-gold hover:text-brand-dark border border-brand-gold/80 font-heading font-bold text-xs uppercase tracking-wider rounded transition-all duration-300 shadow-md backdrop-blur-sm"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>0300-5197825</span>
-                  </a>
-                </div>
-              </div>
-
+            {/* Verified Trust Badges */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-2 text-[11px] font-mono text-stone-300">
+              <span className="flex items-center gap-1.5 bg-black/50 px-3 py-1 rounded-full border border-brand-gold/30 backdrop-blur-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-brand-gold" />
+                30+ Years Craftsmanship
+              </span>
+              <span className="flex items-center gap-1.5 bg-black/50 px-3 py-1 rounded-full border border-white/20 backdrop-blur-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-brand-gold" />
+                ±0.1mm CNC Fiber Laser
+              </span>
+              <span className="flex items-center gap-1.5 bg-black/50 px-3 py-1 rounded-full border border-white/20 backdrop-blur-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-brand-gold" />
+                Rawalpindi &amp; Islamabad Workshop
+              </span>
             </div>
 
           </div>
+        </div>
 
-          {/* Floating Live Workshop & Engineering Credentials Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 max-w-5xl mx-auto px-4 sm:px-6">
-            
-            {/* Card 1: Live Fabrication Floor */}
-            <div className="bg-black/25 hover:bg-black/40 border border-brand-gold/40 hover:border-brand-gold backdrop-blur-[2px] p-4 rounded-lg shadow-xl flex items-center gap-3.5 transition-all group">
-              <div className="relative flex items-center justify-center shrink-0">
-                <span className="absolute w-3.5 h-3.5 rounded-full bg-emerald-400 animate-ping opacity-75"></span>
-                <span className="relative w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-              </div>
-              <div className="space-y-0.5">
-                <div className="text-xs font-heading font-black text-brand-gold uppercase tracking-wide">
-                  Active Workshop Floor
-                </div>
-                <div className="text-[11px] text-slate-200 font-sans drop-shadow-sm">
-                  Rawalpindi Industrial Fabrication Yard • Live On-Site
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2: Heritage & Client Rating */}
-            <div className="bg-black/25 hover:bg-black/40 border border-brand-gold/40 hover:border-brand-gold backdrop-blur-[2px] p-4 rounded-lg shadow-xl flex items-center gap-3.5 transition-all group">
-              <Award className="w-5 h-5 text-brand-gold shrink-0" />
-              <div className="space-y-0.5">
-                <div className="text-xs font-heading font-black text-stone-100 uppercase tracking-wide flex items-center gap-1.5 drop-shadow-sm">
-                  <span>30+ Years Heritage</span>
-                  <span className="text-amber-400 text-xs">★★★★★</span>
-                </div>
-                <div className="text-[11px] text-slate-200 font-sans drop-shadow-sm">
-                  5,000+ Precision MS Projects in Twin Cities
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3: Engineering Assurance */}
-            <div className="bg-black/25 hover:bg-black/40 border border-brand-gold/40 hover:border-brand-gold backdrop-blur-[2px] p-4 rounded-lg shadow-xl flex items-center gap-3.5 transition-all group">
-              <ShieldCheck className="w-5 h-5 text-brand-gold shrink-0" />
-              <div className="space-y-0.5">
-                <div className="text-xs font-heading font-black text-stone-100 uppercase tracking-wide drop-shadow-sm">
-                  10-Year Warranty
-                </div>
-                <div className="text-[11px] text-slate-200 font-sans drop-shadow-sm">
-                  Anti-Sag Structural Warranty & Multi-Stage Primer
-                </div>
-              </div>
-            </div>
-
+        {/* Bottom Pagination Bar: Circular Dots • • ⦿ • • & Floating "Online" Button */}
+        <div className="relative z-30 w-full pb-4 sm:pb-5">
+          {/* Bottom-Center Circular Dots matching reference image • • ⦿ • • */}
+          <div className="flex items-center justify-center gap-2.5 sm:gap-3" role="tablist" aria-label="Slider Pagination">
+            {heroSlides.map((slide, idx) => {
+              const isActive = idx === currentSlide;
+              return (
+                <button
+                  key={`dot-${slide.id}`}
+                  onClick={() => goToSlide(idx)}
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-label={`Go to slide ${idx + 1}: ${slide.title}`}
+                  className="relative p-1.5 flex items-center justify-center focus:outline-none group cursor-pointer"
+                >
+                  {isActive ? (
+                    <span className="w-4 h-4 rounded-full border-2 border-white flex items-center justify-center shadow-lg transition-transform scale-110">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                    </span>
+                  ) : (
+                    <span className="w-2.5 h-2.5 rounded-full bg-white/50 group-hover:bg-white group-hover:scale-125 transition-all shadow-md" />
+                  )}
+                </button>
+              );
+            })}
           </div>
 
+          {/* Floating Online Badge in Bottom-Right matching FF Steel Reference */}
+          <a 
+            href={whatsappDirect}
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex absolute bottom-0 right-6 z-30 bg-[#f38300] hover:bg-[#ff9514] text-white font-heading font-black text-xs px-5 py-2 rounded-t-lg shadow-2xl items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-300 animate-ping" />
+            <span>Online</span>
+          </a>
         </div>
       </section>
+
+      {/* Floating Live Workshop & Engineering Credentials Ribbon */}
+      <div className="w-full bg-[#080D17] border-b border-brand-light/50 py-5 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          {/* Card 1: Active Workshop Floor */}
+          <div className="bg-brand-navy/60 hover:bg-brand-navy border border-brand-light/70 hover:border-brand-gold/60 p-4 rounded-xl shadow-lg flex items-center gap-3.5 transition-all group">
+            <div className="relative flex items-center justify-center shrink-0">
+              <span className="absolute w-3.5 h-3.5 rounded-full bg-emerald-400 animate-ping opacity-75"></span>
+              <span className="relative w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            </div>
+            <div className="space-y-0.5">
+              <div className="text-xs font-heading font-black text-brand-gold uppercase tracking-wide">
+                Active Workshop Floor
+              </div>
+              <div className="text-[11px] text-slate-200 font-sans drop-shadow-sm">
+                Rawalpindi Industrial Fabrication Yard • Live On-Site
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Heritage & Client Rating */}
+          <div className="bg-brand-navy/60 hover:bg-brand-navy border border-brand-light/70 hover:border-brand-gold/60 p-4 rounded-xl shadow-lg flex items-center gap-3.5 transition-all group">
+            <Award className="w-5 h-5 text-brand-gold shrink-0" />
+            <div className="space-y-0.5">
+              <div className="text-xs font-heading font-black text-stone-100 uppercase tracking-wide flex items-center gap-1.5 drop-shadow-sm">
+                <span>30+ Years Heritage</span>
+                <span className="text-amber-400 text-xs">★★★★★</span>
+              </div>
+              <div className="text-[11px] text-slate-200 font-sans drop-shadow-sm">
+                5,000+ Precision MS Projects in Twin Cities
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: Engineering Assurance */}
+          <div className="bg-brand-navy/60 hover:bg-brand-navy border border-brand-light/70 hover:border-brand-gold/60 p-4 rounded-xl shadow-lg flex items-center gap-3.5 transition-all group">
+            <ShieldCheck className="w-5 h-5 text-brand-gold shrink-0" />
+            <div className="space-y-0.5">
+              <div className="text-xs font-heading font-black text-stone-100 uppercase tracking-wide drop-shadow-sm">
+                10-Year Warranty
+              </div>
+              <div className="text-[11px] text-slate-200 font-sans drop-shadow-sm">
+                Anti-Sag Structural Warranty & Multi-Stage Primer
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
 
       {/* ======================================================== */}
       {/* 2. ABOUT SECTION: 30+ YEARS HERITAGE & WORKFLOW */}
@@ -692,9 +805,260 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ======================================================== */}
+      {/* PRODUCTS SECTION: FRONT GATES & MODERN HOME ITEMS */}
+      {/* ======================================================== */}
+      <section id="products" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          
+          {/* Section Header with Slider Navigation Controls */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
+            <div className="space-y-1">
+              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
+                FRONT GATES & CUSTOM FABRICATIONS
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 font-sans">
+                Precision CNC laser-cut sheets, heavy structural pipes, and imported roller automation options.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              {/* Previous / Next Arrow Controls */}
+              <div className="flex items-center gap-1.5">
+                <button 
+                  onClick={() => scrollProducts('left')} 
+                  aria-label="Previous products"
+                  className="p-2 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all duration-300 shadow-md cursor-pointer active:scale-95"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => scrollProducts('right')} 
+                  aria-label="Next products"
+                  className="p-2 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all duration-300 shadow-md cursor-pointer active:scale-95"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              <Link to="/items" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1">
+                <span>View All Products</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Product Cards Interactive Horizontal Slider */}
+          <div 
+            ref={productsSliderRef}
+            onScroll={checkProductScroll}
+            className="flex gap-6 overflow-x-auto pb-4 pt-1 slider-snap scroll-smooth no-scrollbar"
+          >
+            {products.slice(0, 12).map((prod) => (
+              <div 
+                key={prod.id} 
+                className="w-[280px] sm:w-[310px] md:w-[320px] shrink-0 group bg-brand-navy border border-brand-light/60 rounded-lg overflow-hidden hover:border-brand-gold transition-all duration-300 flex flex-col justify-between shadow-xl card-interactive"
+              >
+                <Link to={`/product/${prod.slug}`} className="relative aspect-[4/3] w-full overflow-hidden bg-black block">
+                  <img 
+                    src={prod.images?.[0] || prod.frontImage || FALLBACK_IMAGE_URL} 
+                    alt={prod.name} 
+                    loading="lazy"
+                    decoding="async"
+                    onError={handleImageError}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  />
+                  <div className="absolute top-2.5 left-2.5 bg-black/80 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-brand-gold/40 shadow">
+                    {prod.productCode}
+                  </div>
+                </Link>
+
+                <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-mono text-slate-400 uppercase block">
+                      {prod.category} • {prod.item}
+                    </span>
+                    <Link to={`/product/${prod.slug}`}>
+                      <h3 className="font-heading font-bold text-xs sm:text-sm text-stone-100 group-hover:text-brand-gold transition-colors line-clamp-1 uppercase">
+                        {prod.name}
+                      </h3>
+                    </Link>
+                  </div>
+
+                  <div className="pt-2 border-t border-brand-light/40 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] text-slate-400">Rate:</span>
+                      <span className="text-xs font-mono font-bold text-brand-gold">
+                        {formatPrice(prod.pricePerSqFt || 2500)} / sq.ft
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link to={`/product/${prod.slug}`} className="btn-gold btn-shimmer text-[10px] py-2 text-center justify-center font-bold">
+                        <span>Details</span>
+                      </Link>
+                      <Link to={`/try-at-home?product=${prod.productCode}`} className="btn-outline text-[10px] py-2 text-center justify-center font-bold">
+                        <span>Try on Photo</span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 16 Modern Home Items Row with Infinite Smooth Marquee & Controls */}
+          <div className="space-y-6 pt-4">
+            <div className="flex items-center justify-between border-b border-brand-light/40 pb-3">
+              <div className="space-y-0.5">
+                <h3 className="font-heading font-black text-lg text-stone-100 uppercase">
+                  16 Modern Home Fabrication Items
+                </h3>
+                <p className="text-[11px] text-slate-400 font-sans">
+                  Continuous gliding gallery • Hover to pause and inspect any item
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <button 
+                    onClick={() => scrollMarquee('left')}
+                    aria-label="Scroll left"
+                    className="p-1.5 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all text-xs cursor-pointer shadow active:scale-95"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+                  <button 
+                    onClick={() => scrollMarquee('right')}
+                    aria-label="Scroll right"
+                    className="p-1.5 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all text-xs cursor-pointer shadow active:scale-95"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <Link to="/categories/modern-home" className="text-xs text-brand-gold font-bold hover:underline">
+                  Explore Category →
+                </Link>
+              </div>
+            </div>
+
+            {/* Continuous Infinite Marquee Track with Double Buffer */}
+            <div 
+              ref={marqueeSliderRef}
+              className="overflow-x-auto no-scrollbar scroll-smooth relative py-2"
+            >
+              <div className="flex gap-4 w-max marquee-track hover:[animation-play-state:paused] animate-marquee">
+                {[
+                  { name: 'Front Gate', subtitle: 'CNC Laser & Heavy MS', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Balcony Railing', subtitle: 'Stainless & Tempered Glass', link: '/items?item=Balcony+Railing', image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Boundary Wall Grills', subtitle: 'Anti-Climb Security Grills', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Window Grills', subtitle: 'Designer Security Frames', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Pivot Front Door', subtitle: 'Heavy Structural Pivot', link: '/items?item=Doors', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Spiral Staircase', subtitle: 'Cantilever & Spiral Steps', link: '/items?item=Stair+Railing', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Stair Railings', subtitle: 'TIG Welded MS & SS 304', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Car Porch Shed', subtitle: 'Heavy Cantilever Canopy', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'AC Outdoor Cage', subtitle: 'Security & Anti-Theft Guard', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Architectural Louvers', subtitle: 'Sunshade Airflow Panels', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Steel Pergola', subtitle: 'Rooftop & Garden Pergola', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Frameless Glass Balustrade', subtitle: '12mm Tempered Core', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Modern Duct Covers', subtitle: 'Laser Cut Floor Trench Grates', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Planters & Trellis', subtitle: 'Vertical Garden Steel Work', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Boundary Spikes', subtitle: 'Laser Precision Security Spikes', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Automated Gate Motors', subtitle: 'Italian Heavy-Duty Automation', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
+                  // Buffer duplicate for infinite loop
+                  { name: 'Front Gate', subtitle: 'CNC Laser & Heavy MS', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Balcony Railing', subtitle: 'Stainless & Tempered Glass', link: '/items?item=Balcony+Railing', image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Boundary Wall Grills', subtitle: 'Anti-Climb Security Grills', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Window Grills', subtitle: 'Designer Security Frames', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Pivot Front Door', subtitle: 'Heavy Structural Pivot', link: '/items?item=Doors', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Spiral Staircase', subtitle: 'Cantilever & Spiral Steps', link: '/items?item=Stair+Railing', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Stair Railings', subtitle: 'TIG Welded MS & SS 304', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Car Porch Shed', subtitle: 'Heavy Cantilever Canopy', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'AC Outdoor Cage', subtitle: 'Security & Anti-Theft Guard', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Architectural Louvers', subtitle: 'Sunshade Airflow Panels', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Steel Pergola', subtitle: 'Rooftop & Garden Pergola', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Frameless Glass Balustrade', subtitle: '12mm Tempered Core', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Modern Duct Covers', subtitle: 'Laser Cut Floor Trench Grates', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Planters & Trellis', subtitle: 'Vertical Garden Steel Work', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Boundary Spikes', subtitle: 'Laser Precision Security Spikes', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                  { name: 'Automated Gate Motors', subtitle: 'Italian Heavy-Duty Automation', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' }
+                ].map((item, idx) => (
+                  <Link
+                    key={`${item.name}-${idx}`}
+                    to={item.link}
+                    className="group w-40 sm:w-48 shrink-0 bg-brand-navy border border-brand-light/60 hover:border-brand-gold rounded-lg overflow-hidden p-2.5 space-y-2 transition-all duration-300 shadow-md text-center block card-interactive"
+                  >
+                    <div className="aspect-[4/3] rounded overflow-hidden bg-black relative">
+                      <img 
+                        src={item.image || FALLBACK_IMAGE_URL} 
+                        alt={item.name} 
+                        loading="lazy"
+                        decoding="async"
+                        onError={handleImageError}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <h4 className="font-heading font-bold text-xs text-stone-100 group-hover:text-brand-gold transition-colors truncate uppercase">
+                        {item.name}
+                      </h4>
+                      <p className="text-[10px] text-slate-400 font-mono truncate">
+                        {item.subtitle}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Try at Home Live Visualizer Studio Strip */}
+          <div className="bg-gradient-to-r from-[#0B1320] via-brand-navy to-[#0B1320] border border-brand-gold/50 rounded-lg p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center shadow-2xl">
+            <div className="lg:col-span-8 space-y-3">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-gold/20 text-brand-gold text-[10px] font-heading font-bold uppercase tracking-widest rounded border border-brand-gold/40">
+                <Sparkles className="w-3.5 h-3.5" /> Interactive Elevation Studio
+              </span>
+              <h3 className="text-xl sm:text-3xl font-heading font-black text-stone-100 uppercase">
+                Test Gates & Doors on Your House Photo
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Upload your house elevation picture, overlay any gate or door model, adjust scaling and perspective, and get instant square footage pricing directly on WhatsApp.
+              </p>
+              <div className="pt-1">
+                <Link to="/try-at-home" className="btn-gold text-xs py-3 px-6 inline-flex items-center gap-2 shadow-lg hover:shadow-glow-gold uppercase font-bold tracking-wider">
+                  <Eye className="w-4 h-4" />
+                  <span>Launch Live Elevation Studio</span>
+                </Link>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4">
+              <div className="relative rounded-lg overflow-hidden border border-brand-gold/50 aspect-video shadow-xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" 
+                  alt="Live visualizer tool" 
+                  loading="lazy"
+                  decoding="async"
+                  onError={handleImageError}
+                  className="w-full h-full object-cover" 
+                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  <span className="btn-gold text-[10px] py-1.5 px-3 font-bold uppercase">
+                    Open Studio
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ======================================================== */}
       {/* SERVICES SECTION: 6 CORE CAPABILITIES */}
       {/* ======================================================== */}
-      <section id="services" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
+      <section id="services" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
@@ -965,257 +1329,6 @@ export const HomePage: React.FC = () => {
                 </div>
               </div>
             ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* PRODUCTS SECTION: FRONT GATES & MODERN HOME ITEMS */}
-      {/* ======================================================== */}
-      <section id="products" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          {/* Section Header with Slider Navigation Controls */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
-            <div className="space-y-1">
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
-                FRONT GATES & CUSTOM FABRICATIONS
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-300 font-sans">
-                Precision CNC laser-cut sheets, heavy structural pipes, and imported roller automation options.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 shrink-0">
-              {/* Previous / Next Arrow Controls */}
-              <div className="flex items-center gap-1.5">
-                <button 
-                  onClick={() => scrollProducts('left')} 
-                  aria-label="Previous products"
-                  className="p-2 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all duration-300 shadow-md cursor-pointer active:scale-95"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <button 
-                  onClick={() => scrollProducts('right')} 
-                  aria-label="Next products"
-                  className="p-2 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all duration-300 shadow-md cursor-pointer active:scale-95"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-
-              <Link to="/items" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1">
-                <span>View All Products</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Product Cards Interactive Horizontal Slider */}
-          <div 
-            ref={productsSliderRef}
-            onScroll={checkProductScroll}
-            className="flex gap-6 overflow-x-auto pb-4 pt-1 slider-snap scroll-smooth no-scrollbar"
-          >
-            {products.slice(0, 12).map((prod) => (
-              <div 
-                key={prod.id} 
-                className="w-[280px] sm:w-[310px] md:w-[320px] shrink-0 group bg-brand-navy border border-brand-light/60 rounded-lg overflow-hidden hover:border-brand-gold transition-all duration-300 flex flex-col justify-between shadow-xl card-interactive"
-              >
-                <Link to={`/product/${prod.slug}`} className="relative aspect-[4/3] w-full overflow-hidden bg-black block">
-                  <img 
-                    src={prod.images?.[0] || prod.frontImage || FALLBACK_IMAGE_URL} 
-                    alt={prod.name} 
-                    loading="lazy"
-                    decoding="async"
-                    onError={handleImageError}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                  />
-                  <div className="absolute top-2.5 left-2.5 bg-black/80 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-brand-gold/40 shadow">
-                    {prod.productCode}
-                  </div>
-                </Link>
-
-                <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono text-slate-400 uppercase block">
-                      {prod.category} • {prod.item}
-                    </span>
-                    <Link to={`/product/${prod.slug}`}>
-                      <h3 className="font-heading font-bold text-xs sm:text-sm text-stone-100 group-hover:text-brand-gold transition-colors line-clamp-1 uppercase">
-                        {prod.name}
-                      </h3>
-                    </Link>
-                  </div>
-
-                  <div className="pt-2 border-t border-brand-light/40 space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-slate-400">Rate:</span>
-                      <span className="text-xs font-mono font-bold text-brand-gold">
-                        {formatPrice(prod.pricePerSqFt || 2500)} / sq.ft
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <Link to={`/product/${prod.slug}`} className="btn-gold btn-shimmer text-[10px] py-2 text-center justify-center font-bold">
-                        <span>Details</span>
-                      </Link>
-                      <Link to={`/try-at-home?product=${prod.productCode}`} className="btn-outline text-[10px] py-2 text-center justify-center font-bold">
-                        <span>Try on Photo</span>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* 16 Modern Home Items Row with Infinite Smooth Marquee & Controls */}
-          <div className="space-y-6 pt-4">
-            <div className="flex items-center justify-between border-b border-brand-light/40 pb-3">
-              <div className="space-y-0.5">
-                <h3 className="font-heading font-black text-lg text-stone-100 uppercase">
-                  16 Modern Home Fabrication Items
-                </h3>
-                <p className="text-[11px] text-slate-400 font-sans">
-                  Continuous gliding gallery • Hover to pause and inspect any item
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <button 
-                    onClick={() => scrollMarquee('left')}
-                    aria-label="Scroll left"
-                    className="p-1.5 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all text-xs cursor-pointer shadow active:scale-95"
-                  >
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                  </button>
-                  <button 
-                    onClick={() => scrollMarquee('right')}
-                    aria-label="Scroll right"
-                    className="p-1.5 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all text-xs cursor-pointer shadow active:scale-95"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                <Link to="/categories/modern-home" className="text-xs text-brand-gold font-bold hover:underline">
-                  Explore Category →
-                </Link>
-              </div>
-            </div>
-
-            {/* Continuous Infinite Marquee Track with Double Buffer */}
-            <div 
-              ref={marqueeSliderRef}
-              className="overflow-x-auto no-scrollbar scroll-smooth relative py-2"
-            >
-              <div className="flex gap-4 w-max marquee-track hover:[animation-play-state:paused] animate-marquee">
-                {[
-                  { name: 'Front Gate', subtitle: 'CNC Laser & Heavy MS', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Balcony Railing', subtitle: 'Stainless & Tempered Glass', link: '/items?item=Balcony+Railing', image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Boundary Wall Grills', subtitle: 'Anti-Climb Security Grills', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Window Grills', subtitle: 'Designer Security Frames', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Pivot Front Door', subtitle: 'Heavy Structural Pivot', link: '/items?item=Doors', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Spiral Staircase', subtitle: 'Cantilever & Spiral Steps', link: '/items?item=Stair+Railing', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Stair Railings', subtitle: 'TIG Welded MS & SS 304', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Car Porch Shed', subtitle: 'Heavy Cantilever Canopy', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'AC Outdoor Cage', subtitle: 'Security & Anti-Theft Guard', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Architectural Louvers', subtitle: 'Sunshade Airflow Panels', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Steel Pergola', subtitle: 'Rooftop & Garden Pergola', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Frameless Glass Balustrade', subtitle: '12mm Tempered Core', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Modern Duct Covers', subtitle: 'Laser Cut Floor Trench Grates', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Planters & Trellis', subtitle: 'Vertical Garden Steel Work', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Boundary Spikes', subtitle: 'Laser Precision Security Spikes', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Automated Gate Motors', subtitle: 'Italian Heavy-Duty Automation', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
-                  // Buffer duplicate for infinite loop
-                  { name: 'Front Gate', subtitle: 'CNC Laser & Heavy MS', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Balcony Railing', subtitle: 'Stainless & Tempered Glass', link: '/items?item=Balcony+Railing', image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Boundary Wall Grills', subtitle: 'Anti-Climb Security Grills', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Window Grills', subtitle: 'Designer Security Frames', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Pivot Front Door', subtitle: 'Heavy Structural Pivot', link: '/items?item=Doors', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Spiral Staircase', subtitle: 'Cantilever & Spiral Steps', link: '/items?item=Stair+Railing', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Stair Railings', subtitle: 'TIG Welded MS & SS 304', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Car Porch Shed', subtitle: 'Heavy Cantilever Canopy', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'AC Outdoor Cage', subtitle: 'Security & Anti-Theft Guard', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Architectural Louvers', subtitle: 'Sunshade Airflow Panels', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Steel Pergola', subtitle: 'Rooftop & Garden Pergola', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Frameless Glass Balustrade', subtitle: '12mm Tempered Core', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Modern Duct Covers', subtitle: 'Laser Cut Floor Trench Grates', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Planters & Trellis', subtitle: 'Vertical Garden Steel Work', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Boundary Spikes', subtitle: 'Laser Precision Security Spikes', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Automated Gate Motors', subtitle: 'Italian Heavy-Duty Automation', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' }
-                ].map((item, idx) => (
-                  <Link
-                    key={`${item.name}-${idx}`}
-                    to={item.link}
-                    className="group w-40 sm:w-48 shrink-0 bg-brand-navy border border-brand-light/60 hover:border-brand-gold rounded-lg overflow-hidden p-2.5 space-y-2 transition-all duration-300 shadow-md text-center block card-interactive"
-                  >
-                    <div className="aspect-[4/3] rounded overflow-hidden bg-black relative">
-                      <img 
-                        src={item.image || FALLBACK_IMAGE_URL} 
-                        alt={item.name} 
-                        loading="lazy"
-                        decoding="async"
-                        onError={handleImageError}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                    <div className="space-y-0.5">
-                      <h4 className="font-heading font-bold text-xs text-stone-100 group-hover:text-brand-gold transition-colors truncate uppercase">
-                        {item.name}
-                      </h4>
-                      <p className="text-[10px] text-slate-400 font-mono truncate">
-                        {item.subtitle}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Try at Home Live Visualizer Studio Strip */}
-          <div className="bg-gradient-to-r from-[#0B1320] via-brand-navy to-[#0B1320] border border-brand-gold/50 rounded-lg p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center shadow-2xl">
-            <div className="lg:col-span-8 space-y-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-gold/20 text-brand-gold text-[10px] font-heading font-bold uppercase tracking-widest rounded border border-brand-gold/40">
-                <Sparkles className="w-3.5 h-3.5" /> Interactive Elevation Studio
-              </span>
-              <h3 className="text-xl sm:text-3xl font-heading font-black text-stone-100 uppercase">
-                Test Gates & Doors on Your House Photo
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Upload your house elevation picture, overlay any gate or door model, adjust scaling and perspective, and get instant square footage pricing directly on WhatsApp.
-              </p>
-              <div className="pt-1">
-                <Link to="/try-at-home" className="btn-gold text-xs py-3 px-6 inline-flex items-center gap-2 shadow-lg hover:shadow-glow-gold uppercase font-bold tracking-wider">
-                  <Eye className="w-4 h-4" />
-                  <span>Launch Live Elevation Studio</span>
-                </Link>
-              </div>
-            </div>
-
-            <div className="lg:col-span-4">
-              <div className="relative rounded-lg overflow-hidden border border-brand-gold/50 aspect-video shadow-xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" 
-                  alt="Live visualizer tool" 
-                  loading="lazy"
-                  decoding="async"
-                  onError={handleImageError}
-                  className="w-full h-full object-cover" 
-                />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <span className="btn-gold text-[10px] py-1.5 px-3 font-bold uppercase">
-                    Open Studio
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
 
         </div>
@@ -1916,12 +2029,19 @@ export const HomePage: React.FC = () => {
 
               <video
                 key={activeVideoModal.videoUrl}
-                src={activeVideoModal.videoUrl}
+                src={`${activeVideoModal.videoUrl}#t=3`}
                 controls
                 autoPlay
                 preload="auto"
                 playsInline
                 disablePictureInPicture={false}
+                onLoadedMetadata={(e) => {
+                  try {
+                    if (e.currentTarget.currentTime < 3) {
+                      e.currentTarget.currentTime = 3;
+                    }
+                  } catch (err) {}
+                }}
                 onWaiting={() => setIsVideoBuffering(true)}
                 onPlaying={() => setIsVideoBuffering(false)}
                 onCanPlay={() => setIsVideoBuffering(false)}

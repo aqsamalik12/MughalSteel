@@ -76,7 +76,7 @@ export const Header: React.FC = () => {
     let animationFrameId: number | null = null;
     let isTicking = false;
 
-    const sections = ['home', 'about', 'services', 'products', 'portfolio', 'projects', 'reviews', 'contact'];
+    const sections = ['home', 'about', 'products', 'services', 'portfolio', 'projects', 'reviews', 'contact'];
 
     const onScroll = () => {
       if (!isTicking) {
@@ -307,20 +307,6 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* SERVICES (Direct Nav Button - Smooth Scroll to #services) */}
-              <button 
-                type="button"
-                onClick={() => handleNavClick('services')}
-                onMouseEnter={() => prefetchRoute('services')}
-                className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 whitespace-nowrap ${
-                  isNavActive('services', '/services')
-                    ? 'text-brand-gold font-bold' 
-                    : 'text-stone-300 hover:text-brand-gold'
-                }`}
-              >
-                SERVICES
-              </button>
-
               {/* PRODUCTS (Dropdown/MegaMenu) */}
               <div 
                 className="relative group/nav"
@@ -343,6 +329,20 @@ export const Header: React.FC = () => {
                   <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${activeMegaType === 'items' ? 'rotate-180 text-brand-gold' : 'text-stone-400 group-hover/nav:text-brand-gold'}`} />
                 </button>
               </div>
+
+              {/* SERVICES (Direct Nav Button - Smooth Scroll to #services) */}
+              <button 
+                type="button"
+                onClick={() => handleNavClick('services')}
+                onMouseEnter={() => prefetchRoute('services')}
+                className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 whitespace-nowrap ${
+                  isNavActive('services', '/services')
+                    ? 'text-brand-gold font-bold' 
+                    : 'text-stone-300 hover:text-brand-gold'
+                }`}
+              >
+                SERVICES
+              </button>
 
               {/* PORTFOLIO (Single Direct Link) */}
               <button 
@@ -561,24 +561,7 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* 3. SERVICES (Direct Nav) */}
-              <div className="py-2">
-                <button 
-                  type="button"
-                  onClick={() => handleNavClick('services', '/#services')}
-                  className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
-                    isNavActive('services', '/services') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
-                  }`}
-                >
-                  <span className="flex items-center gap-2.5">
-                    <Cog className="w-4 h-4 text-brand-gold" />
-                    <span>SERVICES</span>
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-slate-500" />
-                </button>
-              </div>
-
-              {/* 4. PRODUCTS Accordion */}
+              {/* 3. PRODUCTS Accordion */}
               <div className="py-2 space-y-2">
                 <button 
                   onClick={() => setMobileExpandedSection(mobileExpandedSection === 'products' ? null : 'products')}
@@ -608,6 +591,23 @@ export const Header: React.FC = () => {
                     <Link to="/items?item=Sheds+%26+Canopies" onClick={() => setMobileMenuOpen(false)} className="block py-1 text-slate-300 hover:text-brand-gold">Car Porch Sheds & Pergolas</Link>
                   </div>
                 )}
+              </div>
+
+              {/* 4. SERVICES (Direct Nav) */}
+              <div className="py-2">
+                <button 
+                  type="button"
+                  onClick={() => handleNavClick('services', '/#services')}
+                  className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
+                    isNavActive('services', '/services') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
+                  }`}
+                >
+                  <span className="flex items-center gap-2.5">
+                    <Cog className="w-4 h-4 text-brand-gold" />
+                    <span>SERVICES</span>
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-slate-500" />
+                </button>
               </div>
 
               {/* 5. PORTFOLIO (Single Direct Link) */}
