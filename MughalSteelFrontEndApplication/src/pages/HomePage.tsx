@@ -800,147 +800,7 @@ export const HomePage: React.FC = () => {
       </div>
 
       {/* ======================================================== */}
-      {/* 2. ABOUT SECTION: 30+ YEARS HERITAGE & WORKFLOW */}
-      {/* ======================================================== */}
-      <section 
-        id="about" 
-        className="cv-auto scroll-mt-24 w-full relative border-b border-brand-light/40 py-20 md:py-28 bg-cover bg-center bg-no-repeat overflow-hidden"
-        style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(5,8,14,0.30), rgba(5,8,14,0.45)), url('/mughal-luxury-architectural-villa.jpg')`
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
-          
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/20 pb-5 bg-black/55 backdrop-blur-md p-6 rounded-2xl border">
-            <div className="space-y-1">
-              <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block drop-shadow">
-                HIGH COURT ROAD, RAWALPINDI • MUHAMMAD QASIM
-              </span>
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-white uppercase tracking-tight drop-shadow-2xl">
-                ABOUT MUGHAL STEEL FABRICATION
-              </h2>
-              <p className="text-xs sm:text-sm text-stone-200 font-sans max-w-3xl drop-shadow-md">
-                Premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. Recognized for combining traditional craftsmanship with modern engineering and digital workflows.
-              </p>
-            </div>
-            <Link to="/about" className="text-xs font-heading font-bold text-brand-gold hover:text-white hover:underline flex items-center gap-1.5 shrink-0 bg-black/60 px-4 py-2.5 rounded-lg border border-brand-gold/50 shadow-md">
-              <span>Read Full Story</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          {/* Stats Row */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-            {aboutStats.map((s, idx) => (
-              <div key={idx} className="bg-black/70 backdrop-blur-md border border-brand-gold/40 p-6 rounded-xl space-y-1 shadow-2xl hover:border-brand-gold transition-all duration-300 card-interactive">
-                <p className="text-xl sm:text-2xl lg:text-3xl font-heading font-black text-brand-gold truncate drop-shadow">{s.value}</p>
-                <p className="text-stone-300 text-xs uppercase tracking-wider font-semibold font-mono">{s.label}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Story & Philosophy Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-6 space-y-4 bg-black/70 backdrop-blur-md border border-white/20 p-6 sm:p-8 rounded-2xl shadow-2xl">
-              <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block drop-shadow">
-                TRADITIONAL CRAFTSMANSHIP & DIGITAL WORKFLOWS
-              </span>
-              <h3 className="text-xl sm:text-3xl font-heading font-black text-white uppercase tracking-tight drop-shadow-md">
-                Dedicated Yard in Rawalpindi with Modern 3D & AI Design
-              </h3>
-              <p className="text-stone-200 text-xs sm:text-sm leading-relaxed font-sans drop-shadow">
-                Mughal Steel Fabrication is a premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. The enterprise is recognized for combining traditional craftsmanship with modern engineering and digital workflows.
-              </p>
-              <p className="text-stone-200 text-xs sm:text-sm leading-relaxed font-sans drop-shadow">
-                Operating a dedicated fabrication yard in Rawalpindi equipped with modern machinery and tools, powered by skilled steel fabricators, welders, and operational managers who ensure high structural standards and precision.
-              </p>
-
-              <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
-                <div className="flex items-center gap-2 text-stone-100">
-                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
-                  <span>Custom Ironwork & Doors</span>
-                </div>
-                <div className="flex items-center gap-2 text-stone-100">
-                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
-                  <span>Staircase Engineering</span>
-                </div>
-                <div className="flex items-center gap-2 text-stone-100">
-                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
-                  <span>Architectural Railings</span>
-                </div>
-                <div className="flex items-center gap-2 text-stone-100">
-                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
-                  <span>AI & 3D Visual Previews</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-6">
-              <div className="relative rounded-2xl overflow-hidden border border-brand-gold/60 shadow-2xl bg-black aspect-[16/10] group">
-                <img 
-                  src="/mughal-steel-workshop-master.jpg" 
-                  alt="Mughal Steel Dedicated Fabrication Yard - High Court Road Rawalpindi" 
-                  loading="lazy"
-                  decoding="async"
-                  onError={handleImageError}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" 
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent flex flex-col justify-end p-5 sm:p-6">
-                  <span className="text-xs font-mono font-bold text-brand-gold bg-black/90 px-3 py-1 rounded border border-brand-gold/50 self-start">
-                    High Court Road Fabrication Yard • Muhammad Qasim & Team
-                  </span>
-                  <span className="text-xs text-slate-200 font-sans mt-1.5 leading-relaxed">
-                    Powered by skilled steel fabricators, welders, and operational managers ensuring high structural standards and precision.
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 7-Step Workflow */}
-          <div className="space-y-6 pt-4">
-            <div className="text-center space-y-1">
-              <span className="text-xs font-mono font-bold text-brand-gold uppercase tracking-wider">
-                TURNKEY EXECUTION PROCESS
-              </span>
-              <h3 className="text-xl sm:text-2xl font-heading font-black text-stone-100 uppercase">
-                7-Step Fabrication & Delivery Workflow
-              </h3>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3">
-              {scopeSteps.map((step, idx) => (
-                <div 
-                  key={idx}
-                  className="bg-brand-navy border border-brand-light/60 p-3.5 rounded-lg flex flex-col justify-between space-y-2 shadow-md group hover:border-brand-gold transition-all"
-                >
-                  <div className="flex items-center justify-between border-b border-brand-light/40 pb-1.5">
-                    <span className="text-sm font-mono font-black text-brand-gold">
-                      {step.step}
-                    </span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-brand-gold/60"></div>
-                  </div>
-                  <div className="space-y-0.5">
-                    <h4 className="font-heading font-bold text-[11px] text-stone-100 uppercase line-clamp-1">
-                      {step.title}
-                    </h4>
-                    <p className="text-[10px] text-slate-400 leading-relaxed font-sans line-clamp-2">
-                      {step.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-
-
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* PRODUCTS SECTION: FRONT GATES & MODERN HOME ITEMS */}
+      {/* 2. PRODUCTS SECTION: FRONT GATES & MODERN HOME ITEMS     */}
       {/* ======================================================== */}
       <section id="products" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -1838,6 +1698,144 @@ export const HomePage: React.FC = () => {
             >
               <span>View All Verified Client Reviews</span>
             </Link>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 7. ABOUT SECTION: 30+ YEARS HERITAGE & WORKFLOW           */}
+      {/* ======================================================== */}
+      <section 
+        id="about" 
+        className="cv-auto scroll-mt-24 w-full relative border-b border-brand-light/40 py-20 md:py-28 bg-cover bg-center bg-no-repeat overflow-hidden"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(5,8,14,0.30), rgba(5,8,14,0.45)), url('/mughal-luxury-architectural-villa.jpg')`
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
+          
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/20 pb-5 bg-black/55 backdrop-blur-md p-6 rounded-2xl border">
+            <div className="space-y-1">
+              <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block drop-shadow">
+                HIGH COURT ROAD, RAWALPINDI • MUHAMMAD QASIM
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-heading font-black text-white uppercase tracking-tight drop-shadow-2xl">
+                ABOUT MUGHAL STEEL FABRICATION
+              </h2>
+              <p className="text-xs sm:text-sm text-stone-200 font-sans max-w-3xl drop-shadow-md">
+                Premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. Recognized for combining traditional craftsmanship with modern engineering and digital workflows.
+              </p>
+            </div>
+            <Link to="/about" className="text-xs font-heading font-bold text-brand-gold hover:text-white hover:underline flex items-center gap-1.5 shrink-0 bg-black/60 px-4 py-2.5 rounded-lg border border-brand-gold/50 shadow-md">
+              <span>Read Full Story</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* Stats Row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+            {aboutStats.map((s, idx) => (
+              <div key={idx} className="bg-black/70 backdrop-blur-md border border-brand-gold/40 p-6 rounded-xl space-y-1 shadow-2xl hover:border-brand-gold transition-all duration-300 card-interactive">
+                <p className="text-xl sm:text-2xl lg:text-3xl font-heading font-black text-brand-gold truncate drop-shadow">{s.value}</p>
+                <p className="text-stone-300 text-xs uppercase tracking-wider font-semibold font-mono">{s.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Story & Philosophy Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-6 space-y-4 bg-black/70 backdrop-blur-md border border-white/20 p-6 sm:p-8 rounded-2xl shadow-2xl">
+              <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block drop-shadow">
+                TRADITIONAL CRAFTSMANSHIP & DIGITAL WORKFLOWS
+              </span>
+              <h3 className="text-xl sm:text-3xl font-heading font-black text-white uppercase tracking-tight drop-shadow-md">
+                Dedicated Yard in Rawalpindi with Modern 3D & AI Design
+              </h3>
+              <p className="text-stone-200 text-xs sm:text-sm leading-relaxed font-sans drop-shadow">
+                Mughal Steel Fabrication is a premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. The enterprise is recognized for combining traditional craftsmanship with modern engineering and digital workflows.
+              </p>
+              <p className="text-stone-200 text-xs sm:text-sm leading-relaxed font-sans drop-shadow">
+                Operating a dedicated fabrication yard in Rawalpindi equipped with modern machinery and tools, powered by skilled steel fabricators, welders, and operational managers who ensure high structural standards and precision.
+              </p>
+
+              <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
+                <div className="flex items-center gap-2 text-stone-100">
+                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
+                  <span>Custom Ironwork & Doors</span>
+                </div>
+                <div className="flex items-center gap-2 text-stone-100">
+                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
+                  <span>Staircase Engineering</span>
+                </div>
+                <div className="flex items-center gap-2 text-stone-100">
+                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
+                  <span>Architectural Railings</span>
+                </div>
+                <div className="flex items-center gap-2 text-stone-100">
+                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
+                  <span>AI & 3D Visual Previews</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-6">
+              <div className="relative rounded-2xl overflow-hidden border border-brand-gold/60 shadow-2xl bg-black aspect-[16/10] group">
+                <img 
+                  src="/mughal-steel-workshop-master.jpg" 
+                  alt="Mughal Steel Dedicated Fabrication Yard - High Court Road Rawalpindi" 
+                  loading="lazy"
+                  decoding="async"
+                  onError={handleImageError}
+                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent flex flex-col justify-end p-5 sm:p-6">
+                  <span className="text-xs font-mono font-bold text-brand-gold bg-black/90 px-3 py-1 rounded border border-brand-gold/50 self-start">
+                    High Court Road Fabrication Yard • Muhammad Qasim & Team
+                  </span>
+                  <span className="text-xs text-slate-200 font-sans mt-1.5 leading-relaxed">
+                    Powered by skilled steel fabricators, welders, and operational managers ensuring high structural standards and precision.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 7-Step Workflow */}
+          <div className="space-y-6 pt-4">
+            <div className="text-center space-y-1">
+              <span className="text-xs font-mono font-bold text-brand-gold uppercase tracking-wider">
+                TURNKEY EXECUTION PROCESS
+              </span>
+              <h3 className="text-xl sm:text-2xl font-heading font-black text-stone-100 uppercase">
+                7-Step Fabrication & Delivery Workflow
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3">
+              {scopeSteps.map((step, idx) => (
+                <div 
+                  key={idx}
+                  className="bg-brand-navy border border-brand-light/60 p-3.5 rounded-lg flex flex-col justify-between space-y-2 shadow-md group hover:border-brand-gold transition-all"
+                >
+                  <div className="flex items-center justify-between border-b border-brand-light/40 pb-1.5">
+                    <span className="text-sm font-mono font-black text-brand-gold">
+                      {step.step}
+                    </span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-gold/60"></div>
+                  </div>
+                  <div className="space-y-0.5">
+                    <h4 className="font-heading font-bold text-[11px] text-stone-100 uppercase line-clamp-1">
+                      {step.title}
+                    </h4>
+                    <p className="text-[10px] text-slate-400 leading-relaxed font-sans line-clamp-2">
+                      {step.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
         </div>

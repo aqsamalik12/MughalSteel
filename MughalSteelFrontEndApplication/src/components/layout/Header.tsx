@@ -76,7 +76,7 @@ export const Header: React.FC = () => {
     let animationFrameId: number | null = null;
     let isTicking = false;
 
-    const sections = ['home', 'products', 'services', 'portfolio', 'projects', 'reviews', 'contact'];
+    const sections = ['home', 'products', 'services', 'portfolio', 'projects', 'reviews', 'about', 'contact'];
 
     const onScroll = () => {
       if (!isTicking) {
@@ -294,7 +294,7 @@ export const Header: React.FC = () => {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleToggleMega('items');
+                    handleNavClick('products', '/items');
                   }}
                   className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center gap-1 whitespace-nowrap ${
                     isNavActive('products', '/items') || isNavActive('products', '/product') || activeMegaType === 'items'
@@ -321,17 +321,13 @@ export const Header: React.FC = () => {
                 SERVICES
               </button>
 
-              {/* PORTFOLIO (Single Direct Link to /portfolio) */}
+              {/* PORTFOLIO (Direct Nav Button - Smooth Scroll to #portfolio / Page) */}
               <button 
                 type="button"
-                onClick={() => {
-                  setActiveMegaType(null);
-                  setMobileMenuOpen(false);
-                  navigate('/portfolio');
-                }}
+                onClick={() => handleNavClick('portfolio', '/portfolio')}
                 onMouseEnter={() => prefetchRoute('portfolio')}
                 className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center whitespace-nowrap ${
-                  location.pathname.startsWith('/portfolio')
+                  isNavActive('portfolio', '/portfolio')
                     ? 'text-brand-gold font-bold' 
                     : 'text-stone-300 hover:text-brand-gold'
                 }`}
@@ -339,7 +335,7 @@ export const Header: React.FC = () => {
                 PORTFOLIO
               </button>
 
-              {/* PROJECTS (Dropdown/MegaMenu - Project Categories) */}
+              {/* PROJECTS (Dropdown/MegaMenu - Smooth Scroll to #projects) */}
               <div 
                 className="relative group/nav"
                 onMouseEnter={() => { handleMouseEnterMega('categories'); prefetchRoute('categories'); }}
@@ -349,7 +345,7 @@ export const Header: React.FC = () => {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleToggleMega('categories');
+                    handleNavClick('projects', '/categories');
                   }}
                   className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center gap-1 whitespace-nowrap ${
                     isNavActive('projects', '/projects') || isNavActive('projects', '/categories') || activeMegaType === 'categories'
@@ -376,17 +372,13 @@ export const Header: React.FC = () => {
                 REVIEWS
               </button>
 
-              {/* ABOUT US (Direct Nav Button to About Details Page) */}
+              {/* ABOUT US (Direct Nav Button - Smooth Scroll to #about / Page) */}
               <button 
                 type="button"
-                onClick={() => {
-                  setActiveMegaType(null);
-                  setMobileMenuOpen(false);
-                  navigate('/about');
-                }}
+                onClick={() => handleNavClick('about', '/about')}
                 onMouseEnter={() => prefetchRoute('about')}
                 className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center whitespace-nowrap ${
-                  location.pathname === '/about'
+                  isNavActive('about', '/about')
                     ? 'text-brand-gold font-bold' 
                     : 'text-stone-300 hover:text-brand-gold'
                 }`}
@@ -394,17 +386,13 @@ export const Header: React.FC = () => {
                 ABOUT US
               </button>
 
-              {/* CONTACT US (Direct Nav Button to Contact Details Page) */}
+              {/* CONTACT US (Direct Nav Button - Smooth Scroll to #contact / Page) */}
               <button 
                 type="button"
-                onClick={() => {
-                  setActiveMegaType(null);
-                  setMobileMenuOpen(false);
-                  navigate('/contact');
-                }}
+                onClick={() => handleNavClick('contact', '/contact')}
                 onMouseEnter={() => prefetchRoute('contact')}
                 className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center whitespace-nowrap ${
-                  location.pathname === '/contact' || location.pathname === '/contact-us'
+                  isNavActive('contact', '/contact') || location.pathname === '/contact-us'
                     ? 'text-brand-gold font-bold' 
                     : 'text-stone-300 hover:text-brand-gold'
                 }`}
@@ -596,16 +584,13 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* 4. PORTFOLIO (Single Direct Link to /portfolio) */}
+              {/* 4. PORTFOLIO (Direct Nav Button to #portfolio / Page) */}
               <div className="py-2">
                 <button 
                   type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    navigate('/portfolio');
-                  }}
+                  onClick={() => handleNavClick('portfolio', '/portfolio')}
                   className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
-                    location.pathname.startsWith('/portfolio') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
+                    isNavActive('portfolio', '/portfolio') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
@@ -676,16 +661,13 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* 7. ABOUT US (Single Direct Link to About Page) */}
+              {/* 7. ABOUT US (Direct Nav Button to #about / Page) */}
               <div className="py-2">
                 <button 
                   type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    navigate('/about');
-                  }}
+                  onClick={() => handleNavClick('about', '/about')}
                   className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
-                    location.pathname === '/about' ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
+                    isNavActive('about', '/about') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
@@ -696,16 +678,13 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* 8. CONTACT US (Single Direct Link to Contact Page) */}
+              {/* 8. CONTACT US (Direct Nav Button to #contact / Page) */}
               <div className="py-2">
                 <button 
                   type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    navigate('/contact');
-                  }}
+                  onClick={() => handleNavClick('contact', '/contact')}
                   className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
-                    location.pathname === '/contact' || location.pathname === '/contact-us' ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
+                    isNavActive('contact', '/contact') || location.pathname === '/contact-us' ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
