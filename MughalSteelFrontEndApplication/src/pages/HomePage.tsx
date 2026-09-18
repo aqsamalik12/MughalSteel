@@ -479,13 +479,18 @@ export const HomePage: React.FC = () => {
               <span className="text-stone-300 font-mono text-[11px]">0{currentSlide + 1} / 0{heroSlides.length}</span>
             </div>
 
-            {/* Fixed Main Brand Headline: MughalSteel Fabrication (does not change with slides) */}
-            <div className="space-y-1.5 sm:space-y-2">
-              <h1 className="text-3xl sm:text-5xl lg:text-[54px] font-heading font-black text-white uppercase tracking-tight leading-[1.08] drop-shadow-2xl">
-                MughalSteel <span className="text-brand-gold">Fabrication</span>
+            {/* Fixed Main Brand Headline: Mughal.Steel with Fabrication underneath (smaller font size) */}
+            <div className="space-y-1 sm:space-y-1.5">
+              <h1 className="flex flex-col font-heading font-black tracking-tight drop-shadow-2xl">
+                <span className="text-3xl sm:text-5xl lg:text-[54px] text-white leading-[1.08]">
+                  Mughal<span className="text-brand-gold">.</span>Steel
+                </span>
+                <span className="text-2xl sm:text-4xl lg:text-[40px] text-brand-gold leading-tight mt-0.5 sm:mt-1 font-extrabold tracking-wide">
+                  Fabrication
+                </span>
               </h1>
               {/* Dynamic Slide Topic / Project Headline */}
-              <p className="text-sm sm:text-lg lg:text-xl font-heading font-bold text-stone-200 uppercase tracking-wide drop-shadow transition-all">
+              <p className="text-sm sm:text-lg lg:text-xl font-heading font-bold text-stone-200 uppercase tracking-wide drop-shadow transition-all pt-0.5">
                 {heroSlides[currentSlide].title}
               </p>
             </div>

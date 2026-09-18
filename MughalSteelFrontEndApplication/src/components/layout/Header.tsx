@@ -257,8 +257,8 @@ export const Header: React.FC = () => {
 
               {/* Professional Brand Title & Subtitle */}
               <div className="flex flex-col">
-                <span className="font-serif font-black text-sm sm:text-base md:text-lg tracking-wider text-stone-100 uppercase leading-tight group-hover:text-brand-gold transition-colors duration-200 whitespace-nowrap">
-                  MUGHAL STEEL
+                <span className="font-heading font-black text-sm sm:text-base md:text-lg tracking-wider text-stone-100 leading-tight group-hover:text-brand-gold transition-colors duration-200 whitespace-nowrap">
+                  Mughal<span className="text-brand-gold">.</span>Steel
                 </span>
                 <span className="text-[8px] sm:text-[9px] font-mono tracking-[0.2em] text-[#c5a880] font-bold uppercase mt-0.5 leading-none whitespace-nowrap">
                   FABRICATION
