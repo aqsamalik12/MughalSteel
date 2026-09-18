@@ -101,6 +101,7 @@ export const HomePage: React.FC = () => {
       id: 'slide-vid-0',
       type: 'video' as const,
       videoSrc: '/videos/hero_video_0.mp4',
+      poster: '/videos/hero_poster_0.jpg',
       badge: 'Project Showcase • Structural Steel & Railings',
       title: 'Overview of Completed Projects & Railings',
       description: 'Site walkthrough of completed heavy architectural steel fabrication, precision laser-cut balustrades, and master metal engineering.',
@@ -113,6 +114,7 @@ export const HomePage: React.FC = () => {
       id: 'slide-vid-1',
       type: 'video' as const,
       videoSrc: '/videos/hero_video_1.mp4',
+      poster: '/videos/hero_poster_1.jpg',
       badge: 'Site Handover • Gulberg Greens Islamabad',
       title: 'Gulberg Greens Luxury Villa Project',
       description: 'Turnkey architectural steel installation at Gulberg Greens featuring heavy entrance gates, security grills, and modern balcony railings.',
@@ -125,6 +127,7 @@ export const HomePage: React.FC = () => {
       id: 'slide-vid-2',
       type: 'video' as const,
       videoSrc: '/videos/hero_video_2.mp4',
+      poster: '/videos/hero_poster_2.jpg',
       badge: 'Live Workshop • CNC Fiber Laser Cutting',
       title: 'Precision CNC Laser Cutting & Heavy Fabrication',
       description: 'Live fabrication floor showcase: high-precision ±0.1mm CNC fiber laser cutting, certified structural welding, and anti-sag gate assembly.',
@@ -137,6 +140,7 @@ export const HomePage: React.FC = () => {
       id: 'slide-vid-3',
       type: 'video' as const,
       videoSrc: '/videos/hero_video_3.mp4',
+      poster: '/videos/hero_poster_3.jpg',
       badge: 'Architectural Showcase • DHA Islamabad',
       title: 'Crafting Excellence in Steel & Cast Iron at DHA',
       description: 'Premium estate metalwork completed at DHA Islamabad: classical cast iron balustrades, modern steel gates, and multi-stage powder coating.',
@@ -149,6 +153,7 @@ export const HomePage: React.FC = () => {
       id: 'slide-vid-4',
       type: 'video' as const,
       videoSrc: '/videos/hero_video_4.mp4',
+      poster: '/videos/hero_poster_4.jpg',
       badge: 'Turnkey Handover • Cast Iron & Custom Doors',
       title: 'Luxury Cast Iron Railings & Custom Iron Doors',
       description: 'Custom hand-forged cast iron balustrades, heavy structural entrance doors, and ornamental architectural metal decor completed Alhamdulillah.',
@@ -161,6 +166,7 @@ export const HomePage: React.FC = () => {
       id: 'slide-vid-5',
       type: 'video' as const,
       videoSrc: '/videos/hero_video_5.mp4',
+      poster: '/videos/hero_poster_5.jpg',
       badge: 'Engineering Precision • Stair Systems',
       title: 'Architectural Staircase & Spiral Steps Engineering',
       description: 'Engineered floating cantilever and spiral steel staircases designed to strict structural standards with zero deflection.',
@@ -171,8 +177,30 @@ export const HomePage: React.FC = () => {
     }
   ];
 
+  const heroVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [previousSlide, setPreviousSlide] = useState<number | null>(null);
   const slideTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Automatically start and play the video whenever the active slide changes
+  useEffect(() => {
+    heroSlides.forEach((slide, idx) => {
+      const vid = heroVideoRefs.current[idx];
+      if (!vid) return;
+      if (idx === currentSlide) {
+        vid.currentTime = 0;
+        vid.muted = true;
+        const playPromise = vid.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            vid.muted = true;
+            vid.play().catch(() => {});
+          });
+        }
+      } else {
+        vid.pause();
+      }
+    });
+  }, [currentSlide]);
 
   // Helper to transition to a target slide with smooth crossfade
   const goToSlide = (nextIndex: number) => {
@@ -423,24 +451,28 @@ export const HomePage: React.FC = () => {
                     />
                   </div>
                 ) : (
-                  <div className="relative w-full h-full overflow-hidden bg-black">
+                  <div className="relative w-full h-full overflow-hidden bg-[#05080E]">
+                    {/* Instant visual fallback so there is NEVER a black screen */}
+                    {slide.poster && (
+                      <img 
+                        src={slide.poster}
+                        alt={slide.title}
+                        className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
+                      />
+                    )}
                     <video
-                      key={slide.videoSrc}
+                      ref={(el) => {
+                        heroVideoRefs.current[idx] = el;
+                        if (el) el.muted = true;
+                      }}
                       src={slide.videoSrc}
+                      poster={slide.poster}
                       autoPlay
                       loop
                       muted
                       playsInline
-                      preload={isActive ? 'auto' : 'metadata'}
-                      className="w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
-                      ref={(el) => {
-                        if (el) {
-                          el.muted = true;
-                          if (isActive) {
-                            el.play().catch(() => {});
-                          }
-                        }
-                      }}
+                      preload="auto"
+                      className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
                     />
                   </div>
                 )}
