@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm --prefix MughalSteelFrontEndApplication run build",
+  "outputDirectory": "MughalSteelFrontEndApplication/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
