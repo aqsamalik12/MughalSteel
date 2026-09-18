@@ -227,6 +227,59 @@ export const HomePage: React.FC = () => {
     };
   }, [isSliderPaused, currentSlide, heroSlides.length]);
 
+  // Touch swipe state for mobile gesture navigation without touching the video
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+    setTouchStartY(e.touches[0].clientY);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null || touchStartY === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const diffX = touchStartX - touchEndX;
+    const diffY = touchStartY - touchEndY;
+
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+      if (diffX > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+    setTouchStartX(null);
+    setTouchStartY(null);
+  };
+
+  // Auto-resume YouTube playback if player is ever paused or ended (prevents pause/stop button from appearing)
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      try {
+        if (typeof e.data === 'string') {
+          const data = JSON.parse(e.data);
+          if (data.event === 'infoDelivery' && (data.info?.playerState === 2 || data.info?.playerState === 0)) {
+            const iframes = document.querySelectorAll('#home iframe');
+            iframes.forEach((el) => {
+              const iframe = el as HTMLIFrameElement;
+              iframe.contentWindow?.postMessage(
+                JSON.stringify({ event: 'command', func: 'playVideo', args: [] }),
+                '*'
+              );
+            });
+          }
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
   // Component unmount cleanup
   useEffect(() => {
     return () => {
@@ -393,9 +446,11 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       <section 
         id="home" 
-        className="relative scroll-mt-24 w-full h-[82vh] min-h-[580px] max-h-[850px] overflow-hidden bg-[#05080E] flex flex-col justify-between select-none"
+        className="relative scroll-mt-24 w-full h-[82vh] min-h-[580px] max-h-[850px] overflow-hidden bg-[#05080E] flex flex-col justify-between select-none touch-pan-y"
         onMouseEnter={() => setIsSliderPaused(true)}
         onMouseLeave={() => setIsSliderPaused(false)}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         role="region"
         aria-roledescription="carousel"
         aria-label="Mughal Steel Production & Fabrication Showcase"
