@@ -76,7 +76,7 @@ export const Header: React.FC = () => {
     let animationFrameId: number | null = null;
     let isTicking = false;
 
-    const sections = ['home', 'about', 'products', 'services', 'portfolio', 'projects', 'reviews', 'contact'];
+    const sections = ['home', 'products', 'services', 'portfolio', 'projects', 'reviews', 'contact'];
 
     const onScroll = () => {
       if (!isTicking) {
@@ -284,29 +284,6 @@ export const Header: React.FC = () => {
                 HOME
               </button>
 
-              {/* ABOUT US (Dropdown/MegaMenu) */}
-              <div 
-                className="relative group/nav"
-                onMouseEnter={() => handleMouseEnterMega('more')}
-                onMouseLeave={handleMouseLeaveMega}
-              >
-                <button 
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleToggleMega('more');
-                  }}
-                  className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center gap-1 whitespace-nowrap ${
-                    isNavActive('about', '/about') || activeMegaType === 'more'
-                      ? 'text-brand-gold font-bold' 
-                      : 'text-stone-300 hover:text-brand-gold'
-                  }`}
-                >
-                  <span>ABOUT US</span>
-                  <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${activeMegaType === 'more' ? 'rotate-180 text-brand-gold' : 'text-stone-400 group-hover/nav:text-brand-gold'}`} />
-                </button>
-              </div>
-
               {/* PRODUCTS (Dropdown/MegaMenu) */}
               <div 
                 className="relative group/nav"
@@ -344,13 +321,17 @@ export const Header: React.FC = () => {
                 SERVICES
               </button>
 
-              {/* PORTFOLIO (Single Direct Link) */}
+              {/* PORTFOLIO (Single Direct Link to /portfolio) */}
               <button 
                 type="button"
-                onClick={() => handleNavClick('portfolio', '/portfolio')}
+                onClick={() => {
+                  setActiveMegaType(null);
+                  setMobileMenuOpen(false);
+                  navigate('/portfolio');
+                }}
                 onMouseEnter={() => prefetchRoute('portfolio')}
                 className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center whitespace-nowrap ${
-                  isNavActive('portfolio', '/portfolio') 
+                  location.pathname.startsWith('/portfolio')
                     ? 'text-brand-gold font-bold' 
                     : 'text-stone-300 hover:text-brand-gold'
                 }`}
@@ -395,18 +376,40 @@ export const Header: React.FC = () => {
                 REVIEWS
               </button>
 
-              {/* CONTACT (Single Page Link) */}
+              {/* ABOUT US (Direct Nav Button to About Details Page) */}
               <button 
                 type="button"
-                onClick={() => handleNavClick('contact', '/contact')}
-                onMouseEnter={() => prefetchRoute('contact')}
+                onClick={() => {
+                  setActiveMegaType(null);
+                  setMobileMenuOpen(false);
+                  navigate('/about');
+                }}
+                onMouseEnter={() => prefetchRoute('about')}
                 className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center whitespace-nowrap ${
-                  isNavActive('contact', '/contact') 
+                  location.pathname === '/about'
                     ? 'text-brand-gold font-bold' 
                     : 'text-stone-300 hover:text-brand-gold'
                 }`}
               >
-                CONTACT
+                ABOUT US
+              </button>
+
+              {/* CONTACT US (Direct Nav Button to Contact Details Page) */}
+              <button 
+                type="button"
+                onClick={() => {
+                  setActiveMegaType(null);
+                  setMobileMenuOpen(false);
+                  navigate('/contact');
+                }}
+                onMouseEnter={() => prefetchRoute('contact')}
+                className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 flex items-center whitespace-nowrap ${
+                  location.pathname === '/contact' || location.pathname === '/contact-us'
+                    ? 'text-brand-gold font-bold' 
+                    : 'text-stone-300 hover:text-brand-gold'
+                }`}
+              >
+                CONTACT US
               </button>
 
             </nav>
@@ -544,24 +547,7 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* 2. ABOUT */}
-              <div className="py-2">
-                <button 
-                  type="button"
-                  onClick={() => handleNavClick('about', '/about')}
-                  className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
-                    isNavActive('about', '/about') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
-                  }`}
-                >
-                  <span className="flex items-center gap-2.5">
-                    <UserIcon className="w-4 h-4 text-brand-gold" />
-                    <span>ABOUT</span>
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-slate-500" />
-                </button>
-              </div>
-
-              {/* 3. PRODUCTS Accordion */}
+              {/* 2. PRODUCTS Accordion */}
               <div className="py-2 space-y-2">
                 <button 
                   onClick={() => setMobileExpandedSection(mobileExpandedSection === 'products' ? null : 'products')}
@@ -593,7 +579,7 @@ export const Header: React.FC = () => {
                 )}
               </div>
 
-              {/* 4. SERVICES (Direct Nav) */}
+              {/* 3. SERVICES (Direct Nav) */}
               <div className="py-2">
                 <button 
                   type="button"
@@ -610,13 +596,16 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* 5. PORTFOLIO (Single Direct Link) */}
+              {/* 4. PORTFOLIO (Single Direct Link to /portfolio) */}
               <div className="py-2">
                 <button 
                   type="button"
-                  onClick={() => handleNavClick('portfolio', '/portfolio')}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate('/portfolio');
+                  }}
                   className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
-                    isNavActive('portfolio', '/portfolio') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
+                    location.pathname.startsWith('/portfolio') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
@@ -627,7 +616,7 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* 6. PROJECTS Accordion (Project Categories) */}
+              {/* 5. PROJECTS Accordion (Project Categories) */}
               <div className="py-2 space-y-2">
                 <button 
                   onClick={() => setMobileExpandedSection(mobileExpandedSection === 'projects' ? null : 'projects')}
@@ -670,7 +659,7 @@ export const Header: React.FC = () => {
                 )}
               </div>
 
-              {/* 7. REVIEWS */}
+              {/* 6. REVIEWS */}
               <div className="py-2">
                 <button 
                   type="button"
@@ -687,18 +676,41 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* 8. CONTACT */}
+              {/* 7. ABOUT US (Single Direct Link to About Page) */}
               <div className="py-2">
                 <button 
                   type="button"
-                  onClick={() => handleNavClick('contact', '/contact')}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate('/about');
+                  }}
                   className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
-                    isNavActive('contact', '/contact') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
+                    location.pathname === '/about' ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
+                  }`}
+                >
+                  <span className="flex items-center gap-2.5">
+                    <UserIcon className="w-4 h-4 text-brand-gold" />
+                    <span>ABOUT US</span>
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-slate-500" />
+                </button>
+              </div>
+
+              {/* 8. CONTACT US (Single Direct Link to Contact Page) */}
+              <div className="py-2">
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate('/contact');
+                  }}
+                  className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
+                    location.pathname === '/contact' || location.pathname === '/contact-us' ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
                     <Mail className="w-4 h-4 text-brand-gold" />
-                    <span>CONTACT</span>
+                    <span>CONTACT US</span>
                   </span>
                   <ChevronRight className="w-4 h-4 text-slate-500" />
                 </button>

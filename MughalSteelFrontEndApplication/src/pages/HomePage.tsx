@@ -203,47 +203,27 @@ export const HomePage: React.FC = () => {
   };
 
   // Hero auto-slider controller:
-  // - On Video slides: Video plays fully; onEnded advances to the next slide automatically
-  // - On Image slide (Slide 0): 12-second timer gives the visitor time to read the text before advancing
+  // - On Image slide (Slide 0): exactly 10-second timer gives the visitor time to read before advancing
+  // - On Video slides (Slides 1-6): Video plays fully; onEnded event triggers nextSlide automatically
   useEffect(() => {
-    if (isSliderPaused) {
-      if (slideTimerRef.current) {
-        clearInterval(slideTimerRef.current);
-        slideTimerRef.current = null;
-      }
-      return;
-    }
-
     // When active slide is a video, let the video's onEnded event trigger nextSlide
     if (heroSlides[currentSlide].type === 'video') {
-      if (slideTimerRef.current) {
-        clearInterval(slideTimerRef.current);
-        slideTimerRef.current = null;
-      }
-      return;
+      // Safety watchdog: in case video duration is long or blocked, advance after 45 seconds
+      const watchdog = setTimeout(() => {
+        nextSlide();
+      }, 45000);
+      return () => clearTimeout(watchdog);
     }
 
-    // For image slides, advance after 12 seconds with smooth progress bar
-    const intervalTime = 100; // update progress every 100ms
-    const step = 100 / (12000 / intervalTime); // 12,000ms = 12 sec for image slide
-
-    slideTimerRef.current = setInterval(() => {
-      setSlideProgress((prev) => {
-        if (prev >= 100) {
-          nextSlide();
-          return 0;
-        }
-        return prev + step;
-      });
-    }, intervalTime);
+    // For image slide (Slide 0), exactly 10 seconds:
+    const timer = setTimeout(() => {
+      nextSlide();
+    }, 10000);
 
     return () => {
-      if (slideTimerRef.current) {
-        clearInterval(slideTimerRef.current);
-        slideTimerRef.current = null;
-      }
+      clearTimeout(timer);
     };
-  }, [isSliderPaused, currentSlide, heroSlides.length]);
+  }, [currentSlide, heroSlides.length]);
 
   // If a YouTube video is active, automatically advance to next slide as soon as it finishes (playerState === 0)
   useEffect(() => {
@@ -431,8 +411,6 @@ export const HomePage: React.FC = () => {
       <section 
         id="home" 
         className="relative scroll-mt-24 w-full min-h-[660px] sm:min-h-[720px] lg:min-h-[760px] xl:h-[88vh] xl:max-h-[890px] overflow-hidden bg-[#05080E] flex flex-col justify-between select-none"
-        onMouseEnter={() => setIsSliderPaused(true)}
-        onMouseLeave={() => setIsSliderPaused(false)}
         role="region"
         aria-roledescription="carousel"
         aria-label="Mughal Steel Production & Fabrication Showcase"
@@ -467,40 +445,36 @@ export const HomePage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="relative w-full h-full overflow-hidden bg-black flex items-center justify-center pointer-events-none select-none">
-                    {/* Native Seamless MP4 Stream (Zero YouTube UI, Zero Subtitles, Zero Next/Previous/Pause Overlay) */}
+                    {/* Native Hardware-Accelerated Smooth MP4 Stream */}
                     {slide.videoSrc ? (
-                      <video
-                        key={slide.videoSrc}
-                        src={slide.videoSrc}
-                        poster={slide.poster}
-                        autoPlay
-                        muted
-                        playsInline
-                        preload={isActive ? 'auto' : 'metadata'}
-                        className="w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
-                        onEnded={() => {
-                          nextSlide();
-                        }}
-                        onTimeUpdate={(e) => {
-                          if (isActive) {
-                            const el = e.currentTarget;
-                            if (el.duration && !isNaN(el.duration)) {
-                              setSlideProgress((el.currentTime / el.duration) * 100);
-                            }
-                          }
-                        }}
-                        ref={(el) => {
-                          if (el) {
-                            el.muted = true;
-                            if (isActive) {
-                              el.currentTime = 0;
-                              el.play().catch(() => {});
-                            } else {
-                              el.pause();
-                            }
-                          }
-                        }}
-                      />
+                      isActive ? (
+                        <video
+                          key={`hero-vid-${slide.id}`}
+                          src={slide.videoSrc}
+                          poster={slide.poster}
+                          autoPlay
+                          muted
+                          playsInline
+                          preload="auto"
+                          className="w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
+                          onEnded={() => {
+                            nextSlide();
+                          }}
+                          onError={() => {
+                            setTimeout(nextSlide, 3000);
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-black">
+                          {slide.poster && (
+                            <img 
+                              src={slide.poster} 
+                              alt="" 
+                              className="w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]" 
+                            />
+                          )}
+                        </div>
+                      )
                     ) : (
                       isActive && (
                         <iframe
@@ -666,15 +640,14 @@ export const HomePage: React.FC = () => {
               // Video Slides: Active Project Headline & Dynamic Info
               <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-3.5 sm:pl-5 space-y-3 sm:space-y-4">
                 
-                {/* Active Video Badge */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-[#cca04b]/50 text-[#cca04b] text-xs font-mono font-bold uppercase tracking-wider backdrop-blur-md shadow-md">
-                  <span className="flex h-2 w-2 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#cca04b] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#cca04b]"></span>
-                  </span>
-                  <span>{heroSlides[currentSlide].badge}</span>
-                  <span className="text-white/40">|</span>
-                  <span className="text-stone-300 font-mono text-[11px]">0{currentSlide + 1} / 0{heroSlides.length}</span>
+                {/* Project Header Tag & Byline */}
+                <div className="space-y-0.5 sm:space-y-1">
+                  <p className="text-xs sm:text-sm lg:text-base font-heading font-black uppercase tracking-wider sm:tracking-widest text-[#cca04b] drop-shadow">
+                    COMPLETE RESIDENTIAL FABRICATION PROJECT
+                  </p>
+                  <p className="text-[11px] sm:text-xs lg:text-sm font-heading font-medium text-white tracking-wide drop-shadow">
+                    Crafted With Perfection By
+                  </p>
                 </div>
 
                 <div className="space-y-1 sm:space-y-1.5">
@@ -686,6 +659,11 @@ export const HomePage: React.FC = () => {
                       Steel Fabrication.
                     </span>
                   </h1>
+
+                  {/* Golden Subtitle directly under Mughal Steel Fabrication */}
+                  <p className="text-xs sm:text-sm font-heading font-bold text-[#cca04b] uppercase tracking-wide drop-shadow pt-0.5">
+                    Featuring custom wrought iron gates, security Grills and premium aluminum windows
+                  </p>
 
                   <p className="text-sm sm:text-lg lg:text-xl font-heading font-bold text-stone-200 uppercase tracking-wide drop-shadow pt-0.5">
                     {heroSlides[currentSlide].title}

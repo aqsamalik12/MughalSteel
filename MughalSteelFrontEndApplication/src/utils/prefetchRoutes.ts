@@ -38,6 +38,9 @@ export const prefetchRoute = (routeName: string) => {
       case 'account':
         import('../pages/AccountPage');
         break;
+      case 'about':
+        import('../pages/AboutPage');
+        break;
       case 'contact':
         import('../pages/ContactPage');
         break;
