@@ -98,8 +98,10 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/items'
     },
     {
-      id: 'slide-yt-fQZGXcWxw0Q',
-      type: 'youtube' as const,
+      id: 'slide-vid-0',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_0.mp4',
+      poster: '/videos/hero_poster_0.jpg',
       youtubeId: 'fQZGXcWxw0Q',
       badge: 'DHA Phase 1 • Steel Work & Railings',
       title: 'Overview of Completed Projects & Railings',
@@ -110,8 +112,10 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/items'
     },
     {
-      id: 'slide-yt-YHK1SWPQpoA',
-      type: 'youtube' as const,
+      id: 'slide-vid-1',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_1.mp4',
+      poster: '/videos/hero_poster_1.jpg',
       youtubeId: 'YHK1SWPQpoA',
       badge: 'Completed Project • Gulberg Greens Farmhouse',
       title: 'COMPLETED PROJECT: GULBERG GREENS FARMHOUSE',
@@ -122,8 +126,10 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/portfolio/gulberg-greens-farmhouse'
     },
     {
-      id: 'slide-yt-2bw7KK7sVFg',
-      type: 'youtube' as const,
+      id: 'slide-vid-2',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_2.mp4',
+      poster: '/videos/hero_poster_2.jpg',
       youtubeId: '2bw7KK7sVFg',
       badge: 'Luxury Villa • Arched Gate & Balcony Railings',
       title: 'Luxury Residence Arched Gate & Balcony Railings',
@@ -134,8 +140,10 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/custom-design'
     },
     {
-      id: 'slide-yt-fTgElLgHO1s',
-      type: 'youtube' as const,
+      id: 'slide-vid-3',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_3.mp4',
+      poster: '/videos/hero_poster_3.jpg',
       youtubeId: 'fTgElLgHO1s',
       badge: 'DHA Islamabad • Cast Iron & Steel Work',
       title: 'Crafting Excellence in Steel & Cast Iron at DHA',
@@ -146,8 +154,10 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/projects'
     },
     {
-      id: 'slide-yt-9ccCSDyRn4Q',
-      type: 'youtube' as const,
+      id: 'slide-vid-4',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_4.mp4',
+      poster: '/videos/hero_poster_4.jpg',
       youtubeId: '9ccCSDyRn4Q',
       badge: 'Cast Iron Railings & Custom Iron Doors',
       title: 'Luxury Cast Iron Railings & Custom Iron Doors',
@@ -158,8 +168,10 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/items'
     },
     {
-      id: 'slide-yt-tdK_xYFThrI',
-      type: 'youtube' as const,
+      id: 'slide-vid-5',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_5.mp4',
+      poster: '/videos/hero_poster_5.jpg',
       youtubeId: 'tdK_xYFThrI',
       badge: 'Spanish Villa • Custom Balcony Railings & Gate',
       title: 'Spanish Villa Balcony Railings & Main Entrance Gate',
@@ -190,7 +202,9 @@ export const HomePage: React.FC = () => {
     goToSlide((currentSlide - 1 + heroSlides.length) % heroSlides.length);
   };
 
-  // 12-Second interval for hero auto-slider
+  // Hero auto-slider controller:
+  // - On Video slides: Video plays fully; onEnded advances to the next slide automatically
+  // - On Image slide (Slide 0): 12-second timer gives the visitor time to read the text before advancing
   useEffect(() => {
     if (isSliderPaused) {
       if (slideTimerRef.current) {
@@ -200,13 +214,23 @@ export const HomePage: React.FC = () => {
       return;
     }
 
+    // When active slide is a video, let the video's onEnded event trigger nextSlide
+    if (heroSlides[currentSlide].type === 'video') {
+      if (slideTimerRef.current) {
+        clearInterval(slideTimerRef.current);
+        slideTimerRef.current = null;
+      }
+      return;
+    }
+
+    // For image slides, advance after 12 seconds with smooth progress bar
     const intervalTime = 100; // update progress every 100ms
-    const step = 100 / (12000 / intervalTime); // 12,000ms = 12 sec per slide
+    const step = 100 / (12000 / intervalTime); // 12,000ms = 12 sec for image slide
 
     slideTimerRef.current = setInterval(() => {
       setSlideProgress((prev) => {
         if (prev >= 100) {
-          goToSlide((currentSlide + 1) % heroSlides.length);
+          nextSlide();
           return 0;
         }
         return prev + step;
@@ -220,6 +244,25 @@ export const HomePage: React.FC = () => {
       }
     };
   }, [isSliderPaused, currentSlide, heroSlides.length]);
+
+  // If a YouTube video is active, automatically advance to next slide as soon as it finishes (playerState === 0)
+  useEffect(() => {
+    const handleYouTubeMessage = (e: MessageEvent) => {
+      try {
+        if (typeof e.data === 'string') {
+          const data = JSON.parse(e.data);
+          if (data.event === 'infoDelivery' && data.info?.playerState === 0) {
+            nextSlide();
+          }
+        }
+      } catch {
+        // ignore non-json messages
+      }
+    };
+
+    window.addEventListener('message', handleYouTubeMessage);
+    return () => window.removeEventListener('message', handleYouTubeMessage);
+  }, [currentSlide]);
 
   // Component unmount cleanup
   useEffect(() => {
@@ -387,7 +430,7 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       <section 
         id="home" 
-        className="relative scroll-mt-24 w-full h-[82vh] min-h-[580px] max-h-[850px] overflow-hidden bg-[#05080E] flex flex-col justify-between select-none"
+        className="relative scroll-mt-24 w-full min-h-[660px] sm:min-h-[720px] lg:min-h-[760px] xl:h-[88vh] xl:max-h-[890px] overflow-hidden bg-[#05080E] flex flex-col justify-between select-none"
         onMouseEnter={() => setIsSliderPaused(true)}
         onMouseLeave={() => setIsSliderPaused(false)}
         role="region"
@@ -423,16 +466,52 @@ export const HomePage: React.FC = () => {
                     />
                   </div>
                 ) : (
-                  <div className="relative w-full h-full overflow-hidden bg-black">
-                    {/* Active YouTube Embed: plays the exact video URL provided */}
-                    {isActive && (
-                      <iframe
-                        src={`https://www.youtube.com/embed/${slide.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${slide.youtubeId}&controls=1&rel=0&playsinline=1&modestbranding=1&enablejsapi=1`}
-                        title={slide.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                        className="absolute inset-0 w-full h-full border-0 object-cover z-0"
+                  <div className="relative w-full h-full overflow-hidden bg-black flex items-center justify-center pointer-events-none select-none">
+                    {/* Native Seamless MP4 Stream (Zero YouTube UI, Zero Subtitles, Zero Next/Previous/Pause Overlay) */}
+                    {slide.videoSrc ? (
+                      <video
+                        key={slide.videoSrc}
+                        src={slide.videoSrc}
+                        poster={slide.poster}
+                        autoPlay
+                        muted
+                        playsInline
+                        preload={isActive ? 'auto' : 'metadata'}
+                        className="w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
+                        onEnded={() => {
+                          nextSlide();
+                        }}
+                        onTimeUpdate={(e) => {
+                          if (isActive) {
+                            const el = e.currentTarget;
+                            if (el.duration && !isNaN(el.duration)) {
+                              setSlideProgress((el.currentTime / el.duration) * 100);
+                            }
+                          }
+                        }}
+                        ref={(el) => {
+                          if (el) {
+                            el.muted = true;
+                            if (isActive) {
+                              el.currentTime = 0;
+                              el.play().catch(() => {});
+                            } else {
+                              el.pause();
+                            }
+                          }
+                        }}
                       />
+                    ) : (
+                      isActive && (
+                        <iframe
+                          src={`https://www.youtube-nocookie.com/embed/${slide.youtubeId}?autoplay=1&mute=1&loop=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&cc_load_policy=0&cc_lang_pref=none`}
+                          title={slide.title}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          tabIndex={-1}
+                          aria-hidden="true"
+                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[135%] h-[135%] min-w-full min-h-full border-0 object-cover pointer-events-none z-0 select-none scale-105"
+                        />
+                      )
                     )}
                   </div>
                 )}
@@ -464,57 +543,190 @@ export const HomePage: React.FC = () => {
           <ChevronRight className="w-6 h-6" />
         </button>
 
-        {/* Hero Content Area: Clean Left-Aligned Enterprise Typography matching FF Steel */}
-        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:pl-6 lg:pr-12 flex-1 flex flex-col justify-center py-10 sm:py-16">
-          <div className="max-w-2xl lg:max-w-3xl space-y-5 sm:space-y-6 text-left -ml-1 sm:-ml-3 lg:-ml-4">
+        {/* Hero Content Area: Clean Left-Aligned Enterprise Typography matching Reference Screenshot */}
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:pl-6 lg:pr-12 flex-1 flex flex-col justify-center py-6 sm:py-8 lg:py-10">
+          <div className="max-w-2xl lg:max-w-3xl text-left -ml-1 sm:-ml-3 lg:-ml-4">
             
-            {/* Brand Hero Container matching reference image exactly */}
-            <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-4 sm:pl-6 space-y-3 sm:space-y-4">
-              <h1 className="flex flex-col font-heading font-black tracking-tight drop-shadow-2xl">
-                <span className="text-4xl sm:text-6xl lg:text-[70px] text-[#cca04b] uppercase tracking-wide leading-none font-black">
-                  MUGHAL
-                </span>
-                <span className="text-2xl sm:text-4xl lg:text-[44px] text-white uppercase tracking-tight leading-tight mt-1 sm:mt-1.5 font-black">
-                  STEEL FABRICATION
-                </span>
-              </h1>
+            {currentSlide === 0 ? (
+              // Team Photo Slide: Exact Showcase layout from reference screenshot
+              <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-3.5 sm:pl-5 space-y-2.5 sm:space-y-3">
+                
+                {/* Brand Hero Heading */}
+                <div className="space-y-1">
+                  <p className="text-white text-base sm:text-lg lg:text-xl font-heading font-medium tracking-wide drop-shadow">
+                    Welcome to
+                  </p>
+                  <h1 className="flex flex-wrap items-baseline gap-2 sm:gap-3 font-heading font-black tracking-tight drop-shadow-2xl">
+                    <span className="text-3xl sm:text-5xl lg:text-[56px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
+                      Mughal
+                    </span>
+                    <span className="text-2xl sm:text-4xl lg:text-[44px] text-white leading-tight font-black">
+                      Steel Fabrication.
+                    </span>
+                  </h1>
+                </div>
 
-              {/* Tagline / Subtitle */}
-              <p className="text-sm sm:text-base lg:text-lg text-stone-200 font-sans font-medium drop-shadow-md">
-                Premium Steel Fabrication Solutions
-              </p>
+                {/* Tagline / Subtitle */}
+                <p className="text-xs sm:text-sm lg:text-base text-stone-200 font-sans font-semibold drop-shadow-md">
+                  Premium Steel &amp; Metal Fabrication Solutions <span className="text-[#cca04b] font-bold mx-1">|</span> Serving All Over Pakistan
+                </p>
 
-              {/* Location Tag matching reference */}
-              <div className="flex items-center gap-2 text-stone-300 text-xs sm:text-sm font-sans font-medium drop-shadow">
-                <MapPin className="w-4 h-4 text-[#cca04b] shrink-0" />
-                <span>Rawalpindi, Islamabad</span>
+                {/* Action Buttons: Explore Projects & Get a Free Quote */}
+                <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 pt-0.5">
+                  <Link 
+                    to="/projects" 
+                    className="inline-flex items-center justify-center bg-[#cca04b] hover:bg-[#d8ad56] text-stone-950 font-heading font-bold text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md shadow-lg hover:shadow-[0_0_20px_rgba(204,160,75,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  >
+                    <span>Explore Projects</span>
+                  </Link>
+
+                  <Link 
+                    to="/quote" 
+                    className="inline-flex items-center justify-center bg-black/60 hover:bg-black/85 text-white border border-stone-400/80 hover:border-white font-heading font-medium text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md backdrop-blur-md shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  >
+                    <span>Get a Free Quote</span>
+                  </Link>
+                </div>
+
+                {/* Direct Call Number Placed Directly UNDER the Explore Projects Buttons Section */}
+                <div className="pt-0.5">
+                  <a 
+                    href="tel:03005197825"
+                    className="inline-flex items-center gap-2 text-white hover:text-[#cca04b] font-heading font-bold text-xs sm:text-sm tracking-wider py-1 transition-colors drop-shadow group"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-[#cca04b]/20 flex items-center justify-center group-hover:bg-[#cca04b]/30 transition-colors">
+                      <Phone className="w-3.5 h-3.5 text-[#cca04b]" />
+                    </div>
+                    <span className="font-mono font-bold text-stone-100">0300-5197825</span>
+                  </a>
+                </div>
+
+                {/* 4 Architectural Fabrication Specialties */}
+                <div className="pt-2 sm:pt-2.5 space-y-2 sm:space-y-2.5 text-left max-w-2xl">
+                  <div>
+                    <h2 className="text-xs sm:text-[13px] lg:text-[13.5px] font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 sm:underline-offset-4 decoration-[#cca04b]">
+                      WROUGHT &amp; CAST IRON WORK,
+                    </h2>
+                    <p className="text-[11px] sm:text-xs lg:text-[12px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
+                      Custom double-height main entrance doors, heavy-duty security gates, and ornamental window panels crafted to perfection.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h2 className="text-xs sm:text-[13px] lg:text-[13.5px] font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 sm:underline-offset-4 decoration-[#cca04b]">
+                      MODERN STAIRCASES,
+                    </h2>
+                    <p className="text-[11px] sm:text-xs lg:text-[12px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
+                      Precision-engineered spiral stairs, L-shaped staircases, and single-beam structures with marble-topped steel steps.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h2 className="text-xs sm:text-[13px] lg:text-[13.5px] font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 sm:underline-offset-4 decoration-[#cca04b]">
+                      GLASS RAILINGS &amp; CNC GRILLS,
+                    </h2>
+                    <p className="text-[11px] sm:text-xs lg:text-[12px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
+                      Tempered glass balcony railings, architectural fences, and intricate CNC laser-cut metal panels.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h2 className="text-xs sm:text-[13px] lg:text-[13.5px] font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 sm:underline-offset-4 decoration-[#cca04b]">
+                      SHADE PERGOLAS &amp; CANOPIES,
+                    </h2>
+                    <p className="text-[11px] sm:text-xs lg:text-[12px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
+                      Durable outdoor fencing systems and modern retractable shade pergolas with tensile fabric.
+                    </p>
+                  </div>
+
+                  {/* Why Choose Us Section */}
+                  <div className="pt-1.5 border-t border-white/10">
+                    <h2 className="text-xs sm:text-[13px] lg:text-[14px] font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 sm:underline-offset-4 decoration-[#cca04b]">
+                      WHY CHOOSE US?
+                    </h2>
+                    <div className="mt-1 space-y-1 text-[11px] sm:text-xs text-stone-100 font-sans leading-snug drop-shadow">
+                      <p>
+                        <strong className="text-white font-bold">Nationwide Service:</strong> Delivering premium steel fabrication and structural solutions all across Pakistan.
+                      </p>
+                      <p>
+                        <strong className="text-white font-bold">Tailored for Every Structure:</strong> Whether it's a modern house, a classic villa, or a commercial plaza, we deliver solutions customized to your exact architectural style.
+                      </p>
+                      <p>
+                        <strong className="text-white font-bold">Precision &amp; Gauge Standards:</strong> Guaranteed structural strength using certified material gauges and accurate fabrication standards.
+                      </p>
+                      <p>
+                        <strong className="text-white font-bold">Expert Craftsmanship:</strong> Backed by professional expertise and precision MS projects nationwide.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
               </div>
+            ) : (
+              // Video Slides: Active Project Headline & Dynamic Info
+              <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-3.5 sm:pl-5 space-y-3 sm:space-y-4">
+                
+                {/* Active Video Badge */}
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-[#cca04b]/50 text-[#cca04b] text-xs font-mono font-bold uppercase tracking-wider backdrop-blur-md shadow-md">
+                  <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#cca04b] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#cca04b]"></span>
+                  </span>
+                  <span>{heroSlides[currentSlide].badge}</span>
+                  <span className="text-white/40">|</span>
+                  <span className="text-stone-300 font-mono text-[11px]">0{currentSlide + 1} / 0{heroSlides.length}</span>
+                </div>
 
-              {/* Action Buttons matching reference image */}
-              <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1 sm:pt-2">
-                <Link 
-                  to="/projects" 
-                  className="inline-flex items-center justify-center bg-[#cca04b] hover:bg-[#d8ad56] text-stone-950 font-heading font-bold text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md shadow-lg hover:shadow-[0_0_20px_rgba(204,160,75,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-                >
-                  <span>Explore Projects</span>
-                </Link>
+                <div className="space-y-1 sm:space-y-1.5">
+                  <h1 className="flex flex-wrap items-baseline gap-2 sm:gap-3 font-heading font-black tracking-tight drop-shadow-2xl">
+                    <span className="text-3xl sm:text-5xl lg:text-[56px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
+                      Mughal
+                    </span>
+                    <span className="text-2xl sm:text-4xl lg:text-[44px] text-white leading-tight font-black">
+                      Steel Fabrication.
+                    </span>
+                  </h1>
 
-                <Link 
-                  to="/quote" 
-                  className="inline-flex items-center justify-center bg-black/50 hover:bg-black/80 text-white border border-stone-500/70 hover:border-stone-300 font-heading font-medium text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md backdrop-blur-md shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-                >
-                  <span>Get a Free Quote</span>
-                </Link>
+                  <p className="text-sm sm:text-lg lg:text-xl font-heading font-bold text-stone-200 uppercase tracking-wide drop-shadow pt-0.5">
+                    {heroSlides[currentSlide].title}
+                  </p>
+                </div>
 
-                <a 
-                  href="tel:03005197825"
-                  className="inline-flex items-center gap-2 text-white hover:text-[#cca04b] font-heading font-bold text-xs sm:text-sm tracking-wider px-3 py-2 transition-colors drop-shadow"
-                >
-                  <Phone className="w-4 h-4 text-[#cca04b]" />
-                  <span className="font-mono font-bold text-stone-100">0300-5197825</span>
-                </a>
+                <p className="text-xs sm:text-sm lg:text-base text-stone-300/95 font-sans font-normal leading-relaxed max-w-2xl drop-shadow-md">
+                  {heroSlides[currentSlide].description}
+                </p>
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1">
+                  <Link 
+                    to="/projects" 
+                    className="inline-flex items-center justify-center bg-[#cca04b] hover:bg-[#d8ad56] text-stone-950 font-heading font-bold text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md shadow-lg hover:shadow-[0_0_20px_rgba(204,160,75,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  >
+                    <span>Explore Projects</span>
+                  </Link>
+
+                  <Link 
+                    to="/quote" 
+                    className="inline-flex items-center justify-center bg-black/50 hover:bg-black/80 text-white border border-stone-500/70 hover:border-stone-300 font-heading font-medium text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md backdrop-blur-md shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  >
+                    <span>Get a Free Quote</span>
+                  </Link>
+                </div>
+
+                {/* Direct Call Number Placed Directly UNDER the Explore Projects Buttons Section */}
+                <div className="pt-0.5">
+                  <a 
+                    href="tel:03005197825"
+                    className="inline-flex items-center gap-2 text-white hover:text-[#cca04b] font-heading font-bold text-xs sm:text-sm tracking-wider py-1 transition-colors drop-shadow group"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-[#cca04b]/20 flex items-center justify-center group-hover:bg-[#cca04b]/30 transition-colors">
+                      <Phone className="w-3.5 h-3.5 text-[#cca04b]" />
+                    </div>
+                    <span className="font-mono font-bold text-stone-100">0300-5197825</span>
+                  </a>
+                </div>
               </div>
-            </div>
+            )}
 
           </div>
         </div>
