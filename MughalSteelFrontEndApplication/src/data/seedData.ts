@@ -947,6 +947,42 @@ export const SEED_TESTIMONIALS: Testimonial[] = [
 
 export const SEED_PROJECTS = [
   {
+    id: 'proj-gulberg-greens',
+    title: 'COMPLETED PROJECT: GULBERG GREENS FARMHOUSE',
+    slug: 'gulberg-greens-farmhouse',
+    category: 'Modern Farmhouse',
+    image: '/mughal-luxury-architectural-villa.jpg',
+    galleryImages: [
+      '/mughal-luxury-architectural-villa.jpg',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80'
+    ],
+    shortDescription: 'Executed Entirely by Mughal Steel Fabrication: Grand entrance gates, custom fencing, precision structural framework, architectural stairs & aluminum works.',
+    description: `COMPLETED PROJECT: GULBERG GREENS FARMHOUSE\nExecuted Entirely by Mughal Steel Fabrication\n\nWrought & Cast Iron Work: Grand entrance gates, custom fencing, and ornamental details crafted with perfection.\n\nPrecision Steel & Pipe Works: High-strength structural framework and heavy-duty fabrication.\n\nCustom Staircases: Elegant and durable modern architectural stairs.\n\nArchitectural Aluminum Work: Premium-grade windows and fittings.\n\nExperience total perfection in metalwork and construction with Mughal Steel Fabrication, Rawalpindi.`,
+    location: 'Gulberg Greens, Islamabad',
+    projectType: 'Turnkey Farmhouse Architectural Metalwork & Fabrication',
+    clientType: 'Private Luxury Farmhouse Estate',
+    completedDate: 'Completed',
+    status: 'Completed',
+    featured: true,
+    youtubeId: 'YHK1SWPQpoA',
+    specs: {
+      steelGrade: 'High-Tensile Structural MS & Ornamental Cast Iron',
+      gauge: '12-Gauge (2.5mm) & 14-Gauge (2.0mm) Structural Pipes',
+      finish: 'Multi-Stage Zinc Primer & Electrostatic Matte Finish',
+      automation: 'Automated Italian Sliding Gate Motor System',
+      span: 'Custom Double-Height Entrance & Perimeter Fencing'
+    },
+    deliverables: [
+      'Wrought & Cast Iron Work: Grand entrance gates, custom fencing, and ornamental details crafted with perfection',
+      'Precision Steel & Pipe Works: High-strength structural framework and heavy-duty fabrication',
+      'Custom Staircases: Elegant and durable modern architectural stairs',
+      'Architectural Aluminum Work: Premium-grade windows and fittings',
+      'Complete On-Site Laser Surveying, Anchoring & Final Handover'
+    ]
+  },
+  {
     id: 'proj-1',
     title: 'DHA Phase 6 Luxury Villa Elevation',
     category: 'Modern Home',

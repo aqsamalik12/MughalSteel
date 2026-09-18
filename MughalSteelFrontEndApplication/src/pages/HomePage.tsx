@@ -113,13 +113,13 @@ export const HomePage: React.FC = () => {
       id: 'slide-yt-YHK1SWPQpoA',
       type: 'youtube' as const,
       youtubeId: 'YHK1SWPQpoA',
-      badge: 'Gulberg Greens • Luxury Villa Project',
-      title: 'Gulberg Greens Luxury Villa Project',
-      description: 'Turnkey architectural steel installation at Gulberg Greens featuring heavy entrance gates, security grills, and modern balcony railings.',
+      badge: 'Completed Project • Gulberg Greens Farmhouse',
+      title: 'COMPLETED PROJECT: GULBERG GREENS FARMHOUSE',
+      description: 'Executed Entirely by Mughal Steel Fabrication: Grand entrance gates, custom fencing & ornamental details, high-strength structural framework & heavy-duty fabrication, elegant architectural custom staircases, and premium-grade aluminum windows and fittings.',
       ctaText: 'Get A Quote',
       ctaLink: '/quote',
-      secondaryText: 'Explore Gates',
-      secondaryLink: '/items'
+      secondaryText: 'View Project Details',
+      secondaryLink: '/portfolio/gulberg-greens-farmhouse'
     },
     {
       id: 'slide-yt-2bw7KK7sVFg',
@@ -465,20 +465,9 @@ export const HomePage: React.FC = () => {
         </button>
 
         {/* Hero Content Area: Clean Left-Aligned Enterprise Typography matching FF Steel */}
-        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 flex-1 flex flex-col justify-center py-10 sm:py-16">
-          <div className="max-w-2xl lg:max-w-3xl space-y-5 sm:space-y-6 text-left">
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:pl-6 lg:pr-12 flex-1 flex flex-col justify-center py-10 sm:py-16">
+          <div className="max-w-2xl lg:max-w-3xl space-y-5 sm:space-y-6 text-left -ml-1 sm:-ml-3 lg:-ml-4">
             
-            {/* Active Reel / Certification Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-[#cca04b]/50 text-[#cca04b] text-xs font-mono font-bold uppercase tracking-wider backdrop-blur-md shadow-md">
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#cca04b] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#cca04b]"></span>
-              </span>
-              <span>{heroSlides[currentSlide].badge}</span>
-              <span className="text-white/40">|</span>
-              <span className="text-stone-300 font-mono text-[11px]">0{currentSlide + 1} / 0{heroSlides.length}</span>
-            </div>
-
             {/* Brand Hero Container matching reference image exactly */}
             <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-4 sm:pl-6 space-y-3 sm:space-y-4">
               <h1 className="flex flex-col font-heading font-black tracking-tight drop-shadow-2xl">
@@ -525,22 +514,6 @@ export const HomePage: React.FC = () => {
                   <span className="font-mono font-bold text-stone-100">0300-5197825</span>
                 </a>
               </div>
-            </div>
-
-            {/* Verified Trust Badges */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-2 text-[11px] font-mono text-stone-300">
-              <span className="flex items-center gap-1.5 bg-black/50 px-3 py-1 rounded-full border border-brand-gold/30 backdrop-blur-xs">
-                <CheckCircle2 className="w-3.5 h-3.5 text-brand-gold" />
-                30+ Years Craftsmanship
-              </span>
-              <span className="flex items-center gap-1.5 bg-black/50 px-3 py-1 rounded-full border border-white/20 backdrop-blur-xs">
-                <CheckCircle2 className="w-3.5 h-3.5 text-brand-gold" />
-                ±0.1mm CNC Fiber Laser
-              </span>
-              <span className="flex items-center gap-1.5 bg-black/50 px-3 py-1 rounded-full border border-white/20 backdrop-blur-xs">
-                <CheckCircle2 className="w-3.5 h-3.5 text-brand-gold" />
-                Rawalpindi &amp; Islamabad Workshop
-              </span>
             </div>
 
           </div>
@@ -641,27 +614,27 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       <section 
         id="about" 
-        className="cv-auto scroll-mt-24 w-full relative border-b border-brand-light/40 py-16 md:py-24 bg-cover bg-center bg-no-repeat"
+        className="cv-auto scroll-mt-24 w-full relative border-b border-brand-light/40 py-20 md:py-28 bg-cover bg-center bg-no-repeat overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(8,13,23,0.92), rgba(8,13,23,0.96)), url('/mughal-luxury-architectural-villa.jpg')`
+          backgroundImage: `linear-gradient(to bottom, rgba(5,8,14,0.30), rgba(5,8,14,0.45)), url('/mughal-luxury-architectural-villa.jpg')`
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
           
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/20 pb-5 bg-black/55 backdrop-blur-md p-6 rounded-2xl border">
             <div className="space-y-1">
-              <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block">
+              <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block drop-shadow">
                 HIGH COURT ROAD, RAWALPINDI • MUHAMMAD QASIM
               </span>
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight drop-shadow-lg">
+              <h2 className="text-2xl sm:text-4xl font-heading font-black text-white uppercase tracking-tight drop-shadow-2xl">
                 ABOUT MUGHAL STEEL FABRICATION
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-3xl">
+              <p className="text-xs sm:text-sm text-stone-200 font-sans max-w-3xl drop-shadow-md">
                 Premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. Recognized for combining traditional craftsmanship with modern engineering and digital workflows.
               </p>
             </div>
-            <Link to="/about" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1 shrink-0">
+            <Link to="/about" className="text-xs font-heading font-bold text-brand-gold hover:text-white hover:underline flex items-center gap-1.5 shrink-0 bg-black/60 px-4 py-2.5 rounded-lg border border-brand-gold/50 shadow-md">
               <span>Read Full Story</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
@@ -670,43 +643,43 @@ export const HomePage: React.FC = () => {
           {/* Stats Row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             {aboutStats.map((s, idx) => (
-              <div key={idx} className="bg-brand-navy/90 backdrop-blur-xs border border-brand-light/60 p-6 rounded-lg space-y-1 shadow-lg hover:border-brand-gold transition-all duration-300 card-interactive">
-                <p className="text-xl sm:text-2xl lg:text-3xl font-heading font-black text-brand-gold truncate">{s.value}</p>
-                <p className="text-slate-300 text-xs uppercase tracking-wider font-semibold font-mono">{s.label}</p>
+              <div key={idx} className="bg-black/70 backdrop-blur-md border border-brand-gold/40 p-6 rounded-xl space-y-1 shadow-2xl hover:border-brand-gold transition-all duration-300 card-interactive">
+                <p className="text-xl sm:text-2xl lg:text-3xl font-heading font-black text-brand-gold truncate drop-shadow">{s.value}</p>
+                <p className="text-stone-300 text-xs uppercase tracking-wider font-semibold font-mono">{s.label}</p>
               </div>
             ))}
           </div>
 
           {/* Story & Philosophy Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-6 space-y-4">
-              <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block">
+            <div className="lg:col-span-6 space-y-4 bg-black/70 backdrop-blur-md border border-white/20 p-6 sm:p-8 rounded-2xl shadow-2xl">
+              <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block drop-shadow">
                 TRADITIONAL CRAFTSMANSHIP & DIGITAL WORKFLOWS
               </span>
-              <h3 className="text-xl sm:text-3xl font-heading font-black text-stone-100 uppercase tracking-tight">
+              <h3 className="text-xl sm:text-3xl font-heading font-black text-white uppercase tracking-tight drop-shadow-md">
                 Dedicated Yard in Rawalpindi with Modern 3D & AI Design
               </h3>
-              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-sans">
+              <p className="text-stone-200 text-xs sm:text-sm leading-relaxed font-sans drop-shadow">
                 Mughal Steel Fabrication is a premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. The enterprise is recognized for combining traditional craftsmanship with modern engineering and digital workflows.
               </p>
-              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-sans">
+              <p className="text-stone-200 text-xs sm:text-sm leading-relaxed font-sans drop-shadow">
                 Operating a dedicated fabrication yard in Rawalpindi equipped with modern machinery and tools, powered by skilled steel fabricators, welders, and operational managers who ensure high structural standards and precision.
               </p>
 
               <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
-                <div className="flex items-center gap-2 text-slate-200">
+                <div className="flex items-center gap-2 text-stone-100">
                   <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
                   <span>Custom Ironwork & Doors</span>
                 </div>
-                <div className="flex items-center gap-2 text-slate-200">
+                <div className="flex items-center gap-2 text-stone-100">
                   <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
                   <span>Staircase Engineering</span>
                 </div>
-                <div className="flex items-center gap-2 text-slate-200">
+                <div className="flex items-center gap-2 text-stone-100">
                   <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
                   <span>Architectural Railings</span>
                 </div>
-                <div className="flex items-center gap-2 text-slate-200">
+                <div className="flex items-center gap-2 text-stone-100">
                   <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
                   <span>AI & 3D Visual Previews</span>
                 </div>
@@ -714,21 +687,21 @@ export const HomePage: React.FC = () => {
             </div>
 
             <div className="lg:col-span-6">
-              <div className="relative rounded-2xl overflow-hidden border border-brand-gold/50 shadow-2xl bg-black aspect-[16/10] group">
+              <div className="relative rounded-2xl overflow-hidden border border-brand-gold/60 shadow-2xl bg-black aspect-[16/10] group">
                 <img 
-                  src="/mughal-luxury-architectural-villa.jpg" 
-                  alt="Mughal Steel Architectural Fabrication & Luxury Villa Metalwork" 
+                  src="/mughal-steel-workshop-master.jpg" 
+                  alt="Mughal Steel Dedicated Fabrication Yard - High Court Road Rawalpindi" 
                   loading="lazy"
                   decoding="async"
                   onError={handleImageError}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent flex flex-col justify-end p-5 sm:p-6">
-                  <span className="text-xs font-mono font-bold text-brand-gold bg-brand-navy/90 px-3 py-1 rounded border border-brand-gold/40 self-start">
-                    High Court Road Fabrication Yard • Muhammad Qasim
+                  <span className="text-xs font-mono font-bold text-brand-gold bg-black/90 px-3 py-1 rounded border border-brand-gold/50 self-start">
+                    High Court Road Fabrication Yard • Muhammad Qasim & Team
                   </span>
                   <span className="text-xs text-slate-200 font-sans mt-1.5 leading-relaxed">
-                    Laser-cut architectural facade screens, luxury wrought iron doors, bespoke balcony balustrades, and wave canopy pergolas.
+                    Powered by skilled steel fabricators, welders, and operational managers ensuring high structural standards and precision.
                   </span>
                 </div>
               </div>
@@ -1366,22 +1339,53 @@ export const HomePage: React.FC = () => {
       <section id="projects" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
-            <div className="space-y-1">
+          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 border-b border-brand-light/40 pb-6">
+            <div className="space-y-3 max-w-4xl">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-[10px] font-heading font-black uppercase tracking-widest rounded">
                 09. FEATURED WORK
               </div>
               <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
                 FEATURED PORTFOLIO PROJECTS
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 font-sans">
-                Explore real completed site installations across Islamabad, Rawalpindi, DHA, Bahria Town, and commercial plazas.
-              </p>
+              
+              <div className="space-y-3 pt-1">
+                <div className="border-l-2 border-brand-gold pl-3 py-0.5">
+                  <h3 className="text-sm sm:text-base font-heading font-black text-brand-gold uppercase tracking-wide">
+                    COMPLETED PROJECT: GULBERG GREENS FARMHOUSE
+                  </h3>
+                  <p className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider mt-0.5">
+                    Executed Entirely by Mughal Steel Fabrication
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs text-slate-300 font-sans">
+                  <div className="flex items-start gap-2 bg-black/40 border border-brand-light/40 p-2.5 rounded-lg">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold shrink-0 mt-1.5" />
+                    <span><strong className="text-stone-100">Wrought &amp; Cast Iron Work:</strong> Grand entrance gates, custom fencing, and ornamental details crafted with perfection.</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-black/40 border border-brand-light/40 p-2.5 rounded-lg">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold shrink-0 mt-1.5" />
+                    <span><strong className="text-stone-100">Precision Steel &amp; Pipe Works:</strong> High-strength structural framework and heavy-duty fabrication.</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-black/40 border border-brand-light/40 p-2.5 rounded-lg">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold shrink-0 mt-1.5" />
+                    <span><strong className="text-stone-100">Custom Staircases:</strong> Elegant and durable modern architectural stairs.</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-black/40 border border-brand-light/40 p-2.5 rounded-lg">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold shrink-0 mt-1.5" />
+                    <span><strong className="text-stone-100">Architectural Aluminum Work:</strong> Premium-grade windows and fittings.</span>
+                  </div>
+                </div>
+
+                <p className="text-xs sm:text-sm text-stone-200 font-medium">
+                  Experience total perfection in metalwork and construction with Mughal Steel Fabrication, Rawalpindi.
+                </p>
+              </div>
             </div>
             
             <Link 
               to="/portfolio"
-              className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1.5 uppercase tracking-wider"
+              className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1.5 uppercase tracking-wider shrink-0 self-start lg:self-start mt-1 bg-black/60 px-4 py-2.5 rounded-lg border border-brand-gold/40 shadow-md hover:border-brand-gold transition"
             >
               <span>Explore All {projects.length} Projects</span>
               <ArrowRight className="w-4 h-4" />

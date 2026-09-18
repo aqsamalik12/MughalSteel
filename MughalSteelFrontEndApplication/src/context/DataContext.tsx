@@ -122,7 +122,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [projects, setProjects] = useState<ProjectShowcase[]>(() => {
     try {
       const saved = localStorage.getItem('mfg_projects');
-      return saved ? JSON.parse(saved) : SEED_PROJECTS;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.some((p: any) => p.id === 'proj-gulberg-greens')) {
+          return parsed;
+        }
+      }
+      return SEED_PROJECTS;
     } catch {
       return SEED_PROJECTS;
     }

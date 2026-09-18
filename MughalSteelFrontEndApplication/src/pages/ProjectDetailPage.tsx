@@ -268,7 +268,7 @@ export const ProjectDetailPage: React.FC = () => {
               <Layers className="w-4 h-4" />
               <span>Project Overview & Scope</span>
             </h2>
-            <p className="text-slate-300 leading-relaxed font-sans text-xs sm:text-sm">
+            <p className="text-slate-300 leading-relaxed font-sans text-xs sm:text-sm whitespace-pre-line">
               {project.description}
             </p>
           </div>

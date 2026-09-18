@@ -81,7 +81,7 @@ export const AboutPage: React.FC = () => {
       <section 
         className="w-full relative py-20 md:py-32 bg-cover bg-center flex items-center justify-center text-center border-b border-brand-light/40 overflow-hidden"
         style={{ 
-          backgroundImage: `linear-gradient(to bottom, rgba(5,8,14,0.80), rgba(5,8,14,0.93)), url('/mughal-luxury-architectural-villa.jpg')` 
+          backgroundImage: `linear-gradient(to bottom, rgba(5,8,14,0.28), rgba(5,8,14,0.45)), url('/mughal-luxury-architectural-villa.jpg')` 
         }}
       >
         <div className="max-w-4xl px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
@@ -245,19 +245,19 @@ export const AboutPage: React.FC = () => {
             </div>
 
             <div className="lg:col-span-6">
-              <div className="relative aspect-[16/11] rounded-xl overflow-hidden border border-brand-gold/50 shadow-2xl group">
+              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-brand-gold/60 shadow-2xl bg-black group">
                 <img 
-                  src="/mughal-luxury-architectural-villa.jpg" 
-                  alt="Mughal Steel Architectural Metalwork & Fabrication" 
+                  src="/mughal-steel-workshop-master.jpg" 
+                  alt="Muhammad Qasim & Mughal Steel Fabrication Team - High Court Road Yard" 
                   onError={handleImageError}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent flex flex-col justify-end p-5 sm:p-6">
-                  <span className="font-mono text-xs font-bold text-brand-gold uppercase tracking-wider">
-                    High Court Road Fabrication Yard • Architectural Showcase
+                  <span className="font-mono text-xs font-bold text-brand-gold uppercase tracking-wider bg-black/80 px-2.5 py-1 rounded border border-brand-gold/40 self-start">
+                    High Court Road Yard • Muhammad Qasim & Expert Team
                   </span>
-                  <span className="text-xs text-slate-200 font-sans mt-1 leading-relaxed">
-                    Laser-cut architectural facade screens, luxury wrought iron doors, bespoke balcony balustrades, and wave canopy pergolas.
+                  <span className="text-xs text-slate-200 font-sans mt-2 leading-relaxed drop-shadow">
+                    Powered by skilled steel fabricators, welders, and operational managers who ensure high structural standards and precision.
                   </span>
                 </div>
               </div>
