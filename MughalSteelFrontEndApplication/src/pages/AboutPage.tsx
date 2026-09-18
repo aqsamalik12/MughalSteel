@@ -79,22 +79,22 @@ export const AboutPage: React.FC = () => {
       
       {/* Hero Banner with Executive Ownership & Location */}
       <section 
-        className="w-full relative py-20 md:py-28 bg-cover bg-center flex items-center justify-center text-center border-b border-brand-light/40"
+        className="w-full relative py-20 md:py-32 bg-cover bg-center flex items-center justify-center text-center border-b border-brand-light/40 overflow-hidden"
         style={{ 
-          backgroundImage: `linear-gradient(to bottom, rgba(5,8,14,0.85), rgba(5,8,14,0.95)), url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80')` 
+          backgroundImage: `linear-gradient(to bottom, rgba(5,8,14,0.80), rgba(5,8,14,0.93)), url('/mughal-luxury-architectural-villa.jpg')` 
         }}
       >
-        <div className="max-w-4xl px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-gold/15 border border-brand-gold/50 text-brand-gold text-xs font-mono font-bold uppercase tracking-widest rounded-full">
+        <div className="max-w-4xl px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-brand-gold/15 border border-brand-gold/50 text-brand-gold text-xs font-mono font-bold uppercase tracking-widest rounded-full backdrop-blur-md">
             <MapPin className="w-3.5 h-3.5" />
             <span>High Court Road, Rawalpindi • Muhammad Qasim</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-black text-stone-100 uppercase tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-black text-stone-100 uppercase tracking-tight leading-tight drop-shadow-2xl">
             ABOUT MUGHAL STEEL FABRICATION
           </h1>
 
-          <p className="text-slate-200 text-sm sm:text-base lg:text-lg leading-relaxed max-w-3xl mx-auto font-sans font-normal">
+          <p className="text-slate-200 text-sm sm:text-base lg:text-lg leading-relaxed max-w-3xl mx-auto font-sans font-normal drop-shadow">
             Mughal Steel Fabrication is a premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by <span className="text-brand-gold font-semibold">Muhammad Qasim</span>. The enterprise is recognized for combining traditional craftsmanship with modern engineering and digital workflows.
           </p>
 
@@ -167,26 +167,29 @@ export const AboutPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
             {coreServices.map((svc, idx) => {
               const Icon = svc.icon;
               return (
                 <div 
                   key={idx} 
-                  className="bg-brand-navy border border-brand-light/60 p-6 sm:p-7 rounded-xl space-y-3.5 hover:border-brand-gold/80 transition-all duration-300 shadow-xl group"
+                  className="bg-brand-navy/90 backdrop-blur-xs border border-brand-light/60 p-7 sm:p-8 rounded-xl space-y-4 hover:border-brand-gold/80 transition-all duration-300 shadow-xl group hover:bg-brand-medium/50"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="w-12 h-12 rounded-lg bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center text-brand-gold group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 rounded-xl bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center text-brand-gold group-hover:scale-110 transition-transform">
                       <Icon className="w-6 h-6" />
                     </div>
-                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-brand-gold bg-brand-gold/10 px-3 py-1 rounded border border-brand-gold/30">
+                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-brand-gold bg-brand-gold/10 px-3 py-1 rounded-full border border-brand-gold/30">
                       {svc.badge}
                     </span>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-heading font-black text-stone-100 uppercase tracking-tight group-hover:text-brand-gold transition-colors">
+
+                  {/* Professional spacious heading with clean typography */}
+                  <h3 className="text-xl sm:text-2xl font-heading font-bold text-stone-100 tracking-wide leading-snug group-hover:text-brand-gold transition-colors pt-1">
                     {svc.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
+
+                  <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed pt-0.5">
                     {svc.desc}
                   </p>
                 </div>
@@ -242,19 +245,19 @@ export const AboutPage: React.FC = () => {
             </div>
 
             <div className="lg:col-span-6">
-              <div className="relative aspect-[16/11] rounded-xl overflow-hidden border border-brand-gold/40 shadow-2xl">
+              <div className="relative aspect-[16/11] rounded-xl overflow-hidden border border-brand-gold/50 shadow-2xl group">
                 <img 
-                  src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80" 
-                  alt="Mughal Steel Workshop & Fabrication Yard" 
+                  src="/mughal-luxury-architectural-villa.jpg" 
+                  alt="Mughal Steel Architectural Metalwork & Fabrication" 
                   onError={handleImageError}
-                  className="w-full h-full object-cover" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-5">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent flex flex-col justify-end p-5 sm:p-6">
                   <span className="font-mono text-xs font-bold text-brand-gold uppercase tracking-wider">
-                    Rawalpindi Dedicated Yard • High Court Road
+                    High Court Road Fabrication Yard • Architectural Showcase
                   </span>
-                  <span className="text-[11px] text-slate-300 font-sans mt-0.5">
-                    Modern metal processing machinery, certified welding bays, and structural alignment.
+                  <span className="text-xs text-slate-200 font-sans mt-1 leading-relaxed">
+                    Laser-cut architectural facade screens, luxury wrought iron doors, bespoke balcony balustrades, and wave canopy pergolas.
                   </span>
                 </div>
               </div>

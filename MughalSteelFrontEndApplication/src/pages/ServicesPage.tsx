@@ -73,16 +73,18 @@ export const ServicesPage: React.FC = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-transparent to-transparent" />
               </div>
 
-              <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2.5">
-                    {getIcon(serv.icon)}
-                    <h3 className="font-heading text-base font-bold text-stone-100 group-hover:text-brand-gold transition-colors uppercase">
+              <div className="p-6 sm:p-7 space-y-5 flex-1 flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="w-11 h-11 rounded-xl bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center text-brand-gold">
+                      {getIcon(serv.icon)}
+                    </div>
+                    <h3 className="font-heading text-lg sm:text-xl font-bold text-stone-100 group-hover:text-brand-gold transition-colors tracking-wide leading-snug pt-1">
                       {serv.title}
                     </h3>
                   </div>
 
-                  <p className="text-slate-300 text-xs leading-relaxed font-sans">
+                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-sans pt-1">
                     {serv.description}
                   </p>
 

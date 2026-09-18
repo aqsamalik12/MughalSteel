@@ -639,8 +639,14 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       {/* 2. ABOUT SECTION: 30+ YEARS HERITAGE & WORKFLOW */}
       {/* ======================================================== */}
-      <section id="about" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+      <section 
+        id="about" 
+        className="cv-auto scroll-mt-24 w-full relative border-b border-brand-light/40 py-16 md:py-24 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(8,13,23,0.92), rgba(8,13,23,0.96)), url('/mughal-luxury-architectural-villa.jpg')`
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
           
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
@@ -648,7 +654,7 @@ export const HomePage: React.FC = () => {
               <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block">
                 HIGH COURT ROAD, RAWALPINDI • MUHAMMAD QASIM
               </span>
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
+              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight drop-shadow-lg">
                 ABOUT MUGHAL STEEL FABRICATION
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-3xl">
@@ -664,7 +670,7 @@ export const HomePage: React.FC = () => {
           {/* Stats Row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             {aboutStats.map((s, idx) => (
-              <div key={idx} className="bg-brand-navy border border-brand-light/60 p-6 rounded-lg space-y-1 shadow-lg hover:border-brand-gold transition-all duration-300 card-interactive">
+              <div key={idx} className="bg-brand-navy/90 backdrop-blur-xs border border-brand-light/60 p-6 rounded-lg space-y-1 shadow-lg hover:border-brand-gold transition-all duration-300 card-interactive">
                 <p className="text-xl sm:text-2xl lg:text-3xl font-heading font-black text-brand-gold truncate">{s.value}</p>
                 <p className="text-slate-300 text-xs uppercase tracking-wider font-semibold font-mono">{s.label}</p>
               </div>
@@ -708,18 +714,21 @@ export const HomePage: React.FC = () => {
             </div>
 
             <div className="lg:col-span-6">
-              <div className="relative rounded-lg overflow-hidden border border-brand-gold/50 shadow-2xl bg-black aspect-[16/10]">
+              <div className="relative rounded-2xl overflow-hidden border border-brand-gold/50 shadow-2xl bg-black aspect-[16/10] group">
                 <img 
-                  src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1000&q=80" 
-                  alt="Mughal Steel Workshop & Fabrication Yard" 
+                  src="/mughal-luxury-architectural-villa.jpg" 
+                  alt="Mughal Steel Architectural Fabrication & Luxury Villa Metalwork" 
                   loading="lazy"
                   decoding="async"
                   onError={handleImageError}
-                  className="w-full h-full object-cover" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-5">
-                  <span className="text-xs font-mono font-bold text-brand-gold bg-brand-navy/90 px-3 py-1 rounded border border-brand-gold/40">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent flex flex-col justify-end p-5 sm:p-6">
+                  <span className="text-xs font-mono font-bold text-brand-gold bg-brand-navy/90 px-3 py-1 rounded border border-brand-gold/40 self-start">
                     High Court Road Fabrication Yard • Muhammad Qasim
+                  </span>
+                  <span className="text-xs text-slate-200 font-sans mt-1.5 leading-relaxed">
+                    Laser-cut architectural facade screens, luxury wrought iron doors, bespoke balcony balustrades, and wave canopy pergolas.
                   </span>
                 </div>
               </div>
@@ -1271,24 +1280,24 @@ export const HomePage: React.FC = () => {
               <div 
                 key={srv.id}
                 onClick={() => setActiveServiceModal(srv)}
-                className="group bg-brand-navy border border-brand-light/60 rounded-lg p-6 hover:border-brand-gold transition-all duration-300 shadow-lg flex flex-col justify-between space-y-4 cursor-pointer hover:bg-brand-medium/60 card-interactive"
+                className="group bg-brand-navy border border-brand-light/60 rounded-xl p-7 sm:p-8 hover:border-brand-gold transition-all duration-300 shadow-xl flex flex-col justify-between space-y-6 cursor-pointer hover:bg-brand-medium/60 card-interactive"
               >
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-lg bg-brand-gold/15 border border-brand-gold/40 shrink-0 group-hover:scale-110 transition-transform">
+                <div className="space-y-4">
+                  <div className="w-14 h-14 rounded-xl bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform p-3 text-brand-gold">
                     {srv.icon}
                   </div>
-                  <h3 className="font-heading font-black text-base text-stone-100 group-hover:text-brand-gold transition-colors uppercase">
+                  <h3 className="font-heading font-bold text-lg sm:text-xl text-stone-100 group-hover:text-brand-gold transition-colors tracking-wide leading-snug pt-1">
                     {srv.title}
                   </h3>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
                   {srv.desc}
                 </p>
 
-                <div className="pt-2 border-t border-brand-light/40 flex items-center justify-between text-xs font-heading font-bold text-brand-gold uppercase tracking-wider">
-                  <span className="group-hover:underline">Learn More</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                <div className="pt-3 border-t border-brand-light/40 flex items-center justify-between text-xs font-heading font-bold text-brand-gold uppercase tracking-wider">
+                  <span className="group-hover:underline">Learn More & View Specs</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                 </div>
               </div>
             ))}
