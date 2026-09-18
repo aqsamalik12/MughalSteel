@@ -469,62 +469,62 @@ export const HomePage: React.FC = () => {
           <div className="max-w-2xl lg:max-w-3xl space-y-5 sm:space-y-6 text-left">
             
             {/* Active Reel / Certification Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-brand-gold/50 text-brand-gold text-xs font-mono font-bold uppercase tracking-wider backdrop-blur-md shadow-md">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-[#cca04b]/50 text-[#cca04b] text-xs font-mono font-bold uppercase tracking-wider backdrop-blur-md shadow-md">
               <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-gold opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-gold"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#cca04b] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#cca04b]"></span>
               </span>
               <span>{heroSlides[currentSlide].badge}</span>
               <span className="text-white/40">|</span>
               <span className="text-stone-300 font-mono text-[11px]">0{currentSlide + 1} / 0{heroSlides.length}</span>
             </div>
 
-            {/* Fixed Main Brand Headline: Mughal.Steel with Fabrication underneath (smaller font size) */}
-            <div className="space-y-1 sm:space-y-1.5">
+            {/* Brand Hero Container matching reference image exactly */}
+            <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-4 sm:pl-6 space-y-3 sm:space-y-4">
               <h1 className="flex flex-col font-heading font-black tracking-tight drop-shadow-2xl">
-                <span className="text-3xl sm:text-5xl lg:text-[54px] text-white leading-[1.08]">
-                  Mughal<span className="text-brand-gold">.</span>Steel
+                <span className="text-4xl sm:text-6xl lg:text-[70px] text-[#cca04b] uppercase tracking-wide leading-none font-black">
+                  MUGHAL
                 </span>
-                <span className="text-2xl sm:text-4xl lg:text-[40px] text-brand-gold leading-tight mt-0.5 sm:mt-1 font-extrabold tracking-wide">
-                  Fabrication
+                <span className="text-2xl sm:text-4xl lg:text-[44px] text-white uppercase tracking-tight leading-tight mt-1 sm:mt-1.5 font-black">
+                  STEEL FABRICATION
                 </span>
               </h1>
-              {/* Dynamic Slide Topic / Project Headline */}
-              <p className="text-sm sm:text-lg lg:text-xl font-heading font-bold text-stone-200 uppercase tracking-wide drop-shadow transition-all pt-0.5">
-                {heroSlides[currentSlide].title}
+
+              {/* Tagline / Subtitle */}
+              <p className="text-sm sm:text-base lg:text-lg text-stone-200 font-sans font-medium drop-shadow-md">
+                Premium Steel Fabrication Solutions
               </p>
-            </div>
 
-            {/* Descriptive Subtitle */}
-            <p className="text-xs sm:text-sm lg:text-base text-stone-300/95 font-sans font-normal leading-relaxed max-w-2xl drop-shadow-md transition-all">
-              {heroSlides[currentSlide].description}
-            </p>
+              {/* Location Tag matching reference */}
+              <div className="flex items-center gap-2 text-stone-300 text-xs sm:text-sm font-sans font-medium drop-shadow">
+                <MapPin className="w-4 h-4 text-[#cca04b] shrink-0" />
+                <span>Rawalpindi, Islamabad</span>
+              </div>
 
-            {/* Hero Action Buttons & Direct Call: Orange "Get A Quote →" matching reference */}
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1">
-              <Link 
-                to="/quote" 
-                className="inline-flex items-center gap-2 bg-[#f38300] hover:bg-[#ff9514] text-white font-heading font-black text-xs sm:text-sm uppercase tracking-wider px-7 sm:px-8 py-3.5 rounded-full shadow-xl hover:shadow-[0_0_25px_rgba(243,131,0,0.55)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-              >
-                <span>Get A Quote</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              {/* Action Buttons matching reference image */}
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1 sm:pt-2">
+                <Link 
+                  to="/projects" 
+                  className="inline-flex items-center justify-center bg-[#cca04b] hover:bg-[#d8ad56] text-stone-950 font-heading font-bold text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md shadow-lg hover:shadow-[0_0_20px_rgba(204,160,75,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                >
+                  <span>Explore Projects</span>
+                </Link>
 
-              <Link 
-                to="/items" 
-                className="inline-flex items-center gap-2 bg-black/40 hover:bg-black/65 text-stone-100 hover:text-white border border-brand-gold/60 hover:border-brand-gold font-heading font-bold text-xs sm:text-sm uppercase tracking-wider px-6 py-3.5 rounded-full backdrop-blur-md shadow-lg transition-all cursor-pointer"
-              >
-                <Sparkles className="w-4 h-4 text-brand-gold" />
-                <span>Explore Products</span>
-              </Link>
+                <Link 
+                  to="/quote" 
+                  className="inline-flex items-center justify-center bg-black/50 hover:bg-black/80 text-white border border-stone-500/70 hover:border-stone-300 font-heading font-medium text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md backdrop-blur-md shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                >
+                  <span>Get a Free Quote</span>
+                </Link>
 
-              <a 
-                href="tel:03005197825"
-                className="inline-flex items-center gap-2 text-white hover:text-brand-gold font-heading font-bold text-xs sm:text-sm tracking-wider px-3 py-2 transition-colors drop-shadow"
-              >
-                <Phone className="w-4 h-4 text-[#f38300]" />
-                <span className="font-mono font-bold text-stone-100">0300-5197825</span>
-              </a>
+                <a 
+                  href="tel:03005197825"
+                  className="inline-flex items-center gap-2 text-white hover:text-[#cca04b] font-heading font-bold text-xs sm:text-sm tracking-wider px-3 py-2 transition-colors drop-shadow"
+                >
+                  <Phone className="w-4 h-4 text-[#cca04b]" />
+                  <span className="font-mono font-bold text-stone-100">0300-5197825</span>
+                </a>
+              </div>
             </div>
 
             {/* Verified Trust Badges */}
