@@ -77,7 +77,7 @@ export const Footer: React.FC = () => {
             </Link>
 
             <p className="text-xs text-slate-400 leading-relaxed">
-              Premier industrial & architectural steel fabrication in Pakistan. Specializing in modern CNC laser-cut entrance gates, classical wrought iron work, structural sheds, and aluminum & glass facades.
+              Premier metal fabrication business on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. Combining traditional craftsmanship with modern engineering and digital workflows.
             </p>
 
             {/* Direct Contact Details */}

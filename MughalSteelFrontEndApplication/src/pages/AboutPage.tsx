@@ -2,165 +2,357 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { 
-  ShieldCheck, Hammer, Award, Factory, Sparkles, 
-  MapPin, CheckCircle2, MessageCircle, ArrowRight 
+  Hammer, Factory, Sparkles, 
+  MapPin, CheckCircle2, MessageCircle, ArrowRight,
+  Cpu, Layers, FileText, Share2, Phone
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
-import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
+import { handleImageError } from '../utils/imageFallback';
 
 export const AboutPage: React.FC = () => {
   useSEO({
-    title: 'About Mughal Steel Fabrication | Quality Steel Fabrication',
-    description: 'Learn about Mughal Steel Fabrication, our 30+ year engineering heritage in Rawalpindi & Islamabad, and our certified 14-gauge structural steel standards.',
-    keywords: 'About Mughal Steel, steel fabricators Pakistan, metal workshop Rawalpindi, gate manufacturers Islamabad',
+    title: 'About Mughal Steel Fabrication | High Court Road, Rawalpindi',
+    description: 'Mughal Steel Fabrication is a premier metal fabrication business on High Court Road, Rawalpindi, owned & operated by Muhammad Qasim. Traditional craftsmanship, modern engineering, and digital 3D workflows.',
+    keywords: 'Mughal Steel Fabrication, Muhammad Qasim, High Court Road Rawalpindi, metal fabrication Rawalpindi Islamabad, custom ironwork, steel stairs, laser cut gates',
     url: '/about'
   });
 
-  const { settings, getWhatsAppUrl } = useData();
+  const { getWhatsAppUrl } = useData();
 
   useEffect(() => { 
     window.scrollTo(0, 0); 
   }, []);
 
-  const stats = [
-    { value: '30+', label: 'Years of Metal Heritage' },
-    { value: '5,000+', label: 'Gates & Railings Fabricated' },
-    { value: '10-Year', label: 'Anti-Sag Structural Warranty' },
-    { value: '100%', label: 'Certified 14G/16G MS Steel' }
+  const coreServices = [
+    {
+      title: 'Custom Ironwork',
+      desc: 'Specializes in bespoke wrought iron and cast iron fabrications, such as double-height main entrance doors, security gates, ornamental window panels, and safety grills.',
+      icon: Hammer,
+      badge: 'Bespoke Forge'
+    },
+    {
+      title: 'Staircase Engineering',
+      desc: 'Designs and constructs mild steel staircases including spiral, L-shaped, cantilevered, and single-beam stairs integrated with marble treads.',
+      icon: Layers,
+      badge: 'Structural Design'
+    },
+    {
+      title: 'Architectural & Outdoor Structures',
+      desc: 'Fabricates tempered glass balcony railings, CNC laser-cut metal panels, outdoor perimeter fencing, and retractable wave canopy pergolas using tensile fabric.',
+      icon: Sparkles,
+      badge: 'Modern Exterior'
+    },
+    {
+      title: 'Industrial & Heavy Works',
+      desc: 'Provides heavy structural steel fabrication and high-tensile architectural steel solutions tailored to residential and commercial projects.',
+      icon: Factory,
+      badge: 'Heavy Fabrication'
+    }
   ];
 
-  const milestones = [
-    { year: '1996', title: 'Foundation & Forging Heritage', desc: 'Established as an artisan blacksmith and architectural iron forge workshop in Rawalpindi & Islamabad.' },
-    { year: '2010', title: 'CNC Laser & Automation', desc: 'Introduced industrial fiber laser cutting technology and motorized sliding/swing automation.' },
-    { year: '2018', title: 'Multi-City Expansion', desc: 'Deployed dedicated installation teams across Islamabad, Rawalpindi, Lahore, and KPK.' },
-    { year: '2026', title: 'Digital Visual Showroom', desc: 'Launched live Try at Home elevation visualizer studio and transparent square-foot calculator.' }
+  const digitalWorkflow = [
+    {
+      step: '01',
+      title: '3D Renders & Design',
+      desc: 'Utilizes advanced AI image generation and 3D rendering tools to give clients a live visual preview of custom gates, stairs, and structures before production begins.',
+      icon: Cpu,
+      highlight: 'AI & 3D Previews'
+    },
+    {
+      step: '02',
+      title: 'Streamlined Consultation',
+      desc: 'Employs WhatsApp catalogs, digital rate lists, and instant quotation frameworks to simplify customer communication and project estimates.',
+      icon: FileText,
+      highlight: 'Transparent Estimates'
+    },
+    {
+      step: '03',
+      title: 'Digital Marketing & Reach',
+      desc: 'Maintains an active online presence across social media platforms (Facebook, Instagram, TikTok, and YouTube) with targeted campaigns to connect with residential and commercial clients across the twin cities.',
+      icon: Share2,
+      highlight: 'Twin Cities Reach'
+    }
   ];
 
   return (
     <div className="w-full bg-[#05080E] min-h-screen text-stone-100 font-sans animate-fade-in">
       
-      {/* Hero Banner */}
+      {/* Hero Banner with Executive Ownership & Location */}
       <section 
         className="w-full relative py-20 md:py-28 bg-cover bg-center flex items-center justify-center text-center border-b border-brand-light/40"
         style={{ 
           backgroundImage: `linear-gradient(to bottom, rgba(5,8,14,0.85), rgba(5,8,14,0.95)), url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80')` 
         }}
       >
-        <div className="max-w-4xl px-4 sm:px-6 lg:px-8 space-y-5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-[11px] font-heading font-black uppercase tracking-widest rounded-sm">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>MASTER CRAFTSMEN IN ARCHITECTURAL STEEL</span>
+        <div className="max-w-4xl px-4 sm:px-6 lg:px-8 space-y-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-gold/15 border border-brand-gold/50 text-brand-gold text-xs font-mono font-bold uppercase tracking-widest rounded-full">
+            <MapPin className="w-3.5 h-3.5" />
+            <span>High Court Road, Rawalpindi • Muhammad Qasim</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-black text-stone-100 uppercase tracking-tight leading-tight">
             ABOUT MUGHAL STEEL FABRICATION
           </h1>
 
-          <p className="text-slate-300 text-xs sm:text-base leading-relaxed max-w-2xl mx-auto font-sans">
-            Combining traditional blacksmith forge artistry with millimeter-precise CNC fiber laser cutting to create iconic gates, railings, floating staircases, and luxury facades.
+          <p className="text-slate-200 text-sm sm:text-base lg:text-lg leading-relaxed max-w-3xl mx-auto font-sans font-normal">
+            Mughal Steel Fabrication is a premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by <span className="text-brand-gold font-semibold">Muhammad Qasim</span>. The enterprise is recognized for combining traditional craftsmanship with modern engineering and digital workflows.
           </p>
 
-          <div className="pt-2 flex flex-wrap justify-center gap-3">
-            <Link to="/categories" className="btn-gold text-xs py-3 px-6 font-bold uppercase tracking-wider">
-              Explore 10 Categories
+          <div className="pt-3 flex flex-wrap justify-center gap-3.5">
+            <Link to="/quote" className="btn-gold text-xs py-3 px-7 font-bold uppercase tracking-wider shadow-lg">
+              Get an Instant Quote
             </Link>
             <a 
-              href={getWhatsAppUrl('Hello Mughal Steel, I would like to learn more about your fabrication services.')}
+              href={getWhatsAppUrl('Hello Muhammad Qasim, I would like to consult regarding custom steel fabrication for my project.')}
               target="_blank" 
               rel="noopener noreferrer"
-              className="btn-whatsapp text-xs py-3 px-6 font-bold uppercase tracking-wider flex items-center gap-2"
+              className="btn-whatsapp text-xs py-3 px-7 font-bold uppercase tracking-wider flex items-center gap-2 shadow-lg"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>Connect on WhatsApp</span>
+              <span>WhatsApp Consultation</span>
+            </a>
+            <a 
+              href="tel:03005197825"
+              className="inline-flex items-center gap-2 bg-black/50 hover:bg-black/75 border border-stone-600 text-stone-200 hover:text-white text-xs py-3 px-6 rounded font-heading font-bold uppercase tracking-wider transition-colors"
+            >
+              <Phone className="w-4 h-4 text-brand-gold" />
+              <span>0300-5197825</span>
             </a>
           </div>
         </div>
       </section>
 
-      {/* Stats Bar */}
-      <section className="w-full bg-brand-navy/80 border-b border-brand-light/40 py-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-          {stats.map((s, idx) => (
-            <div key={idx} className="space-y-1">
-              <p className="text-3xl sm:text-4xl font-heading font-black text-brand-gold">{s.value}</p>
-              <p className="text-slate-300 text-xs uppercase tracking-wider font-semibold font-mono">{s.label}</p>
-            </div>
-          ))}
+      {/* Core Brand Highlights Bar */}
+      <section className="w-full bg-brand-navy/90 border-b border-brand-light/40 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+          <div className="space-y-1">
+            <p className="text-xs font-mono uppercase tracking-widest text-slate-400">Ownership</p>
+            <p className="text-lg sm:text-xl font-heading font-black text-brand-gold">Muhammad Qasim</p>
+            <p className="text-[11px] text-slate-400">Owner & Operator</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs font-mono uppercase tracking-widest text-slate-400">Location</p>
+            <p className="text-lg sm:text-xl font-heading font-black text-brand-gold">High Court Road</p>
+            <p className="text-[11px] text-slate-400">Rawalpindi, Pakistan</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs font-mono uppercase tracking-widest text-slate-400">Workshop Yard</p>
+            <p className="text-lg sm:text-xl font-heading font-black text-brand-gold">Modern Machinery</p>
+            <p className="text-[11px] text-slate-400">Dedicated Fabrication Yard</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs font-mono uppercase tracking-widest text-slate-400">Digital Flow</p>
+            <p className="text-lg sm:text-xl font-heading font-black text-brand-gold">AI & 3D Renderings</p>
+            <p className="text-[11px] text-slate-400">Digital Lists & Instant Estimates</p>
+          </div>
         </div>
       </section>
 
-      {/* Main Story & Philosophy */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-20">
+      {/* Main Content Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-24">
         
-        {/* Story Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-6 space-y-5">
-            <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block">
-              OUR HERITAGE & MISSION
-            </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
-              Forging Architectural Statements That Endure Generations
-            </h2>
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-sans">
-              Mughal Steel Fabrication was founded with a dedicated mission: to elevate standard security metalwork into architectural masterpieces. We engineer structural steel solutions for prestigious housing societies, luxury modern residences, classical villas, and commercial complexes across Pakistan.
+        {/* SECTION 1: Core Specializations & Services */}
+        <section className="space-y-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-5">
+            <div className="space-y-2">
+              <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block">
+                1. CORE SPECIALIZATIONS & SERVICES
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
+                Craftsmanship Meets Heavy Engineering
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-md font-sans">
+              From bespoke classical ironwork to high-tensile structural steel for residential and commercial projects.
             </p>
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-sans">
-              Every gate, railing, staircase, and partition is constructed from heavy-gauge structural carbon steel (minimum 14-gauge certified), treated with active hot-zinc anti-corrosion primer, and cured in high-bake powder coating ovens.
-            </p>
+          </div>
 
-            <div className="grid grid-cols-2 gap-4 pt-2">
-              <div className="p-4 bg-brand-navy border border-brand-light/60 rounded-lg space-y-1">
-                <ShieldCheck className="w-5 h-5 text-brand-gold" />
-                <h4 className="font-heading font-bold text-xs text-stone-100 uppercase">10-Year Warranty</h4>
-                <p className="text-[11px] text-slate-400">Sag-free guarantee & chemical primer protection.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {coreServices.map((svc, idx) => {
+              const Icon = svc.icon;
+              return (
+                <div 
+                  key={idx} 
+                  className="bg-brand-navy border border-brand-light/60 p-6 sm:p-7 rounded-xl space-y-3.5 hover:border-brand-gold/80 transition-all duration-300 shadow-xl group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 rounded-lg bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center text-brand-gold group-hover:scale-110 transition-transform">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-brand-gold bg-brand-gold/10 px-3 py-1 rounded border border-brand-gold/30">
+                      {svc.badge}
+                    </span>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-heading font-black text-stone-100 uppercase tracking-tight group-hover:text-brand-gold transition-colors">
+                    {svc.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
+                    {svc.desc}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* SECTION 2: Workshop & Expert Team */}
+        <section className="bg-[#080D17] border border-brand-light/60 rounded-2xl p-6 sm:p-10 lg:p-12 shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            <div className="lg:col-span-6 space-y-6">
+              <div className="space-y-2">
+                <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block">
+                  2. WORKSHOP & EXPERT TEAM
+                </span>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
+                  High-Precision Yard in Rawalpindi
+                </h2>
               </div>
-              <div className="p-4 bg-brand-navy border border-brand-light/60 rounded-lg space-y-1">
-                <Hammer className="w-5 h-5 text-brand-gold" />
-                <h4 className="font-heading font-bold text-xs text-stone-100 uppercase">±0.1mm Precision</h4>
-                <p className="text-[11px] text-slate-400">High-power industrial fiber laser profiling.</p>
+
+              <div className="space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+                <div className="p-4 bg-brand-navy/90 border-l-4 border-brand-gold rounded-r-lg">
+                  <p className="font-semibold text-stone-100">
+                    Operates a dedicated fabrication yard in Rawalpindi equipped with modern machinery and tools.
+                  </p>
+                </div>
+                <div className="p-4 bg-brand-navy/90 border-l-4 border-brand-gold rounded-r-lg">
+                  <p className="font-semibold text-stone-100">
+                    Powered by skilled steel fabricators, welders, and operational managers who ensure high structural standards and precision.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
+                <div className="flex items-center gap-2.5 text-slate-200">
+                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
+                  <span>High Court Road Yard</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-slate-200">
+                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
+                  <span>Certified Welders & Fabricators</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-slate-200">
+                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
+                  <span>Modern Machinery & Tools</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-slate-200">
+                  <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
+                  <span>High Structural Standards</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-6">
+              <div className="relative aspect-[16/11] rounded-xl overflow-hidden border border-brand-gold/40 shadow-2xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80" 
+                  alt="Mughal Steel Workshop & Fabrication Yard" 
+                  onError={handleImageError}
+                  className="w-full h-full object-cover" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-5">
+                  <span className="font-mono text-xs font-bold text-brand-gold uppercase tracking-wider">
+                    Rawalpindi Dedicated Yard • High Court Road
+                  </span>
+                  <span className="text-[11px] text-slate-300 font-sans mt-0.5">
+                    Modern metal processing machinery, certified welding bays, and structural alignment.
+                  </span>
+                </div>
               </div>
             </div>
           </div>
+        </section>
 
-          <div className="lg:col-span-6">
-            <div className="relative aspect-[4/3] rounded-lg overflow-hidden border border-brand-gold/40 shadow-2xl">
-              <img 
-                src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80" 
-                alt="Mughal Steel Workshop" 
-                onError={handleImageError}
-                className="w-full h-full object-cover" 
-              />
-              <div className="absolute bottom-4 left-4 right-4 bg-black/85 backdrop-blur-md p-3.5 rounded border border-brand-light/60 flex items-center justify-between text-xs">
-                <span className="font-mono text-brand-gold font-bold">Rawalpindi & Islamabad Workshops</span>
-                <span className="text-slate-300 font-mono text-[11px]">Direct Laser Cutters</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Milestones Timeline */}
-        <div className="space-y-8">
-          <div className="text-center space-y-2 max-w-2xl mx-auto">
+        {/* SECTION 3: Digital Workflow & Client Consultation Process */}
+        <section className="space-y-10">
+          <div className="text-center space-y-3 max-w-3xl mx-auto">
             <span className="text-xs font-mono font-bold text-brand-gold uppercase tracking-widest">
-              EVOLUTION & TRACK RECORD
+              3. DIGITAL WORKFLOW & CLIENT CONSULTATION PROCESS
             </span>
-            <h3 className="text-2xl sm:text-3xl font-heading font-black text-stone-100 uppercase">
-              Three Decades of Engineering Excellence
+            <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
+              Modern Digital Workflows & Seamless Reach
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 font-sans">
+              From 3D previews to instant WhatsApp catalogs and twin-city digital marketing.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {digitalWorkflow.map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div 
+                  key={idx} 
+                  className="bg-brand-navy border border-brand-light/60 p-6 sm:p-7 rounded-xl space-y-4 hover:border-brand-gold transition-all duration-300 flex flex-col justify-between shadow-xl"
+                >
+                  <div className="space-y-3.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-mono font-black text-brand-gold/60">
+                        {item.step}
+                      </span>
+                      <div className="w-10 h-10 rounded-lg bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center text-brand-gold">
+                        <Icon className="w-5 h-5" />
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-heading font-black text-stone-100 uppercase">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-brand-light/40">
+                    <span className="text-[11px] font-mono text-brand-gold font-bold uppercase tracking-wider">
+                      ✦ {item.highlight}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Executive Direct Contact & Quote CTA */}
+        <section className="bg-gradient-to-r from-brand-navy via-[#0C1424] to-brand-navy border border-brand-gold/40 rounded-2xl p-8 sm:p-12 text-center space-y-6 shadow-2xl">
+          <div className="max-w-2xl mx-auto space-y-3">
+            <span className="text-xs font-mono font-bold text-brand-gold uppercase tracking-widest">
+              DIRECT CONSULTATION WITH MUHAMMAD QASIM
+            </span>
+            <h3 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase">
+              Ready to Discuss Your Project?
             </h3>
+            <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
+              Connect directly with Muhammad Qasim and our engineering team for instant WhatsApp catalogs, 3D render previews, and precise project estimates.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {milestones.map((m, idx) => (
-              <div key={idx} className="p-5 bg-brand-navy border border-brand-light/60 rounded-lg space-y-3 relative hover:border-brand-gold transition-colors">
-                <span className="text-2xl font-mono font-black text-brand-gold block">{m.year}</span>
-                <h4 className="font-heading font-bold text-sm text-stone-100 uppercase">{m.title}</h4>
-                <p className="text-xs text-slate-300 font-sans leading-relaxed">{m.desc}</p>
-              </div>
-            ))}
+          <div className="flex flex-wrap justify-center items-center gap-4 pt-2">
+            <a 
+              href={getWhatsAppUrl('Hello Muhammad Qasim, I would like to get a quote and review designs for my project.')}
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="btn-whatsapp text-xs py-3.5 px-8 font-bold uppercase tracking-wider flex items-center gap-2 shadow-xl"
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span>Connect on WhatsApp</span>
+            </a>
+            <Link 
+              to="/quote" 
+              className="btn-gold text-xs py-3.5 px-8 font-bold uppercase tracking-wider flex items-center gap-2 shadow-xl"
+            >
+              <span>Request Instant Quote</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link 
+              to="/projects" 
+              className="inline-flex items-center gap-2 bg-black/60 hover:bg-black/85 border border-stone-600 hover:border-brand-gold text-stone-200 hover:text-white text-xs py-3.5 px-6 rounded font-heading font-bold uppercase tracking-wider transition-colors"
+            >
+              <span>View Completed Projects</span>
+            </Link>
           </div>
-        </div>
+        </section>
 
-      </section>
+      </div>
 
     </div>
   );

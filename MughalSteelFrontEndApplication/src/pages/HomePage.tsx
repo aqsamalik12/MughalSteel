@@ -372,10 +372,10 @@ export const HomePage: React.FC = () => {
   ];
 
   const aboutStats = [
-    { value: '30+', label: 'Years of Metal Heritage' },
-    { value: '5,000+', label: 'Gates & Railings Fabricated' },
-    { value: '10-Year', label: 'Anti-Sag Structural Warranty' },
-    { value: '100%', label: 'Certified 14G/16G MS Steel' }
+    { value: 'Muhammad Qasim', label: 'Owner & Operator' },
+    { value: 'High Court Road', label: 'Rawalpindi, Pakistan' },
+    { value: '30+', label: 'Years Metal Heritage' },
+    { value: '100%', label: 'Heavy Structural Steel' }
   ];
 
   return (
@@ -645,14 +645,17 @@ export const HomePage: React.FC = () => {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
             <div className="space-y-1">
+              <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block">
+                HIGH COURT ROAD, RAWALPINDI • MUHAMMAD QASIM
+              </span>
               <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
                 ABOUT MUGHAL STEEL FABRICATION
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 font-sans">
-                Three decades of master metallurgy, high-tensile structural engineering, and artisan blacksmith heritage.
+              <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-3xl">
+                Premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. Recognized for combining traditional craftsmanship with modern engineering and digital workflows.
               </p>
             </div>
-            <Link to="/about" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1">
+            <Link to="/about" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1 shrink-0">
               <span>Read Full Story</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
@@ -662,7 +665,7 @@ export const HomePage: React.FC = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             {aboutStats.map((s, idx) => (
               <div key={idx} className="bg-brand-navy border border-brand-light/60 p-6 rounded-lg space-y-1 shadow-lg hover:border-brand-gold transition-all duration-300 card-interactive">
-                <p className="text-3xl sm:text-4xl font-heading font-black text-brand-gold">{s.value}</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-heading font-black text-brand-gold truncate">{s.value}</p>
                 <p className="text-slate-300 text-xs uppercase tracking-wider font-semibold font-mono">{s.label}</p>
               </div>
             ))}
@@ -672,34 +675,34 @@ export const HomePage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-6 space-y-4">
               <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block">
-                ENGINEERING EXCELLENCE
+                TRADITIONAL CRAFTSMANSHIP & DIGITAL WORKFLOWS
               </span>
               <h3 className="text-xl sm:text-3xl font-heading font-black text-stone-100 uppercase tracking-tight">
-                Precision Fiber Laser Cutting with Hand-Forged Durability
+                Dedicated Yard in Rawalpindi with Modern 3D & AI Design
               </h3>
               <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-sans">
-                Mughal Steel Fabrication elevates standard security metalwork into architectural statements. We fabricate structural steel solutions for prestigious housing societies, luxury modern residences, and commercial complexes across Pakistan.
+                Mughal Steel Fabrication is a premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. The enterprise is recognized for combining traditional craftsmanship with modern engineering and digital workflows.
               </p>
               <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-sans">
-                Every gate, railing, staircase, and partition is constructed from heavy-gauge structural carbon steel (minimum 14-gauge certified), treated with active hot-zinc anti-corrosion primer, and cured in high-bake powder coating ovens.
+                Operating a dedicated fabrication yard in Rawalpindi equipped with modern machinery and tools, powered by skilled steel fabricators, welders, and operational managers who ensure high structural standards and precision.
               </p>
 
               <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
                 <div className="flex items-center gap-2 text-slate-200">
                   <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
-                  <span>±0.1mm CNC Tolerances</span>
+                  <span>Custom Ironwork & Doors</span>
                 </div>
                 <div className="flex items-center gap-2 text-slate-200">
                   <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
-                  <span>Electrostatic Powder Coat</span>
+                  <span>Staircase Engineering</span>
                 </div>
                 <div className="flex items-center gap-2 text-slate-200">
                   <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
-                  <span>German Motor Automation</span>
+                  <span>Architectural Railings</span>
                 </div>
                 <div className="flex items-center gap-2 text-slate-200">
                   <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
-                  <span>On-Site Laser Leveling</span>
+                  <span>AI & 3D Visual Previews</span>
                 </div>
               </div>
             </div>
@@ -707,8 +710,8 @@ export const HomePage: React.FC = () => {
             <div className="lg:col-span-6">
               <div className="relative rounded-lg overflow-hidden border border-brand-gold/50 shadow-2xl bg-black aspect-[16/10]">
                 <img 
-                  src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80" 
-                  alt="Master fabricators at Mughal Steel" 
+                  src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1000&q=80" 
+                  alt="Mughal Steel Workshop & Fabrication Yard" 
                   loading="lazy"
                   decoding="async"
                   onError={handleImageError}
@@ -716,7 +719,7 @@ export const HomePage: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-5">
                   <span className="text-xs font-mono font-bold text-brand-gold bg-brand-navy/90 px-3 py-1 rounded border border-brand-gold/40">
-                    Industrial CNC Fiber Laser Line • Rawalpindi Workshop
+                    High Court Road Fabrication Yard • Muhammad Qasim
                   </span>
                 </div>
               </div>
