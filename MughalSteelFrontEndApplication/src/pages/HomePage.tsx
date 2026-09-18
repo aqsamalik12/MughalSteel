@@ -177,30 +177,8 @@ export const HomePage: React.FC = () => {
     }
   ];
 
-  const heroVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [previousSlide, setPreviousSlide] = useState<number | null>(null);
   const slideTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Automatically start and play the video whenever the active slide changes
-  useEffect(() => {
-    heroSlides.forEach((slide, idx) => {
-      const vid = heroVideoRefs.current[idx];
-      if (!vid) return;
-      if (idx === currentSlide) {
-        vid.currentTime = 0;
-        vid.muted = true;
-        const playPromise = vid.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            vid.muted = true;
-            vid.play().catch(() => {});
-          });
-        }
-      } else {
-        vid.pause();
-      }
-    });
-  }, [currentSlide]);
 
   // Helper to transition to a target slide with smooth crossfade
   const goToSlide = (nextIndex: number) => {
@@ -452,28 +430,36 @@ export const HomePage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="relative w-full h-full overflow-hidden bg-[#05080E]">
-                    {/* Instant visual fallback so there is NEVER a black screen */}
-                    {slide.poster && (
-                      <img 
-                        src={slide.poster}
-                        alt={slide.title}
-                        className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
-                      />
-                    )}
-                    <video
-                      ref={(el) => {
-                        heroVideoRefs.current[idx] = el;
-                        if (el) el.muted = true;
-                      }}
-                      src={slide.videoSrc}
-                      poster={slide.poster}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="auto"
+                    {/* Instant visual fallback image so there is NEVER a black flash */}
+                    <img 
+                      src={slide.poster}
+                      alt={slide.title}
                       className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
                     />
+                    {/* Active Native Video: autoplays smoothly when slide is active */}
+                    {isActive && (
+                      <video
+                        key={slide.videoSrc}
+                        src={slide.videoSrc}
+                        poster={slide.poster}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
+                        ref={(el) => {
+                          if (el) {
+                            el.muted = true;
+                            el.defaultMuted = true;
+                            el.play().catch(() => {});
+                          }
+                        }}
+                        onCanPlay={(e) => {
+                          e.currentTarget.muted = true;
+                          e.currentTarget.play().catch(() => {});
+                        }}
+                      />
+                    )}
                   </div>
                 )}
               </div>
