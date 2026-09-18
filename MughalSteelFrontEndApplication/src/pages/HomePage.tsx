@@ -82,7 +82,7 @@ export const HomePage: React.FC = () => {
   // =========================================================================
   // HERO SLIDER CONFIGURATION (Full-Width Cinematic Carousel)
   // Slide 0: Mughal Steel Rawalpindi Fabrication Team Photo (Uploaded by User)
-  // Slides 1-6: 6 Official Mughal Steel YouTube Showcase Videos
+  // Slides 1-6: 6 Official Mughal Steel Clean Native MP4 Showcase Videos (No YouTube UI/Clutter)
   // =========================================================================
   const heroSlides = [
     {
@@ -98,10 +98,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/items'
     },
     {
-      id: 'slide-yt-fQZGXcWxw0Q',
-      type: 'youtube' as const,
-      youtubeId: 'fQZGXcWxw0Q',
-      startTime: 3,
+      id: 'slide-vid-0',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_0.mp4',
       badge: 'Project Showcase • Structural Steel & Railings',
       title: 'Overview of Completed Projects & Railings',
       description: 'Site walkthrough of completed heavy architectural steel fabrication, precision laser-cut balustrades, and master metal engineering.',
@@ -111,10 +110,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/items'
     },
     {
-      id: 'slide-yt-YHK1SWPQpoA',
-      type: 'youtube' as const,
-      youtubeId: 'YHK1SWPQpoA',
-      startTime: 3,
+      id: 'slide-vid-1',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_1.mp4',
       badge: 'Site Handover • Gulberg Greens Islamabad',
       title: 'Gulberg Greens Luxury Villa Project',
       description: 'Turnkey architectural steel installation at Gulberg Greens featuring heavy entrance gates, security grills, and modern balcony railings.',
@@ -124,10 +122,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/items'
     },
     {
-      id: 'slide-yt-2bw7KK7sVFg',
-      type: 'youtube' as const,
-      youtubeId: '2bw7KK7sVFg',
-      startTime: 3,
+      id: 'slide-vid-2',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_2.mp4',
       badge: 'Live Workshop • CNC Fiber Laser Cutting',
       title: 'Precision CNC Laser Cutting & Heavy Fabrication',
       description: 'Live fabrication floor showcase: high-precision ±0.1mm CNC fiber laser cutting, certified structural welding, and anti-sag gate assembly.',
@@ -137,10 +134,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/custom-design'
     },
     {
-      id: 'slide-yt-fTgElLgHO1s',
-      type: 'youtube' as const,
-      youtubeId: 'fTgElLgHO1s',
-      startTime: 3,
+      id: 'slide-vid-3',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_3.mp4',
       badge: 'Architectural Showcase • DHA Islamabad',
       title: 'Crafting Excellence in Steel & Cast Iron at DHA',
       description: 'Premium estate metalwork completed at DHA Islamabad: classical cast iron balustrades, modern steel gates, and multi-stage powder coating.',
@@ -150,10 +146,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/projects'
     },
     {
-      id: 'slide-yt-9ccCSDyRn4Q',
-      type: 'youtube' as const,
-      youtubeId: '9ccCSDyRn4Q',
-      startTime: 3,
+      id: 'slide-vid-4',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_4.mp4',
       badge: 'Turnkey Handover • Cast Iron & Custom Doors',
       title: 'Luxury Cast Iron Railings & Custom Iron Doors',
       description: 'Custom hand-forged cast iron balustrades, heavy structural entrance doors, and ornamental architectural metal decor completed Alhamdulillah.',
@@ -163,10 +158,9 @@ export const HomePage: React.FC = () => {
       secondaryLink: '/items'
     },
     {
-      id: 'slide-yt-tdK_xYFThrI',
-      type: 'youtube' as const,
-      youtubeId: 'tdK_xYFThrI',
-      startTime: 3,
+      id: 'slide-vid-5',
+      type: 'video' as const,
+      videoSrc: '/videos/hero_video_5.mp4',
       badge: 'Engineering Precision • Stair Systems',
       title: 'Architectural Staircase & Spiral Steps Engineering',
       description: 'Engineered floating cantilever and spiral steel staircases designed to strict structural standards with zero deflection.',
@@ -226,59 +220,6 @@ export const HomePage: React.FC = () => {
       }
     };
   }, [isSliderPaused, currentSlide, heroSlides.length]);
-
-  // Touch swipe state for mobile gesture navigation without touching the video
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStartX(e.touches[0].clientX);
-    setTouchStartY(e.touches[0].clientY);
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX === null || touchStartY === null) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-    const diffX = touchStartX - touchEndX;
-    const diffY = touchStartY - touchEndY;
-
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
-      if (diffX > 0) {
-        nextSlide();
-      } else {
-        prevSlide();
-      }
-    }
-    setTouchStartX(null);
-    setTouchStartY(null);
-  };
-
-  // Auto-resume YouTube playback if player is ever paused or ended (prevents pause/stop button from appearing)
-  useEffect(() => {
-    const handleMessage = (e: MessageEvent) => {
-      try {
-        if (typeof e.data === 'string') {
-          const data = JSON.parse(e.data);
-          if (data.event === 'infoDelivery' && (data.info?.playerState === 2 || data.info?.playerState === 0)) {
-            const iframes = document.querySelectorAll('#home iframe');
-            iframes.forEach((el) => {
-              const iframe = el as HTMLIFrameElement;
-              iframe.contentWindow?.postMessage(
-                JSON.stringify({ event: 'command', func: 'playVideo', args: [] }),
-                '*'
-              );
-            });
-          }
-        }
-      } catch {
-        // ignore
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
 
   // Component unmount cleanup
   useEffect(() => {
@@ -446,11 +387,9 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       <section 
         id="home" 
-        className="relative scroll-mt-24 w-full h-[82vh] min-h-[580px] max-h-[850px] overflow-hidden bg-[#05080E] flex flex-col justify-between select-none touch-pan-y"
+        className="relative scroll-mt-24 w-full h-[82vh] min-h-[580px] max-h-[850px] overflow-hidden bg-[#05080E] flex flex-col justify-between select-none"
         onMouseEnter={() => setIsSliderPaused(true)}
         onMouseLeave={() => setIsSliderPaused(false)}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
         role="region"
         aria-roledescription="carousel"
         aria-label="Mughal Steel Production & Fabrication Showcase"
@@ -484,69 +423,38 @@ export const HomePage: React.FC = () => {
                     />
                   </div>
                 ) : (
-                  <div className="relative w-full h-full overflow-hidden bg-black pointer-events-none select-none">
-                    {/* High-res YouTube thumbnail poster */}
-                    <img 
-                      src={`https://img.youtube.com/vi/${slide.youtubeId}/hqdefault.jpg`}
-                      alt={slide.title}
-                      className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.82] contrast-[1.05] scale-110 pointer-events-none"
+                  <div className="relative w-full h-full overflow-hidden bg-black">
+                    <video
+                      key={slide.videoSrc}
+                      src={slide.videoSrc}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload={isActive ? 'auto' : 'metadata'}
+                      className="w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
+                      ref={(el) => {
+                        if (el) {
+                          el.muted = true;
+                          if (isActive) {
+                            el.play().catch(() => {});
+                          }
+                        }
+                      }}
                     />
-                    {/* Active YouTube Embed (Cropped top and bottom so YouTube title, controls & branding are 100% invisible) */}
-                    {isActive && (
-                      <div className="absolute inset-0 w-full h-full overflow-hidden">
-                        <iframe
-                          src={`https://www.youtube-nocookie.com/embed/${slide.youtubeId}?autoplay=1&mute=1&controls=0&rel=0&playsinline=1&modestbranding=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0&start=${slide.startTime ?? 3}`}
-                          title={slide.title}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          tabIndex={-1}
-                          style={{ pointerEvents: 'none', userSelect: 'none' }}
-                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-h-[125%] min-w-[178vh] scale-125 md:scale-[1.32] pointer-events-none select-none border-0"
-                        />
-                        {/* Direct iframe touch/click blocker with physical hit-testable layer */}
-                        <div 
-                          className="absolute inset-0 z-10 bg-black/[0.001] cursor-default select-none pointer-events-auto touch-manipulation"
-                          style={{ pointerEvents: 'auto' }}
-                          aria-hidden="true"
-                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                          onTouchStart={(e) => { e.stopPropagation(); }}
-                          onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                        />
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
             );
           })}
 
-          {/* Transparent Full-Bleed Interaction Shield:
-              Absorbs 100% of user taps/clicks so the background video can never be paused or display YouTube OSD controls */}
-          <div 
-            className="absolute inset-0 z-10 bg-black/[0.001] cursor-default select-none pointer-events-auto touch-manipulation"
-            style={{ pointerEvents: 'auto' }}
-            aria-hidden="true"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-            onTouchStart={(e) => { e.stopPropagation(); }}
-            onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          />
-
           {/* Cinematic Dark Gradient Overlays:
               - Left side gradient: Guarantees 100% crisp typography legibility matching FF Steel reference
-              - Top & bottom vignettes: Seamlessly masks headers and footers for pure cinematic video background */}
+              - Top & bottom vignettes: Seamless blend with navigation header and credential ribbons */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#05080E]/95 via-[#05080E]/80 to-transparent w-full md:w-3/4 lg:w-3/5 pointer-events-none z-10" />
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#05080E] via-[#05080E]/50 to-transparent pointer-events-none z-10" />
           <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#05080E]/90 via-[#05080E]/40 to-transparent pointer-events-none z-10" />
         </div>
-
-        {/* Global Section Touch & Click Interceptor (z-15) */}
-        <div 
-          className="absolute inset-0 z-15 bg-black/[0.001] cursor-default select-none pointer-events-auto touch-manipulation"
-          style={{ pointerEvents: 'auto' }}
-          aria-hidden="true"
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          onTouchStart={(e) => { e.stopPropagation(); }}
-          onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
-        />
 
         {/* Desktop Previous / Next Navigation Arrows */}
         <button 
