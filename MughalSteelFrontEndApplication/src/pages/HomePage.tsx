@@ -558,25 +558,6 @@ export const HomePage: React.FC = () => {
           <ChevronRight className="w-6 h-6" />
         </button>
 
-        {/* Hero Audio Toggle Button (Unmute / Mute Video) */}
-        <button
-          onClick={() => setIsHeroMuted(!isHeroMuted)}
-          aria-label={isHeroMuted ? "Unmute Video" : "Mute Video"}
-          className="absolute right-4 lg:right-6 bottom-14 sm:bottom-16 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/85 border border-white/25 hover:border-brand-gold text-white hover:text-brand-gold text-xs font-heading font-medium backdrop-blur-md shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer"
-        >
-          {isHeroMuted ? (
-            <>
-              <VolumeX className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden sm:inline">Unmute Audio</span>
-            </>
-          ) : (
-            <>
-              <Volume2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-              <span className="hidden sm:inline">Audio On</span>
-            </>
-          )}
-        </button>
-
         {/* Hero Content Area: Left-Aligned within Dark Shadow Boundary (never crosses to the right) */}
         <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:pl-6 lg:pr-12 flex-1 flex flex-col justify-center py-6 sm:py-8 lg:py-10">
           <div className="w-full max-w-md sm:max-w-lg lg:max-w-[420px] xl:max-w-[440px] text-left -ml-1 sm:-ml-2">
@@ -748,10 +729,23 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom Pagination Bar: Circular Dots • • ⦿ • • & Floating "Online" Button */}
-        <div className="relative z-30 w-full pb-2 sm:pb-2.5">
-          {/* Bottom-Center Circular Dots matching reference image • • ⦿ • • */}
-          <div className="flex items-center justify-center gap-2.5 sm:gap-3" role="tablist" aria-label="Slider Pagination">
+        {/* Bottom Hero Controls Bar: Online Badge (Left) | Circular Pagination (Center) | Unmute Audio (Right) */}
+        <div className="relative z-30 w-full pb-2 sm:pb-2.5 px-3 sm:px-6 flex items-center justify-between">
+          {/* Left: Floating Online Badge */}
+          <div className="w-28 sm:w-36 flex justify-start">
+            <a 
+              href={whatsappDirect}
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex bg-[#f38300] hover:bg-[#ff9514] text-white font-heading font-black text-xs px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-t-lg shadow-2xl items-center gap-1.5 sm:gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer select-none"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-300 animate-ping" />
+              <span>Online</span>
+            </a>
+          </div>
+
+          {/* Center: Circular Pagination Dots • • ⦿ • • */}
+          <div className="flex items-center justify-center gap-2 sm:gap-3" role="tablist" aria-label="Slider Pagination">
             {heroSlides.map((slide, idx) => {
               const isActive = idx === currentSlide;
               return (
@@ -775,16 +769,26 @@ export const HomePage: React.FC = () => {
             })}
           </div>
 
-          {/* Floating Online Badge in Bottom-Right matching FF Steel Reference */}
-          <a 
-            href={whatsappDirect}
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex absolute bottom-0 right-6 z-30 bg-[#f38300] hover:bg-[#ff9514] text-white font-heading font-black text-xs px-5 py-2 rounded-t-lg shadow-2xl items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-300 animate-ping" />
-            <span>Online</span>
-          </a>
+          {/* Right: Unmute Audio Toggle Button */}
+          <div className="w-28 sm:w-36 flex justify-end">
+            <button
+              onClick={() => setIsHeroMuted(!isHeroMuted)}
+              aria-label={isHeroMuted ? "Unmute Video" : "Mute Video"}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/85 border border-white/25 hover:border-brand-gold text-white hover:text-brand-gold text-xs font-heading font-medium backdrop-blur-md shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer select-none"
+            >
+              {isHeroMuted ? (
+                <>
+                  <VolumeX className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="hidden sm:inline">Unmute Audio</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+                  <span className="hidden sm:inline">Audio On</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Continuous News Ticker Tape (Black Strip with White Text Moving Right-to-Left) */}
