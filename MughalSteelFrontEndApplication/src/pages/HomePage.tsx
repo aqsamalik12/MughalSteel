@@ -14,6 +14,7 @@ import { PROJECT_CATEGORIES_DATA, SEED_PROJECTS } from '../data/seedData';
 import { useSEO } from '../utils/useSEO';
 import { openDirectEmail } from '../utils/emailHelper';
 import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
+import { CountUp } from '../components/common/CountUp';
 
 
 export const HomePage: React.FC = () => {
@@ -1326,7 +1327,9 @@ export const HomePage: React.FC = () => {
                 <span className="text-xs font-mono font-bold uppercase">Experience</span>
                 <Award className="w-4 h-4" />
               </div>
-              <p className="text-2xl sm:text-3xl font-heading font-black text-white">Since 1994</p>
+              <p className="text-2xl sm:text-3xl font-heading font-black text-white">
+                <CountUp end={1994} duration={1000} prefix="Since " />
+              </p>
               <p className="text-[11px] text-slate-400 font-sans">30+ Years of Metalworking &amp; Structural Heritage</p>
             </div>
 
@@ -1335,7 +1338,9 @@ export const HomePage: React.FC = () => {
                 <span className="text-xs font-mono font-bold uppercase">Completed</span>
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               </div>
-              <p className="text-2xl sm:text-3xl font-heading font-black text-white">1,500+ Projects</p>
+              <p className="text-2xl sm:text-3xl font-heading font-black text-white">
+                <CountUp end={1500} duration={1000} suffix="+ Projects" separator={true} />
+              </p>
               <p className="text-[11px] text-slate-400 font-sans">Delivered Nationwide with Zero Defect Rate</p>
             </div>
 
@@ -1344,7 +1349,9 @@ export const HomePage: React.FC = () => {
                 <span className="text-xs font-mono font-bold uppercase">Certified Standard</span>
                 <ShieldCheck className="w-4 h-4 text-brand-gold" />
               </div>
-              <p className="text-2xl sm:text-3xl font-heading font-black text-white">100% Gauge</p>
+              <p className="text-2xl sm:text-3xl font-heading font-black text-white">
+                <CountUp end={100} duration={1000} suffix="% Gauge" />
+              </p>
               <p className="text-[11px] text-slate-400 font-sans">14G / 12G Certified High-Tensile Mild Steel</p>
             </div>
 
@@ -1353,7 +1360,9 @@ export const HomePage: React.FC = () => {
                 <span className="text-xs font-mono font-bold uppercase">Warranty</span>
                 <Clock className="w-4 h-4 text-amber-400" />
               </div>
-              <p className="text-2xl sm:text-3xl font-heading font-black text-white">10-Year Cover</p>
+              <p className="text-2xl sm:text-3xl font-heading font-black text-white">
+                <CountUp end={10} duration={1000} suffix="-Year Cover" />
+              </p>
               <p className="text-[11px] text-slate-400 font-sans">Official Structural Strength &amp; Anti-Rust Guarantee</p>
             </div>
           </div>
