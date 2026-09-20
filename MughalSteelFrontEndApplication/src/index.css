@@ -458,16 +458,74 @@ html.light ::-webkit-scrollbar-thumb {
 /* ======================================================== */
 /* 1. FRONT PAGE: STRICTLY ZERO ANIMATIONS                  */
 /* ======================================================== */
-/* 1. FRONT PAGE HERO (#home): STRICTLY ZERO ANIMATIONS     */
+/* 1. EASY SLIDE IN ANIMATION (FOR ALL HEADINGS ON SITE)    */
+/* Named literally 'easySlideIn' and 'easy-slide-in'        */
+/* ======================================================== */
+@keyframes easySlideIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(-48px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes easy-slide-in {
+  0% {
+    opacity: 0;
+    transform: translate3d(-48px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Base application for all headings across the entire site */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.heading-spaced,
+.easy-slide-in,
+.easySlideIn {
+  animation-name: easySlideIn;
+  animation-duration: 0.9s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+  will-change: transform, opacity;
+}
+
+/* Staggered cascading timing for section headings */
+h2 {
+  animation-duration: 0.95s;
+  animation-delay: 0.08s;
+}
+
+h3 {
+  animation-duration: 1s;
+  animation-delay: 0.15s;
+}
+
+h4,
+h5,
+h6 {
+  animation-duration: 1.05s;
+  animation-delay: 0.22s;
+}
+
+/* ======================================================== */
+/* 2. FRONT PAGE HERO (#home): STRICTLY ZERO ANIMATIONS     */
 /* Front page hero section stays completely static & stable */
 /* ======================================================== */
 #home,
 #home *,
 #home *::before,
-#home *::after {
-  animation: none !important;
-}
-
+#home *::after,
 #home h1,
 #home h2,
 #home h3,
@@ -504,92 +562,16 @@ html.light ::-webkit-scrollbar-thumb {
   animation: none !important;
 }
 
-/* ======================================================== */
-/* 2. EASY SLIDE IN ANIMATION (REST OF THE ENTIRE WEBSITE)  */
-/* Named literally 'easySlideIn' and 'easy-slide-in'        */
-/* Applied to every heading text across the website         */
-/* ======================================================== */
-@keyframes easySlideIn {
-  0% {
-    opacity: 0;
-    transform: translate3d(-38px, 0, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes easy-slide-in {
-  0% {
-    opacity: 0;
-    transform: translate3d(-38px, 0, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-/* Base application for all headings outside #home across the entire site */
-h1:not(#home *),
-h2:not(#home *),
-h3:not(#home *),
-h4:not(#home *),
-h5:not(#home *),
-h6:not(#home *),
-.heading-spaced:not(#home *),
-.easy-slide-in,
-.easySlideIn {
-  animation-name: easySlideIn;
-  animation-duration: 0.85s;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  animation-fill-mode: both;
-  will-change: transform, opacity;
-}
-
-/* Staggered cascading timing for section headings */
-h2:not(#home *) {
-  animation-duration: 0.9s;
-  animation-delay: 0.08s;
-}
-
-h3:not(#home *) {
-  animation-duration: 0.95s;
-  animation-delay: 0.15s;
-}
-
-h4:not(#home *),
-h5:not(#home *),
-h6:not(#home *) {
-  animation-duration: 1s;
-  animation-delay: 0.22s;
-}
-
-/* Scroll-triggered re-animation: when heading scrolls into view */
-.easy-slide-in-trigger {
-  opacity: 0;
-  transform: translate3d(-38px, 0, 0);
-  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.easy-slide-in-trigger.in-view {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-  animation: easySlideIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) both !important;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  h1:not(#home *),
-  h2:not(#home *),
-  h3:not(#home *),
-  h4:not(#home *),
-  h5:not(#home *),
-  h6:not(#home *),
-  .heading-spaced:not(#home *),
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .heading-spaced,
   .easy-slide-in,
-  .easySlideIn,
-  .easy-slide-in-trigger {
+  .easySlideIn {
     animation: none !important;
     transform: none !important;
     opacity: 1 !important;
