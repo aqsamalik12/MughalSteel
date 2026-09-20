@@ -573,7 +573,7 @@ h6 {
 #home .news-ticker-track {
   display: flex !important;
   width: max-content !important;
-  animation: newsTickerScroll 36s linear infinite !important;
+  animation: newsTickerScroll 75s linear infinite !important;
   transform: translate3d(0, 0, 0);
   will-change: transform !important;
 }
