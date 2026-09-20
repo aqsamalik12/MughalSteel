@@ -196,6 +196,34 @@ export const HomePage: React.FC = () => {
     }
   ];
 
+  // Continuous Right-to-Left News Ticker tape highlights ("Why Choose Us")
+  const whyChooseUsTickerItems = [
+    {
+      title: 'Nationwide Service',
+      text: 'Delivering premium steel fabrication and structural solutions all across Pakistan.'
+    },
+    {
+      title: 'Tailored for Every Structure',
+      text: "Whether it's a modern house, a classic villa, or a commercial plaza, customized to your exact architectural style."
+    },
+    {
+      title: 'Precision & Gauge Standards',
+      text: 'Guaranteed structural strength using certified material gauges (14G / 12G) and accurate fabrication standards.'
+    },
+    {
+      title: 'Expert Craftsmanship',
+      text: 'Backed by professional expertise and precision MS projects nationwide since 1994.'
+    },
+    {
+      title: '10-Year Warranty',
+      text: 'Official structural weld strength & anti-corrosion chemical guarantee.'
+    },
+    {
+      title: 'Free Laser Survey & Estimation',
+      text: 'Twin Cities (Islamabad / Rawalpindi) & Nationwide Site Support • Call 0300-5197825'
+    }
+  ];
+
   const [previousSlide, setPreviousSlide] = useState<number | null>(null);
   const slideTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -534,7 +562,7 @@ export const HomePage: React.FC = () => {
         <button
           onClick={() => setIsHeroMuted(!isHeroMuted)}
           aria-label={isHeroMuted ? "Unmute Video" : "Mute Video"}
-          className="absolute right-4 lg:right-6 bottom-4 sm:bottom-6 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/85 border border-white/25 hover:border-brand-gold text-white hover:text-brand-gold text-xs font-heading font-medium backdrop-blur-md shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          className="absolute right-4 lg:right-6 bottom-14 sm:bottom-16 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/85 border border-white/25 hover:border-brand-gold text-white hover:text-brand-gold text-xs font-heading font-medium backdrop-blur-md shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer"
         >
           {isHeroMuted ? (
             <>
@@ -644,27 +672,6 @@ export const HomePage: React.FC = () => {
                       Durable outdoor fencing systems and modern retractable shade pergolas with tensile fabric.
                     </p>
                   </div>
-
-                  {/* Why Choose Us Section */}
-                  <div className="pt-1 border-t border-white/10">
-                    <h2 className="text-xs font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 decoration-[#cca04b]">
-                      WHY CHOOSE US?
-                    </h2>
-                    <div className="mt-1 space-y-0.5 text-[10px] sm:text-[11px] text-stone-100 font-sans leading-snug drop-shadow">
-                      <p>
-                        <strong className="text-white font-bold">Nationwide Service:</strong> Delivering premium steel fabrication and structural solutions all across Pakistan.
-                      </p>
-                      <p>
-                        <strong className="text-white font-bold">Tailored for Every Structure:</strong> Whether it's a modern house, a classic villa, or a commercial plaza, we deliver solutions customized to your exact architectural style.
-                      </p>
-                      <p>
-                        <strong className="text-white font-bold">Precision &amp; Gauge Standards:</strong> Guaranteed structural strength using certified material gauges and accurate fabrication standards.
-                      </p>
-                      <p>
-                        <strong className="text-white font-bold">Expert Craftsmanship:</strong> Backed by professional expertise and precision MS projects nationwide.
-                      </p>
-                    </div>
-                  </div>
                 </div>
 
               </div>
@@ -742,7 +749,7 @@ export const HomePage: React.FC = () => {
         </div>
 
         {/* Bottom Pagination Bar: Circular Dots • • ⦿ • • & Floating "Online" Button */}
-        <div className="relative z-30 w-full pb-4 sm:pb-5">
+        <div className="relative z-30 w-full pb-2 sm:pb-2.5">
           {/* Bottom-Center Circular Dots matching reference image • • ⦿ • • */}
           <div className="flex items-center justify-center gap-2.5 sm:gap-3" role="tablist" aria-label="Slider Pagination">
             {heroSlides.map((slide, idx) => {
@@ -778,6 +785,48 @@ export const HomePage: React.FC = () => {
             <span className="w-2 h-2 rounded-full bg-emerald-300 animate-ping" />
             <span>Online</span>
           </a>
+        </div>
+
+        {/* Continuous News Ticker Tape (Black Strip with White Text Moving Right-to-Left) */}
+        <div className="relative z-30 w-full bg-black border-t border-b border-[#cca04b]/40 py-2 sm:py-2.5 overflow-hidden flex items-center shadow-2xl">
+          {/* Static Left Badge */}
+          <div className="shrink-0 bg-gradient-to-r from-[#cca04b] via-[#e6c87a] to-[#cca04b] text-brand-dark font-heading font-black text-[11px] sm:text-xs uppercase px-3 sm:px-4 py-1.5 flex items-center gap-1.5 z-20 shadow-md ml-0 select-none">
+            <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+            <span className="tracking-wider">WHY CHOOSE US</span>
+          </div>
+
+          {/* Marquee Viewport with Infinite Right-to-Left Gliding Track */}
+          <div className="overflow-hidden w-full flex items-center select-none py-0.5">
+            <div className="news-ticker-track flex items-center gap-8 whitespace-nowrap pl-4">
+              {/* Set 1 */}
+              {whyChooseUsTickerItems.map((item, idx) => (
+                <div key={`ticker-item-1-${idx}`} className="inline-flex items-center gap-2">
+                  <span className="text-[#cca04b] font-heading font-black text-xs sm:text-[13px] uppercase tracking-wider">
+                    {item.title}:
+                  </span>
+                  <span className="text-white font-medium text-xs sm:text-[13px] tracking-wide">
+                    {item.text}
+                  </span>
+                  <span className="text-[#cca04b] font-bold text-sm px-2 select-none">✦</span>
+                </div>
+              ))}
+              {/* Set 2 (Duplicate for Seamless Infinite Marquee Loop) */}
+              {whyChooseUsTickerItems.map((item, idx) => (
+                <div key={`ticker-item-2-${idx}`} className="inline-flex items-center gap-2" aria-hidden="true">
+                  <span className="text-[#cca04b] font-heading font-black text-xs sm:text-[13px] uppercase tracking-wider">
+                    {item.title}:
+                  </span>
+                  <span className="text-white font-medium text-xs sm:text-[13px] tracking-wide">
+                    {item.text}
+                  </span>
+                  <span className="text-[#cca04b] font-bold text-sm px-2 select-none">✦</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Subtle Fade Gradient on Right Edge */}
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black to-transparent z-10" />
         </div>
       </section>
 

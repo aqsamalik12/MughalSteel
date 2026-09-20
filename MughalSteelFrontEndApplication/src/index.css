@@ -519,22 +519,16 @@ h6 {
 }
 
 /* ======================================================== */
-/* 2. FRONT PAGE HERO (#home): STRICTLY ZERO ANIMATIONS     */
-/* Front page hero section stays completely static & stable */
+/* 2. FRONT PAGE HERO (#home): ZERO ANIMATIONS ON HEADINGS  */
+/* Front page hero headings stay static & stable            */
 /* ======================================================== */
-#home,
-#home *,
-#home *::before,
-#home *::after,
 #home h1,
 #home h2,
 #home h3,
 #home h4,
 #home h5,
 #home h6,
-#home .heading-spaced,
-#home p,
-#home span {
+#home .heading-spaced {
   animation: none !important;
   transform: none !important;
   perspective: none !important;
@@ -562,6 +556,33 @@ h6 {
   animation: none !important;
 }
 
+/* ======================================================== */
+/* 3. NEWS TICKER STRIP: BLACK BAR WITH CONTINUOUS SCROLL   */
+/* Glides right-to-left continuously like TV news tickers   */
+/* ======================================================== */
+@keyframes newsTickerScroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.news-ticker-track,
+#home .news-ticker-track {
+  display: flex !important;
+  width: max-content !important;
+  animation: newsTickerScroll 36s linear infinite !important;
+  transform: translate3d(0, 0, 0);
+  will-change: transform !important;
+}
+
+.news-ticker-track:hover,
+#home .news-ticker-track:hover {
+  animation-play-state: paused !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   h1,
   h2,
@@ -575,6 +596,10 @@ h6 {
     animation: none !important;
     transform: none !important;
     opacity: 1 !important;
+  }
+  .news-ticker-track,
+  #home .news-ticker-track {
+    animation: none !important;
   }
 }
 
