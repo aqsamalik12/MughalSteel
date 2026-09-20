@@ -94,10 +94,26 @@ export const HomePage: React.FC = () => {
   // Slide 0: Mughal Steel Rawalpindi Fabrication Team Photo (Uploaded by User)
   // Slides 1-6: 6 Official Mughal Steel YouTube Showcase Videos
   // =========================================================================
-  const heroSlides = [
+  interface HeroSlideItem {
+    id: string;
+    type: 'video' | 'image';
+    src?: string;
+    videoSrc?: string;
+    poster?: string;
+    youtubeId?: string;
+    badge: string;
+    title: string;
+    description: string;
+    ctaText: string;
+    ctaLink: string;
+    secondaryText: string;
+    secondaryLink: string;
+  }
+
+  const heroSlides: HeroSlideItem[] = [
     {
       id: 'slide-intro-video',
-      type: 'video' as const,
+      type: 'video',
       videoSrc: '/videos/video1.mp4',
       badge: 'Mughal Steel Workshop • High Court Road Yard',
       title: 'Specializing in Heavy Fabrication & Custom Solutions',
