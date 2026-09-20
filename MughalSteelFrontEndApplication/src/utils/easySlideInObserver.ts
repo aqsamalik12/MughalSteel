@@ -39,7 +39,13 @@ export function initEasySlideInObserver(): () => void {
           el.style.animation = 'none';
           // Trigger reflow to restart animation
           void el.offsetWidth;
-          el.style.animation = 'easySlideIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) both';
+          
+          let duration = '1.8s';
+          if (el.tagName === 'H2') duration = '1.9s';
+          else if (el.tagName === 'H3') duration = '2.0s';
+          else if (['H4', 'H5', 'H6'].includes(el.tagName)) duration = '2.1s';
+
+          el.style.animation = `easySlideIn ${duration} cubic-bezier(0.16, 1, 0.3, 1) both`;
         } else {
           el.classList.remove('in-view');
         }

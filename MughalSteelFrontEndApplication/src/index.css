@@ -494,7 +494,7 @@ h6,
 .easy-slide-in,
 .easySlideIn {
   animation-name: easySlideIn;
-  animation-duration: 0.9s;
+  animation-duration: 1.8s;
   animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   animation-fill-mode: both;
   will-change: transform, opacity;
@@ -502,20 +502,20 @@ h6,
 
 /* Staggered cascading timing for section headings */
 h2 {
-  animation-duration: 0.95s;
-  animation-delay: 0.08s;
+  animation-duration: 1.9s;
+  animation-delay: 0.1s;
 }
 
 h3 {
-  animation-duration: 1s;
-  animation-delay: 0.15s;
+  animation-duration: 2.0s;
+  animation-delay: 0.18s;
 }
 
 h4,
 h5,
 h6 {
-  animation-duration: 1.05s;
-  animation-delay: 0.22s;
+  animation-duration: 2.1s;
+  animation-delay: 0.25s;
 }
 
 /* ======================================================== */
