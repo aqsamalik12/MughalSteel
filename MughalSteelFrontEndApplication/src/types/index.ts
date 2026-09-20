@@ -410,6 +410,7 @@ export interface WebsiteSettings {
     youtube?: string;
     pinterest?: string;
     twitter?: string;
+    tiktok?: string;
   };
   formspreeEndpoint?: string;
 }

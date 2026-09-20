@@ -89,6 +89,7 @@ const DEFAULT_SETTINGS: WebsiteSettings = {
   socialLinks: {
     facebook: 'https://www.facebook.com/101947381864652?ref=PROFILE_EDIT_xav_ig_profile_page_web',
     instagram: 'https://www.instagram.com/mughalsteelfabrication/',
+    tiktok: 'https://www.tiktok.com/@mughalsteelfabrication?_r=1&_t=ZS-99t2eFpg3zs',
     linkedin: 'https://linkedin.com/company/mughalsteelfabrication',
     pinterest: 'https://pinterest.com/mughalsteelfabrication',
     twitter: 'https://twitter.com/mughalsteel',
