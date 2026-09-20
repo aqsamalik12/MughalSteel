@@ -19,6 +19,7 @@ import { CustomerLoginPage } from './pages/CustomerLoginPage';
 import { AdminLoginPage } from './pages/AdminLoginPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { scheduleIdlePrefetch } from './utils/prefetchRoutes';
+import { initEasySlideInObserver } from './utils/easySlideInObserver';
 
 // Lazy-Loaded Route Pages (Splits 1.28MB monolithic bundle into lightweight chunks)
 const CategoriesPage = lazy(() => import('./pages/CategoriesPage').then(m => ({ default: m.CategoriesPage })));
@@ -149,10 +150,14 @@ const AppContent: React.FC = () => {
   // Show header and footer across public browsing, hidden only on dedicated auth and admin portal pages
   const showNav = !isAdminPage && !isAuthPage;
 
-  // Ultra-low latency: Automatically prefetch primary routes in background idle cycles
+  // Ultra-low latency: Automatically prefetch primary routes & initialize easy slide in animations
   React.useEffect(() => {
     scheduleIdlePrefetch();
-  }, []);
+    const cleanupObserver = initEasySlideInObserver();
+    return () => {
+      cleanupObserver();
+    };
+  }, [location.pathname]);
 
   return (
     <div className={`flex flex-col min-h-screen transition-colors duration-300 font-sans ${

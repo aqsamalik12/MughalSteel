@@ -457,33 +457,26 @@ html.light ::-webkit-scrollbar-thumb {
 
 /* ======================================================== */
 /* 1. FRONT PAGE: STRICTLY ZERO ANIMATIONS                  */
-/* Guaranteed 100% static & stable per user request         */
 /* ======================================================== */
-.page-is-home,
-.page-is-home *,
-.page-is-home *::before,
-.page-is-home *::after,
-.page-home-root,
-.page-home-root *,
-.page-home-root *::before,
-.page-home-root *::after {
+/* 1. FRONT PAGE HERO (#home): STRICTLY ZERO ANIMATIONS     */
+/* Front page hero section stays completely static & stable */
+/* ======================================================== */
+#home,
+#home *,
+#home *::before,
+#home *::after {
   animation: none !important;
 }
 
-.page-is-home h1,
-.page-is-home h2,
-.page-is-home h3,
-.page-is-home h4,
-.page-is-home h5,
-.page-is-home h6,
-.page-is-home .heading-spaced,
-.page-home-root h1,
-.page-home-root h2,
-.page-home-root h3,
-.page-home-root h4,
-.page-home-root h5,
-.page-home-root h6,
-.page-home-root .heading-spaced {
+#home h1,
+#home h2,
+#home h3,
+#home h4,
+#home h5,
+#home h6,
+#home .heading-spaced,
+#home p,
+#home span {
   animation: none !important;
   transform: none !important;
   perspective: none !important;
@@ -491,41 +484,35 @@ html.light ::-webkit-scrollbar-thumb {
   text-shadow: none !important;
 }
 
-.page-is-home h1:hover,
-.page-is-home h2:hover,
-.page-is-home h3:hover,
-.page-is-home h4:hover,
-.page-is-home .heading-spaced:hover,
-.page-home-root h1:hover,
-.page-home-root h2:hover,
-.page-home-root h3:hover,
-.page-home-root h4:hover,
-.page-home-root .heading-spaced:hover {
+#home h1:hover,
+#home h2:hover,
+#home h3:hover,
+#home h4:hover,
+#home .heading-spaced:hover {
   transform: none !important;
   filter: none !important;
   text-shadow: none !important;
 }
 
-.page-is-home .card-interactive,
-.page-home-root .card-interactive {
+#home .card-interactive {
   animation: none !important;
   transform: none !important;
 }
 
-.page-is-home .card-interactive::after,
-.page-home-root .card-interactive::after {
+#home .card-interactive::after {
   display: none !important;
   animation: none !important;
 }
 
 /* ======================================================== */
-/* 2. OTHER PAGES: EASY SLIDE-IN ANIMATION FOR HEADINGS     */
-/* Smooth, gentle, professional slide-in effect             */
+/* 2. EASY SLIDE IN ANIMATION (REST OF THE ENTIRE WEBSITE)  */
+/* Named literally 'easySlideIn' and 'easy-slide-in'        */
+/* Applied to every heading text across the website         */
 /* ======================================================== */
 @keyframes easySlideIn {
   0% {
     opacity: 0;
-    transform: translate3d(-24px, 0, 0);
+    transform: translate3d(-38px, 0, 0);
   }
   100% {
     opacity: 1;
@@ -533,56 +520,80 @@ html.light ::-webkit-scrollbar-thumb {
   }
 }
 
+@keyframes easy-slide-in {
+  0% {
+    opacity: 0;
+    transform: translate3d(-38px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Base application for all headings outside #home across the entire site */
+h1:not(#home *),
+h2:not(#home *),
+h3:not(#home *),
+h4:not(#home *),
+h5:not(#home *),
+h6:not(#home *),
+.heading-spaced:not(#home *),
 .easy-slide-in,
-.page-is-other h1,
-.page-is-other h2,
-.page-is-other h3,
-.page-is-other h4,
-.page-is-other h5,
-.page-is-other h6,
-.page-is-other .heading-spaced {
-  animation: easySlideIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+.easySlideIn {
+  animation-name: easySlideIn;
+  animation-duration: 0.85s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
   will-change: transform, opacity;
 }
 
-.page-is-other h2 {
-  animation-duration: 0.8s;
+/* Staggered cascading timing for section headings */
+h2:not(#home *) {
+  animation-duration: 0.9s;
   animation-delay: 0.08s;
 }
 
-.page-is-other h3 {
-  animation-duration: 0.85s;
-  animation-delay: 0.14s;
+h3:not(#home *) {
+  animation-duration: 0.95s;
+  animation-delay: 0.15s;
 }
 
-.page-is-other h4,
-.page-is-other h5,
-.page-is-other h6 {
-  animation-duration: 0.9s;
-  animation-delay: 0.2s;
+h4:not(#home *),
+h5:not(#home *),
+h6:not(#home *) {
+  animation-duration: 1s;
+  animation-delay: 0.22s;
+}
+
+/* Scroll-triggered re-animation: when heading scrolls into view */
+.easy-slide-in-trigger {
+  opacity: 0;
+  transform: translate3d(-38px, 0, 0);
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.easy-slide-in-trigger.in-view {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  animation: easySlideIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) both !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-is-other h1,
-  .page-is-other h2,
-  .page-is-other h3,
-  .page-is-other h4,
-  .page-is-other h5,
-  .page-is-other h6,
-  .page-is-other .heading-spaced {
+  h1:not(#home *),
+  h2:not(#home *),
+  h3:not(#home *),
+  h4:not(#home *),
+  h5:not(#home *),
+  h6:not(#home *),
+  .heading-spaced:not(#home *),
+  .easy-slide-in,
+  .easySlideIn,
+  .easy-slide-in-trigger {
     animation: none !important;
     transform: none !important;
     opacity: 1 !important;
   }
-}
-
-/* Optional subtle loop enhancements strictly scoped to non-home pages */
-.page-is-other .badge-pulse-loop {
-  animation: badgePulseSoft 4s ease-in-out infinite;
-}
-
-.page-is-other .product-price-loop {
-  animation: priceGlowLoop 3.5s ease-in-out infinite;
 }
 
 
