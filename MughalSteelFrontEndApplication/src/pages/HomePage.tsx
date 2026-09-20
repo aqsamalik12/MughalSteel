@@ -8,7 +8,7 @@ import {
   Sliders, RefreshCw, X, Video, Award, Clock, 
   MapPin, Check, Heart, Eye, Globe, Compass, 
   Layers, Package, Cog, User as UserIcon, Factory, Hammer,
-  Send, Mail, Phone, ChevronLeft, ChevronRight, Quote
+  Send, Mail, Phone, ChevronLeft, ChevronRight, Quote, Volume2, VolumeX
 } from 'lucide-react';
 import { PROJECT_CATEGORIES_DATA, SEED_PROJECTS } from '../data/seedData';
 import { useSEO } from '../utils/useSEO';
@@ -39,6 +39,16 @@ export const HomePage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
   const [slideProgress, setSlideProgress] = useState(0);
+  const [isHeroMuted, setIsHeroMuted] = useState(true);
+
+  // Interactive "What Is Your Project?" selector state
+  const [selectedProjectType, setSelectedProjectType] = useState<string>('all');
+
+  // Portfolio Completed vs Ongoing status filter state
+  const [portfolioStatusTab, setPortfolioStatusTab] = useState<'all' | 'completed' | 'ongoing'>('all');
+
+  // Active Service Tab for Large Image Showcase
+  const [activeServiceTab, setActiveServiceTab] = useState<number>(0);
 
   // Products horizontal slider state & controls
   const productsSliderRef = useRef<HTMLDivElement>(null);
@@ -86,29 +96,15 @@ export const HomePage: React.FC = () => {
   // =========================================================================
   const heroSlides = [
     {
-      id: 'slide-mughal-team',
-      type: 'image' as const,
-      src: '/mughal-steel-team-hero.png',
-      badge: 'Mughal Steel Team • High Court Road Yard',
+      id: 'slide-intro-video',
+      type: 'video' as const,
+      videoSrc: '/videos/video1.mp4',
+      badge: 'Mughal Steel Workshop • High Court Road Yard',
       title: 'Specializing in Heavy Fabrication & Custom Solutions',
       description: 'Delivering high-tensile architectural CNC laser gates, luxury balustrades, and certified structural steel engineering across Islamabad & Rawalpindi.',
       ctaText: 'Get A Quote',
       ctaLink: '/quote',
       secondaryText: 'Explore Products',
-      secondaryLink: '/items'
-    },
-    {
-      id: 'slide-vid-0',
-      type: 'video' as const,
-      videoSrc: '/videos/hero_video_0.mp4',
-      poster: '/videos/hero_poster_0.jpg',
-      youtubeId: 'fQZGXcWxw0Q',
-      badge: 'DHA Phase 1 • Steel Work & Railings',
-      title: 'Overview of Completed Projects & Railings',
-      description: 'Site walkthrough of completed heavy architectural steel fabrication, precision laser-cut balustrades, and master metal engineering.',
-      ctaText: 'Get A Quote',
-      ctaLink: '/quote',
-      secondaryText: 'View Railings',
       secondaryLink: '/items'
     },
     {
@@ -208,10 +204,10 @@ export const HomePage: React.FC = () => {
   useEffect(() => {
     // When active slide is a video, let the video's onEnded event trigger nextSlide
     if (heroSlides[currentSlide].type === 'video') {
-      // Safety watchdog: in case video duration is long or blocked, advance after 45 seconds
+      // Safety watchdog: in case video duration is long or blocked, advance after 70 seconds
       const watchdog = setTimeout(() => {
         nextSlide();
-      }, 45000);
+      }, 70000);
       return () => clearTimeout(watchdog);
     }
 
@@ -453,7 +449,7 @@ export const HomePage: React.FC = () => {
                           src={slide.videoSrc}
                           poster={slide.poster}
                           autoPlay
-                          muted
+                          muted={isHeroMuted}
                           playsInline
                           preload="auto"
                           className="w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.05]"
@@ -494,9 +490,9 @@ export const HomePage: React.FC = () => {
           })}
 
           {/* Cinematic Dark Gradient Overlays:
-              - Left side gradient: Guarantees 100% crisp typography legibility matching FF Steel reference
+              - Left side gradient: Guarantees 100% crisp typography legibility matching reference
               - Top & bottom vignettes: Seamless blend with navigation header and credential ribbons */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#05080E]/95 via-[#05080E]/80 to-transparent w-full md:w-3/4 lg:w-3/5 pointer-events-none z-10" />
+          <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#05080E] via-[#05080E]/95 sm:via-[#05080E]/90 to-transparent w-full sm:w-[70%] md:w-[55%] lg:w-[48%] pointer-events-none z-10" />
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#05080E] via-[#05080E]/50 to-transparent pointer-events-none z-10" />
           <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#05080E]/90 via-[#05080E]/40 to-transparent pointer-events-none z-10" />
         </div>
@@ -517,46 +513,65 @@ export const HomePage: React.FC = () => {
           <ChevronRight className="w-6 h-6" />
         </button>
 
-        {/* Hero Content Area: Clean Left-Aligned Enterprise Typography matching Reference Screenshot */}
+        {/* Hero Audio Toggle Button (Unmute / Mute Video) */}
+        <button
+          onClick={() => setIsHeroMuted(!isHeroMuted)}
+          aria-label={isHeroMuted ? "Unmute Video" : "Mute Video"}
+          className="absolute right-4 lg:right-6 bottom-4 sm:bottom-6 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/85 border border-white/25 hover:border-brand-gold text-white hover:text-brand-gold text-xs font-heading font-medium backdrop-blur-md shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer"
+        >
+          {isHeroMuted ? (
+            <>
+              <VolumeX className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Unmute Audio</span>
+            </>
+          ) : (
+            <>
+              <Volume2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+              <span className="hidden sm:inline">Audio On</span>
+            </>
+          )}
+        </button>
+
+        {/* Hero Content Area: Left-Aligned within Dark Shadow Boundary (never crosses to the right) */}
         <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:pl-6 lg:pr-12 flex-1 flex flex-col justify-center py-6 sm:py-8 lg:py-10">
-          <div className="max-w-2xl lg:max-w-3xl text-left -ml-1 sm:-ml-3 lg:-ml-4">
+          <div className="w-full max-w-md sm:max-w-lg lg:max-w-[420px] xl:max-w-[440px] text-left -ml-1 sm:-ml-2">
             
             {currentSlide === 0 ? (
-              // Team Photo Slide: Exact Showcase layout from reference screenshot
-              <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-3.5 sm:pl-5 space-y-2.5 sm:space-y-3">
+              // Intro Video Slide: Clean Left Column Layout bounded by black shadow
+              <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-3 sm:pl-4 space-y-2 sm:space-y-2.5">
                 
                 {/* Brand Hero Heading */}
-                <div className="space-y-1">
-                  <p className="text-white text-base sm:text-lg lg:text-xl font-heading font-medium tracking-wide drop-shadow">
+                <div className="space-y-0.5">
+                  <p className="text-white text-sm sm:text-base lg:text-lg font-heading font-medium tracking-wide drop-shadow">
                     Welcome to
                   </p>
-                  <h1 className="flex flex-wrap items-baseline gap-2 sm:gap-3 font-heading font-black tracking-tight drop-shadow-2xl">
-                    <span className="text-3xl sm:text-5xl lg:text-[56px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
+                  <h1 className="flex flex-col items-start gap-0.5 font-heading font-black tracking-tight drop-shadow-2xl">
+                    <span className="text-3xl sm:text-4xl lg:text-[48px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
                       Mughal
                     </span>
-                    <span className="text-2xl sm:text-4xl lg:text-[44px] text-white leading-tight font-black">
+                    <span className="text-2xl sm:text-3xl lg:text-[36px] text-white leading-tight font-black">
                       Steel Fabrication.
                     </span>
                   </h1>
                 </div>
 
                 {/* Tagline / Subtitle */}
-                <p className="text-xs sm:text-sm lg:text-base text-stone-200 font-sans font-semibold drop-shadow-md">
+                <p className="text-[11px] sm:text-xs text-stone-200 font-sans font-semibold drop-shadow-md leading-snug">
                   Premium Steel &amp; Metal Fabrication Solutions <span className="text-[#cca04b] font-bold mx-1">|</span> Serving All Over Pakistan
                 </p>
 
                 {/* Action Buttons: Explore Projects & Get a Free Quote */}
-                <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 pt-0.5">
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
                   <Link 
                     to="/projects" 
-                    className="inline-flex items-center justify-center bg-[#cca04b] hover:bg-[#d8ad56] text-stone-950 font-heading font-bold text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md shadow-lg hover:shadow-[0_0_20px_rgba(204,160,75,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                    className="inline-flex items-center justify-center bg-[#cca04b] hover:bg-[#d8ad56] text-stone-950 font-heading font-bold text-xs px-4 sm:px-5 py-2 rounded-md shadow-lg hover:shadow-[0_0_20px_rgba(204,160,75,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
                     <span>Explore Projects</span>
                   </Link>
 
                   <Link 
                     to="/quote" 
-                    className="inline-flex items-center justify-center bg-black/60 hover:bg-black/85 text-white border border-stone-400/80 hover:border-white font-heading font-medium text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md backdrop-blur-md shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                    className="inline-flex items-center justify-center bg-black/60 hover:bg-black/85 text-white border border-stone-400/80 hover:border-white font-heading font-medium text-xs px-4 sm:px-5 py-2 rounded-md backdrop-blur-md shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
                     <span>Get a Free Quote</span>
                   </Link>
@@ -566,59 +581,59 @@ export const HomePage: React.FC = () => {
                 <div className="pt-0.5">
                   <a 
                     href="tel:03005197825"
-                    className="inline-flex items-center gap-2 text-white hover:text-[#cca04b] font-heading font-bold text-xs sm:text-sm tracking-wider py-1 transition-colors drop-shadow group"
+                    className="inline-flex items-center gap-1.5 text-white hover:text-[#cca04b] font-heading font-bold text-xs tracking-wider py-0.5 transition-colors drop-shadow group"
                   >
-                    <div className="w-6 h-6 rounded-full bg-[#cca04b]/20 flex items-center justify-center group-hover:bg-[#cca04b]/30 transition-colors">
-                      <Phone className="w-3.5 h-3.5 text-[#cca04b]" />
+                    <div className="w-5 h-5 rounded-full bg-[#cca04b]/20 flex items-center justify-center group-hover:bg-[#cca04b]/30 transition-colors">
+                      <Phone className="w-3 h-3 text-[#cca04b]" />
                     </div>
-                    <span className="font-mono font-bold text-stone-100">0300-5197825</span>
+                    <span className="font-mono font-bold text-stone-100 text-xs">0300-5197825</span>
                   </a>
                 </div>
 
                 {/* 4 Architectural Fabrication Specialties */}
-                <div className="pt-2 sm:pt-2.5 space-y-2 sm:space-y-2.5 text-left max-w-2xl">
+                <div className="pt-1 space-y-1.5 text-left">
                   <div>
-                    <h2 className="text-xs sm:text-[13px] lg:text-[13.5px] font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 sm:underline-offset-4 decoration-[#cca04b]">
+                    <h2 className="text-xs font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 decoration-[#cca04b]">
                       WROUGHT &amp; CAST IRON WORK,
                     </h2>
-                    <p className="text-[11px] sm:text-xs lg:text-[12px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
+                    <p className="text-[11px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
                       Custom double-height main entrance doors, heavy-duty security gates, and ornamental window panels crafted to perfection.
                     </p>
                   </div>
 
                   <div>
-                    <h2 className="text-xs sm:text-[13px] lg:text-[13.5px] font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 sm:underline-offset-4 decoration-[#cca04b]">
+                    <h2 className="text-xs font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 decoration-[#cca04b]">
                       MODERN STAIRCASES,
                     </h2>
-                    <p className="text-[11px] sm:text-xs lg:text-[12px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
+                    <p className="text-[11px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
                       Precision-engineered spiral stairs, L-shaped staircases, and single-beam structures with marble-topped steel steps.
                     </p>
                   </div>
 
                   <div>
-                    <h2 className="text-xs sm:text-[13px] lg:text-[13.5px] font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 sm:underline-offset-4 decoration-[#cca04b]">
+                    <h2 className="text-xs font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 decoration-[#cca04b]">
                       GLASS RAILINGS &amp; CNC GRILLS,
                     </h2>
-                    <p className="text-[11px] sm:text-xs lg:text-[12px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
+                    <p className="text-[11px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
                       Tempered glass balcony railings, architectural fences, and intricate CNC laser-cut metal panels.
                     </p>
                   </div>
 
                   <div>
-                    <h2 className="text-xs sm:text-[13px] lg:text-[13.5px] font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 sm:underline-offset-4 decoration-[#cca04b]">
+                    <h2 className="text-xs font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 decoration-[#cca04b]">
                       SHADE PERGOLAS &amp; CANOPIES,
                     </h2>
-                    <p className="text-[11px] sm:text-xs lg:text-[12px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
+                    <p className="text-[11px] text-stone-100 font-sans leading-snug drop-shadow pt-0.5">
                       Durable outdoor fencing systems and modern retractable shade pergolas with tensile fabric.
                     </p>
                   </div>
 
                   {/* Why Choose Us Section */}
-                  <div className="pt-1.5 border-t border-white/10">
-                    <h2 className="text-xs sm:text-[13px] lg:text-[14px] font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 sm:underline-offset-4 decoration-[#cca04b]">
+                  <div className="pt-1 border-t border-white/10">
+                    <h2 className="text-xs font-black text-[#cca04b] uppercase tracking-wider underline underline-offset-2 decoration-[#cca04b]">
                       WHY CHOOSE US?
                     </h2>
-                    <div className="mt-1 space-y-1 text-[11px] sm:text-xs text-stone-100 font-sans leading-snug drop-shadow">
+                    <div className="mt-1 space-y-0.5 text-[10px] sm:text-[11px] text-stone-100 font-sans leading-snug drop-shadow">
                       <p>
                         <strong className="text-white font-bold">Nationwide Service:</strong> Delivering premium steel fabrication and structural solutions all across Pakistan.
                       </p>
@@ -638,54 +653,54 @@ export const HomePage: React.FC = () => {
               </div>
             ) : (
               // Video Slides: Active Project Headline & Dynamic Info
-              <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-3.5 sm:pl-5 space-y-3 sm:space-y-4">
+              <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-3 sm:pl-4 space-y-2 sm:space-y-3">
                 
                 {/* Project Header Tag & Byline */}
-                <div className="space-y-0.5 sm:space-y-1">
-                  <p className="text-xs sm:text-sm lg:text-base font-heading font-black uppercase tracking-wider sm:tracking-widest text-[#cca04b] drop-shadow">
+                <div className="space-y-0.5">
+                  <p className="text-xs font-heading font-black uppercase tracking-wider text-[#cca04b] drop-shadow">
                     COMPLETE RESIDENTIAL FABRICATION PROJECT
                   </p>
-                  <p className="text-[11px] sm:text-xs lg:text-sm font-heading font-medium text-white tracking-wide drop-shadow">
+                  <p className="text-[11px] font-heading font-medium text-white tracking-wide drop-shadow">
                     Crafted With Perfection By
                   </p>
                 </div>
 
-                <div className="space-y-1 sm:space-y-1.5">
-                  <h1 className="flex flex-wrap items-baseline gap-2 sm:gap-3 font-heading font-black tracking-tight drop-shadow-2xl">
-                    <span className="text-3xl sm:text-5xl lg:text-[56px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
+                <div className="space-y-0.5">
+                  <h1 className="flex flex-col items-start gap-0.5 font-heading font-black tracking-tight drop-shadow-2xl">
+                    <span className="text-3xl sm:text-4xl lg:text-[48px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
                       Mughal
                     </span>
-                    <span className="text-2xl sm:text-4xl lg:text-[44px] text-white leading-tight font-black">
+                    <span className="text-2xl sm:text-3xl lg:text-[36px] text-white leading-tight font-black">
                       Steel Fabrication.
                     </span>
                   </h1>
 
                   {/* Golden Subtitle directly under Mughal Steel Fabrication */}
-                  <p className="text-xs sm:text-sm font-heading font-bold text-[#cca04b] uppercase tracking-wide drop-shadow pt-0.5">
+                  <p className="text-[11px] sm:text-xs font-heading font-bold text-[#cca04b] uppercase tracking-wide drop-shadow pt-0.5">
                     Featuring custom wrought iron gates, security Grills and premium aluminum windows
                   </p>
 
-                  <p className="text-sm sm:text-lg lg:text-xl font-heading font-bold text-stone-200 uppercase tracking-wide drop-shadow pt-0.5">
+                  <p className="text-xs sm:text-sm font-heading font-bold text-stone-200 uppercase tracking-wide drop-shadow pt-0.5">
                     {heroSlides[currentSlide].title}
                   </p>
                 </div>
 
-                <p className="text-xs sm:text-sm lg:text-base text-stone-300/95 font-sans font-normal leading-relaxed max-w-2xl drop-shadow-md">
+                <p className="text-[11px] sm:text-xs text-stone-300/95 font-sans font-normal leading-relaxed drop-shadow-md">
                   {heroSlides[currentSlide].description}
                 </p>
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1">
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
                   <Link 
                     to="/projects" 
-                    className="inline-flex items-center justify-center bg-[#cca04b] hover:bg-[#d8ad56] text-stone-950 font-heading font-bold text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md shadow-lg hover:shadow-[0_0_20px_rgba(204,160,75,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                    className="inline-flex items-center justify-center bg-[#cca04b] hover:bg-[#d8ad56] text-stone-950 font-heading font-bold text-xs px-4 sm:px-5 py-2 rounded-md shadow-lg hover:shadow-[0_0_20px_rgba(204,160,75,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
                     <span>Explore Projects</span>
                   </Link>
 
                   <Link 
                     to="/quote" 
-                    className="inline-flex items-center justify-center bg-black/50 hover:bg-black/80 text-white border border-stone-500/70 hover:border-stone-300 font-heading font-medium text-xs sm:text-sm px-6 sm:px-7 py-2.5 sm:py-3 rounded-md backdrop-blur-md shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                    className="inline-flex items-center justify-center bg-black/50 hover:bg-black/80 text-white border border-stone-500/70 hover:border-stone-300 font-heading font-medium text-xs px-4 sm:px-5 py-2 rounded-md backdrop-blur-md shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
                     <span>Get a Free Quote</span>
                   </Link>
@@ -695,12 +710,12 @@ export const HomePage: React.FC = () => {
                 <div className="pt-0.5">
                   <a 
                     href="tel:03005197825"
-                    className="inline-flex items-center gap-2 text-white hover:text-[#cca04b] font-heading font-bold text-xs sm:text-sm tracking-wider py-1 transition-colors drop-shadow group"
+                    className="inline-flex items-center gap-1.5 text-white hover:text-[#cca04b] font-heading font-bold text-xs tracking-wider py-0.5 transition-colors drop-shadow group"
                   >
-                    <div className="w-6 h-6 rounded-full bg-[#cca04b]/20 flex items-center justify-center group-hover:bg-[#cca04b]/30 transition-colors">
-                      <Phone className="w-3.5 h-3.5 text-[#cca04b]" />
+                    <div className="w-5 h-5 rounded-full bg-[#cca04b]/20 flex items-center justify-center group-hover:bg-[#cca04b]/30 transition-colors">
+                      <Phone className="w-3 h-3 text-[#cca04b]" />
                     </div>
-                    <span className="font-mono font-bold text-stone-100">0300-5197825</span>
+                    <span className="font-mono font-bold text-stone-100 text-xs">0300-5197825</span>
                   </a>
                 </div>
               </div>
@@ -802,14 +817,188 @@ export const HomePage: React.FC = () => {
       {/* ======================================================== */}
       {/* 2. PRODUCTS SECTION: FRONT GATES & MODERN HOME ITEMS     */}
       {/* ======================================================== */}
-      <section id="products" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
+      <section id="products" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
+          {/* ======================================================== */}
+          {/* INTERACTIVE "WHAT IS YOUR PROJECT?" SELECTOR             */}
+          {/* ======================================================== */}
+          <div className="bg-gradient-to-b from-brand-navy/90 to-[#070D18] border border-brand-gold/40 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+            <div className="absolute -top-24 -right-24 w-72 h-72 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-brand-light/40 pb-5">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-[10px] font-heading font-black uppercase tracking-widest rounded-full shadow-sm">
+                  <Sparkles className="w-3 h-3 text-brand-gold animate-pulse" />
+                  <span>Interactive Project Finder</span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+                  <span>WHAT IS</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-300 to-brand-gold drop-shadow">
+                    YOUR PROJECT?
+                  </span>
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-2xl">
+                  Select what you are fabricating. We automatically match certified structural steel gauges, CNC laser patterns, and instant square footage rates.
+                </p>
+              </div>
+
+              {selectedProjectType !== 'all' && (
+                <button
+                  onClick={() => setSelectedProjectType('all')}
+                  className="self-start md:self-auto text-xs font-mono font-bold text-brand-gold hover:text-white flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-lg border border-brand-gold/30 hover:border-brand-gold transition cursor-pointer"
+                >
+                  <span>Reset Filter ({products.length} Products)</span>
+                  <RefreshCw className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+
+            {/* Project Category Selection Pills / Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              {[
+                {
+                  id: 'all',
+                  title: 'All Projects',
+                  badge: 'Full Catalog',
+                  icon: '✨',
+                  desc: 'All custom fabrication'
+                },
+                {
+                  id: 'modern',
+                  title: 'Modern Villa',
+                  badge: '14G CNC Laser',
+                  icon: '🏡',
+                  desc: 'Laser gates & glass rails'
+                },
+                {
+                  id: 'classical',
+                  title: 'Classical Kothi',
+                  badge: 'Solid Wrought Iron',
+                  icon: '🏛️',
+                  desc: 'Arched gates & scrolls'
+                },
+                {
+                  id: 'commercial',
+                  title: 'Commercial Plaza',
+                  badge: 'Heavy Structural',
+                  icon: '🏢',
+                  desc: 'Glass facades & pivot doors'
+                },
+                {
+                  id: 'farm',
+                  title: 'Farmhouse Estate',
+                  badge: 'Heavy MS Pipes',
+                  icon: '🌾',
+                  desc: 'Perimeter fence & pergolas'
+                },
+                {
+                  id: 'aluminum-glass',
+                  title: 'Aluminum & Glass',
+                  badge: 'Acoustic / Pivot',
+                  icon: '🪟',
+                  desc: '12mm tempered pivot doors'
+                }
+              ].map((proj) => {
+                const isSelected = selectedProjectType === proj.id;
+                return (
+                  <button
+                    key={proj.id}
+                    onClick={() => setSelectedProjectType(proj.id)}
+                    className={`relative p-3.5 rounded-xl border text-left flex flex-col justify-between transition-all duration-300 cursor-pointer card-interactive ${
+                      isSelected
+                        ? 'bg-gradient-to-b from-brand-medium to-brand-navy border-brand-gold shadow-[0_0_25px_rgba(204,160,75,0.35)] scale-[1.02]'
+                        : 'bg-black/40 border-brand-light/50 hover:border-brand-gold/60 hover:bg-black/60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-xl">{proj.icon}</span>
+                      <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                        isSelected 
+                          ? 'bg-brand-gold text-brand-dark' 
+                          : 'bg-stone-800 text-stone-300'
+                      }`}>
+                        {proj.badge}
+                      </span>
+                    </div>
+
+                    <div className="pt-2.5 space-y-0.5">
+                      <h4 className={`font-heading font-black text-xs uppercase tracking-tight line-clamp-1 ${
+                        isSelected ? 'text-brand-gold' : 'text-stone-100'
+                      }`}>
+                        {proj.title}
+                      </h4>
+                      <p className="text-[10px] text-slate-400 font-sans line-clamp-1">
+                        {proj.desc}
+                      </p>
+                    </div>
+
+                    {isSelected && (
+                      <div className="absolute top-1 right-1 w-2 h-2 rounded-full bg-brand-gold animate-ping" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Dynamic Project Match Alert Banner */}
+            {selectedProjectType !== 'all' && (() => {
+              const activeProjObj = [
+                { id: 'modern', name: 'Modern Villa & Luxury Home', gauge: '14-Gauge (2.0mm) Certified Mild Steel', finishing: 'Electrostatic Matte Charcoal / Jet Black Powder Coat (200°C Oven Bake)', highlight: '±0.1mm Fiber Laser CNC Cut Motifs, Concealed Heavy Ball-Bearing Hinges & Frameless 12mm Tempered Glass' },
+                { id: 'classical', name: 'Classical Villa & Spanish Kothi', gauge: 'Solid Hand-Forged Carbon Steel Bars (16mm-25mm)', finishing: 'Multi-Stage Hot-Zinc Anti-Rust Primer with Hand-Rubbed Antique Gold & Copper Patina', highlight: 'Master Blacksmith Acanthus Leaves, Majestic Arched Driveway Gates & Classical Balustrades' },
+                { id: 'commercial', name: 'Commercial Plaza & Offices', gauge: 'Heavy I-Beam & Structural Carbon Steel Channels', finishing: 'High-Durability Industrial Epoxy & Polyurethane Weather Coating', highlight: 'Acoustic Soundproof Facades, Concealed Hydraulic Floor-Spring Pivot Doors & Fire Spiral Stairs' },
+                { id: 'farm', name: 'Farmhouse & Agrarian Estate', gauge: 'Hot-Dip Galvanized Heavy MS Pipes (Schedule 40)', finishing: '85+ Micron Hot-Dip Molten Zinc Galvanization (ISO 1461)', highlight: 'Heavy Automated Sliding Ranch Gates, Anti-Rust Perimeter Fencing & Shaded Steel Pergolas' },
+                { id: 'aluminum-glass', name: 'Architectural Aluminum & Glass Systems', gauge: 'Commercial 6063-T6 Architectural Extrusions', finishing: 'AkzoNobel Architectural Powder Coating / Anodized Finish', highlight: 'German Hydraulic Floor Springs (350kg load), 12mm Toughened Safety Glass & Weatherproof EPDM' }
+              ].find(x => x.id === selectedProjectType);
+
+              if (!activeProjObj) return null;
+
+              return (
+                <div className="bg-black/60 border border-brand-gold/60 p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fade-in">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-heading font-black text-brand-gold uppercase tracking-wider">
+                        Tailored Fabrication Standard for: {activeProjObj.name}
+                      </span>
+                      <span className="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded font-mono font-bold">
+                        Recommended Standards
+                      </span>
+                    </div>
+                    <p className="text-xs text-stone-200 font-sans">
+                      <strong className="text-brand-gold">Steel Standard:</strong> {activeProjObj.gauge} • <strong className="text-brand-gold">Finish:</strong> {activeProjObj.finishing}
+                    </p>
+                    <p className="text-[11px] text-slate-400 font-sans">
+                      {activeProjObj.highlight}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <a
+                      href={getWhatsAppUrl(`Hello Mughal Steel, I am planning a project: ${activeProjObj.name}. Please send recommended designs, gauge specifications, and quotation.`)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-gold text-[11px] py-2 px-4 uppercase font-bold tracking-wider flex items-center gap-1.5"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5 text-brand-dark" />
+                      <span>Inquire This Project</span>
+                    </a>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+
           {/* Section Header with Slider Navigation Controls */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
             <div className="space-y-1">
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
-                FRONT GATES & CUSTOM FABRICATIONS
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 bg-brand-gold/10 border border-brand-gold/30 text-brand-gold text-[10px] font-heading font-black uppercase tracking-widest rounded">
+                <span>Certified Gauges &amp; CNC Laser Work</span>
+              </div>
+              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+                <span>FRONT GATES &amp;</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
+                  CUSTOM FABRICATIONS
+                </span>
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 font-sans">
                 Precision CNC laser-cut sheets, heavy structural pipes, and imported roller automation options.
@@ -848,7 +1037,25 @@ export const HomePage: React.FC = () => {
             onScroll={checkProductScroll}
             className="flex gap-6 overflow-x-auto pb-4 pt-1 slider-snap scroll-smooth no-scrollbar"
           >
-            {products.slice(0, 12).map((prod) => (
+            {(() => {
+              const filteredProds = selectedProjectType === 'all'
+                ? products
+                : products.filter(p => {
+                    const catMap: Record<string, string> = {
+                      modern: 'Modern Home',
+                      classical: 'Classical Home',
+                      commercial: 'Commercial',
+                      farm: 'Farm',
+                      'aluminum-glass': 'Aluminum & Glass'
+                    };
+                    const targetCat = catMap[selectedProjectType];
+                    if (!targetCat) return true;
+                    return (p.category && p.category.toLowerCase().includes(targetCat.toLowerCase())) ||
+                           (p.name && p.name.toLowerCase().includes(targetCat.toLowerCase()));
+                  });
+              const prodsToRender = (filteredProds.length > 0 ? filteredProds : products).slice(0, 14);
+
+              return prodsToRender.map((prod) => (
               <div 
                 key={prod.id} 
                 className="w-[280px] sm:w-[310px] md:w-[320px] shrink-0 group bg-brand-navy border border-brand-light/60 rounded-lg overflow-hidden hover:border-brand-gold transition-all duration-300 flex flex-col justify-between shadow-xl card-interactive"
@@ -898,18 +1105,28 @@ export const HomePage: React.FC = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            ));
+            })()}
           </div>
 
           {/* 16 Modern Home Items Row with Infinite Smooth Marquee & Controls */}
-          <div className="space-y-6 pt-4">
-            <div className="flex items-center justify-between border-b border-brand-light/40 pb-3">
-              <div className="space-y-0.5">
-                <h3 className="font-heading font-black text-lg text-stone-100 uppercase">
-                  16 Modern Home Fabrication Items
+          <div className="space-y-6 pt-6 border-t border-brand-light/30">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-brand-light/40 pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono font-bold text-brand-gold uppercase tracking-widest bg-brand-gold/10 px-2.5 py-0.5 rounded border border-brand-gold/30 inline-flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse" />
+                    <span>Continuous Gliding Gallery</span>
+                  </span>
+                </div>
+                <h3 className="font-heading font-black text-xl sm:text-2xl text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+                  <span>16 MODERN HOME</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
+                    FABRICATION ITEMS
+                  </span>
                 </h3>
-                <p className="text-[11px] text-slate-400 font-sans">
-                  Continuous gliding gallery • Hover to pause and inspect any item
+                <p className="text-xs text-slate-300 font-sans">
+                  Smooth gliding architectural elements • Hover mouse over any item to pause and inspect specifications
                 </p>
               </div>
 
@@ -1051,451 +1268,332 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ======================================================== */}
-      {/* SERVICES SECTION: 6 CORE CAPABILITIES */}
+      {/* 3. OUR PROJECTS: COMPLETED & ONGOING SITES PORTFOLIO     */}
+      {/* Shows Since 1994, 1,500+ Projects, and Active Sites      */}
       {/* ======================================================== */}
-      <section id="services" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <section id="projects" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-20 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
-            <div className="space-y-1">
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
-                OUR SPECIALIZED SERVICES
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-300 font-sans">
-                Full-spectrum structural steel, decorative wrought iron, and architectural glass solutions.
-              </p>
-            </div>
-            <Link to="/services" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1">
-              <span>View All Services</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                id: 'srv-1',
-                title: 'Steel Fabrication & CNC Laser Works',
-                subtitle: 'High-Tensile Structural Mild Steel (14G / 16G Certified) & Millimeter CNC Laser Precision',
-                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-                desc: 'High-tensile CNC laser cut gates, security boundary grills, and heavy structural warehouse trusses.',
-                fullDescription: 'Mughal Steel Fabrication delivers turnkey architectural steel fabrication solutions combining heavy structural carbon steel box channels with ±0.1mm fiber laser-cut steel sheets. Every assembly is precision welded, anti-rust zinc-primed, and oven-baked with electrostatic polyester powder coat for extreme longevity.',
-                icon: (
-                  <svg className="w-8 h-8 text-brand-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M4 6h16M4 18h16M8 6v12M16 6v12M6 10h12M6 14h12" strokeLinecap="round" />
-                    <rect x="2" y="4" width="20" height="16" rx="2" strokeWidth="1.5" />
-                  </svg>
-                ),
-                specs: [
-                  '14-Gauge (2.0mm) & 12-Gauge (2.5mm) Certified MS Frame',
-                  'High-Speed CNC Fiber Laser Tolerance: ±0.1mm',
-                  'Hot-Zinc Anti-Rust Primer & Electrostatic Powder Oven Bake (200°C)',
-                  'Italian / German Automated Gate Motor Compatibility',
-                  'Heavy-Duty Ball-Bearing Hinges & High-Tensile Ground Anchor Bolts'
-                ],
-                deliverables: [
-                  'Main Villa Driveway Sliding & Swing Gates',
-                  'Telescopic & Bi-Fold High-Clearance Gates',
-                  'Security Window Grills & French Sliding Frames',
-                  'Boundary Wall Security Panels & Decorative Spikes',
-                  'Architectural Facade Louver Cladding'
-                ],
-                process: [
-                  '1. On-Site Digital Laser Survey & Sizing',
-                  '2. 3D CAD Shop Drawing & Motif Blueprint Approval',
-                  '3. CNC Fiber Laser Plate Cutting',
-                  '4. Precision TIG/MIG Structural Welding',
-                  '5. 7-Stage Anti-Corrosion Treatment & Oven Bake',
-                  '6. On-Site Precision Laser Leveling & Installation'
-                ],
-                categoryLink: '/categories/modern-home',
-                categoryLabel: 'View Modern Home Category Designs'
-              },
-              {
-                id: 'srv-2',
-                title: 'Wrought Iron & Classical Artisan Work',
-                subtitle: 'Master Hand-Forged Solid Carbon Steel Scrolls, Haveli Archways & Antique Patinas',
-                image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
-                desc: 'Hand-forged ornamental scrolls, haveli gates, and antique gold balustrades.',
-                fullDescription: 'Preserving centuries of Mughal and European blacksmith artistry, our master artisans hand-forge solid carbon steel bars on heavy anvils to craft bespoke ornamental scrolls, acanthus leaves, classical rosettes, and antique brass accents.',
-                icon: (
-                  <svg className="w-8 h-8 text-brand-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeWidth="1.5" />
-                  </svg>
-                ),
-                specs: [
-                  'Solid Heavy Carbon Steel Bars (16mm to 25mm solid forged)',
-                  'Hand-Hammered Ornamental Scrolls & Cast Monograms',
-                  'Triple-Coat Antique Patina (Spanish Gold, Roman Bronze, Copper Rust-Proof)',
-                  'Concealed Heavy Anchor Bolts for Masonry Pillars',
-                  '10-Year Structural & Anti-Corrosion Guarantee'
-                ],
-                deliverables: [
-                  'Grand Classical Entrance Gates with Family Monograms',
-                  'Majestic Curved Balcony Railings & Terrace Barriers',
-                  'Artisan Wrought Iron Double Front Doors',
-                  'Spiral Staircases with Ornate Gold Balusters',
-                  'Garden Estate Gazebos & Classical Pergolas'
-                ],
-                process: [
-                  '1. Heritage Motif Consultation & Elevation Study',
-                  '2. Full-Scale 1:1 Scale Blacksmith Template Drawing',
-                  '3. Traditional Forge Heating & Hand-Hammering',
-                  '4. Structural Framework Joinery & Grind Finishing',
-                  '5. Hand-Rubbed Antique Metallic Patina Application',
-                  '6. White-Glove On-Site Erection & Leveling'
-                ],
-                categoryLink: '/categories/classical-home',
-                categoryLabel: 'View Classical Home Category Designs'
-              },
-              {
-                id: 'srv-3',
-                title: 'Aluminum & Glass Works',
-                subtitle: 'Architectural Pivot Doors, Thermally Isolated Facades & Acoustic Laminated Glass Systems',
-                image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80',
-                desc: 'Thermally isolated pivot doors, glass balustrades, and soundproof partitions.',
-                fullDescription: 'Ultra-slim architectural aluminum framing paired with high-performance 12mm tempered or acoustic double-glazed glass. Engineered for modern villa pivot entrance doors, office glass partitions, frameless balcony balustrades, and expansive sliding patio enclosures.',
-                icon: (
-                  <svg className="w-8 h-8 text-brand-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <rect x="3" y="3" width="18" height="18" rx="2" strokeWidth="1.5" />
-                    <path d="M3 9h18M9 21V9" strokeWidth="1.5" />
-                  </svg>
-                ),
-                specs: [
-                  'Commercial-Grade 6063-T6 Thermal-Break Aluminum Extrusions',
-                  '12mm / 16mm Laminated Toughened Safety Glass (EN 12150 Certified)',
-                  'German Concealed Hydraulic Floor Springs (Up to 350kg Capacity)',
-                  'Acoustic Soundproofing Rating: Up to 42dB Noise Isolation',
-                  'Weather-Sealed EPDM Gaskets & Multi-Point Security Locks'
-                ],
-                deliverables: [
-                  'Oversized Frameless Glass Pivot Entrance Doors',
-                  'Floor-to-Ceiling Acoustic Office Partitions',
-                  'Frameless Balcony Tempered Glass Balustrades',
-                  'Commercial Showroom & Storefront Glass Facades',
-                  'Double-Glazed Soundproof French Windows'
-                ],
-                process: [
-                  '1. Precision Optical Laser Alignment Survey',
-                  '2. Architectural Glass Specification & Thickness Engineering',
-                  '3. CNC Aluminum Profile Milling & Thermal Isolator Assembly',
-                  '4. High-Temperature Glass Tempering & Edge Polishing',
-                  '5. Hydraulic Floor Spring Anchoring',
-                  '6. Turnkey On-Site Glazing & Weatherproofing'
-                ],
-                categoryLink: '/categories/aluminum-glass',
-                categoryLabel: 'View Aluminum & Glass Category Designs'
-              },
-              {
-                id: 'srv-4',
-                title: 'Structural & Commercial Steel Solutions',
-                subtitle: 'Heavy Industrial Trusses, Mezzanine Floors, Warehouse Sheds & Fire-Escape Spines',
-                image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
-                desc: 'Mezzanine platforms, fire-escape spiral stairs, automated sliding barrier frames, and industrial sheds.',
-                fullDescription: 'Heavy structural steel engineering designed to meet Pakistan Building Code (PBC) standards. From large-span warehouse portal frames and industrial mezzanine storage decks to commercial exterior spiral escape stairs.',
-                icon: (
-                  <svg className="w-8 h-8 text-brand-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M3 21h18M6 21V7l6-4 6 4v14M10 11h4M10 15h4M10 19h4" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-                  </svg>
-                ),
-                specs: [
-                  'Heavy I-Beam, H-Beam & Hollow Structural Section (HSS) Steel',
-                  'Certified Coded Structural Welders (ASME / AWS D1.1 Standard)',
-                  'High-Tensile Grade 8.8 Structural Foundation Anchor Bolts',
-                  'Structural Load Proof Tested up to 1500 kg/m²',
-                  'Fire-Retardant Intumescent Paint Coating Option'
-                ],
-                deliverables: [
-                  'Industrial Warehouse & Factory Portal Frame Sheds',
-                  'Multi-Tier Mezzanine Steel Storage Decks',
-                  'Commercial Exterior Fire-Escape Spiral Staircases',
-                  'Commercial Tensile Parking Canopies & Walkways',
-                  'High-Rise Building Steel Sub-Frames & Trusses'
-                ],
-                process: [
-                  '1. Structural Load & Wind Velocity Calculations',
-                  '2. Coded Steel Fabrication in Industrial Workshop',
-                  '3. Full Ultrasonic Weld Testing & Primer Application',
-                  '4. On-Site Heavy Crane Hoisting & Bolt Tensioning',
-                  '5. Structural Safety Certification & Load Sign-off'
-                ],
-                categoryLink: '/categories/commercial',
-                categoryLabel: 'View Commercial Category Designs'
-              },
-              {
-                id: 'srv-5',
-                title: 'Farm & Agricultural Solutions',
-                subtitle: 'Hot-Dip Galvanized Cattle Barriers, Heavy Equipment Sheds & Estate Perimeter Security',
-                image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
-                desc: 'Hot-dip galvanized cattle barriers, heavy equipment shed trusses, and durable agrarian estate fencing.',
-                fullDescription: 'Robust, heavy-gauge weather-proof steel fabrication built to withstand harsh outdoor agrarian environments, animal livestock pressure, and heavy tractor/harvester machinery.',
-                icon: (
-                  <svg className="w-8 h-8 text-brand-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M3 9l9-6 9 6v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9z" strokeWidth="1.5" />
-                    <path d="M9 21V12h6v9" strokeWidth="1.5" />
-                    <line x1="3" y1="12" x2="9" y2="12" strokeWidth="1.2" />
-                    <line x1="15" y1="12" x2="21" y2="12" strokeWidth="1.2" />
-                  </svg>
-                ),
-                specs: [
-                  'Hot-Dip Galvanized Steel Coating (ISO 1461 Certified, 85+ Microns)',
-                  'High-Yield Schedule 40 Seamless Round & Square Tubular Pipes',
-                  'Livestock-Safe Smooth Finished Radiused Welds',
-                  'Heavy-Duty Ground Anchors & Locking Slam-Latches',
-                  'Weatherproof Galvanized Corrugated Roofing Profiles'
-                ],
-                deliverables: [
-                  'Estate Main Entrance Farmhouse Grand Gates',
-                  'Livestock Corrals, Cattle Crushes & Feeding Barriers',
-                  'Heavy Tractor & Agricultural Machinery Sheds',
-                  'Perimeter Chain-Link & Tubular Steel Security Fencing',
-                  'Farmhouse Shaded Steel Porches & Pergolas'
-                ],
-                process: [
-                  '1. Agricultural Terrain & Livestock Flow Survey',
-                  '2. Heavy Schedule 40 Pipe Bending & Framing',
-                  '3. Deep-Dip Molten Zinc Hot Galvanization',
-                  '4. On-Site Deep Foundation Excavation & Concreting',
-                  '5. Heavy Hinge & Motor Alignment Setup'
-                ],
-                categoryLink: '/categories/farm',
-                categoryLabel: 'View Farm Category Designs'
-              },
-              {
-                id: 'srv-6',
-                title: 'Custom Design & Turnkey Installation',
-                subtitle: 'Turnkey 3D CAD Modeling, Laser Leveling, Structural Foundation Anchoring & Motor Setup',
-                image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80',
-                desc: 'Turnkey 3D CAD modeling, laser leveling, structural foundation anchoring, and automated motor setup.',
-                fullDescription: 'Complete end-to-end bespoke design and engineering consultancy. We take your architectural blueprints or site measurements, generate detailed 3D CAD elevations with virtual try-on previews, and manage complete on-site crane and laser installation with warranty certification.',
-                icon: (
-                  <svg className="w-8 h-8 text-brand-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M12 2l8 4v6c0 5.5-3.8 10.7-8 12-4.2-1.3-8-6.5-8-12V6l8-4z" strokeWidth="1.5" />
-                    <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-                  </svg>
-                ),
-                specs: [
-                  'Detailed 3D CAD & Structural Elevation Shop Drawings',
-                  '±0.5mm Precision On-Site Digital Laser Leveling',
-                  'Heavy Core Drilling & High-Strength Chemical Epoxy Anchoring',
-                  'Complete German / Italian Automation Setup & Wiring',
-                  'Mughal Steel Official 10-Year Fabrication Warranty Certificate'
-                ],
-                deliverables: [
-                  'Turnkey 3D CAD Visualizer & Blueprint Service',
-                  'Custom House Elevation Gate & Door Fitting',
-                  'Automated Sliding & Swing Roller Motor Setup',
-                  'On-Site Core Drilling & Structural Pillar Anchoring',
-                  '10-Year Warranty & Annual Maintenance Support'
-                ],
-                process: [
-                  '1. Free On-Site Digital Survey in Twin Cities',
-                  '2. 3D Elevation Simulation & Material Quotation',
-                  '3. Dedicated Fabrication in Rawalpindi Industrial Yard',
-                  '4. Quality Inspection & Multi-Stage Powder Coat',
-                  '5. Complete On-Site Crane Installation & Testing',
-                  '6. Delivery of Official Warranty Certificate'
-                ],
-                categoryLink: '/quote',
-                categoryLabel: 'Request Custom Elevation & Quote'
-              }
-            ].map((srv) => (
-              <div 
-                key={srv.id}
-                onClick={() => setActiveServiceModal(srv)}
-                className="group bg-brand-navy border border-brand-light/60 rounded-xl p-7 sm:p-8 hover:border-brand-gold transition-all duration-300 shadow-xl flex flex-col justify-between space-y-6 cursor-pointer hover:bg-brand-medium/60 card-interactive"
-              >
-                <div className="space-y-4">
-                  <div className="w-14 h-14 rounded-xl bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform p-3 text-brand-gold">
-                    {srv.icon}
-                  </div>
-                  <h3 className="font-heading font-bold text-lg sm:text-xl text-stone-100 group-hover:text-brand-gold transition-colors tracking-wide leading-snug pt-1">
-                    {srv.title}
-                  </h3>
-                </div>
-
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
-                  {srv.desc}
-                </p>
-
-                <div className="pt-3 border-t border-brand-light/40 flex items-center justify-between text-xs font-heading font-bold text-brand-gold uppercase tracking-wider">
-                  <span className="group-hover:underline">Learn More & View Specs</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
-                </div>
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-brand-light/40 pb-6">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-[10px] font-heading font-black uppercase tracking-widest rounded-full shadow-sm">
+                <Factory className="w-3.5 h-3.5 text-brand-gold" />
+                <span>Established 1994 • 30+ Years Metal Heritage</span>
               </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* PORTFOLIO SECTION: 10 ARCHITECTURAL CATEGORIES */}
-      {/* ======================================================== */}
-      <section id="portfolio" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
-            <div className="space-y-1">
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
-                10 PROJECT CATEGORIES
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-black text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+                <span>OUR PROJECTS &amp;</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
+                  SITE EXECUTION
+                </span>
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 font-sans">
-                Select your property type to view tailored fabrication designs, gauges, and installation standards.
+              <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-3xl">
+                Over 1,500+ luxury residential villas, commercial plazas, and society entrances executed across Pakistan. Explore our recently completed handovers alongside live on-site installations.
               </p>
             </div>
-            <Link to="/categories" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1">
-              <span>View All {activeCategories.length} Categories</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
 
-          {/* Categories Grid - Dynamic & Responsive */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-            {activeCategories.map((cat) => (
+            <div className="flex items-center gap-3 shrink-0">
               <Link 
-                key={cat.id} 
-                to={`/categories/${cat.slug}`}
-                className="group bg-brand-navy border border-brand-light/60 rounded-lg overflow-hidden hover:border-brand-gold transition-all duration-300 shadow-md flex flex-col justify-between card-interactive"
+                to="/portfolio"
+                className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1.5 uppercase tracking-wider bg-black/60 px-4 py-2.5 rounded-lg border border-brand-gold/40 shadow-md hover:border-brand-gold transition"
               >
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
-                  <img 
-                    src={cat.heroImage || FALLBACK_IMAGE_URL} 
-                    alt={cat.name} 
-                    loading="lazy"
-                    decoding="async"
-                    onError={handleImageError}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                  />
-                </div>
-                <div className="p-3 text-center space-y-1">
-                  <h3 className="font-heading font-bold text-xs sm:text-sm text-stone-100 group-hover:text-brand-gold transition-colors line-clamp-1 uppercase">
-                    {cat.name}
-                  </h3>
-                  <span className="text-[10px] text-slate-400 font-mono block">
-                    {cat.items.length} Items
-                  </span>
-                </div>
+                <span>Complete Portfolio ({projects.length} Works)</span>
+                <ArrowRight className="w-4 h-4" />
               </Link>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* FEATURED WORK / PROJECTS SHOWCASE */}
-      {/* ======================================================== */}
-      <section id="projects" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          
-          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 border-b border-brand-light/40 pb-6">
-            <div className="space-y-3 max-w-4xl">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-[10px] font-heading font-black uppercase tracking-widest rounded">
-                09. FEATURED WORK
-              </div>
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
-                FEATURED PORTFOLIO PROJECTS
-              </h2>
-              
-              <div className="space-y-3 pt-1">
-                <div className="border-l-2 border-brand-gold pl-3 py-0.5">
-                  <h3 className="text-sm sm:text-base font-heading font-black text-brand-gold uppercase tracking-wide">
-                    COMPLETED PROJECT: GULBERG GREENS FARMHOUSE
-                  </h3>
-                  <p className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider mt-0.5">
-                    Executed Entirely by Mughal Steel Fabrication
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs text-slate-300 font-sans">
-                  <div className="flex items-start gap-2 bg-black/40 border border-brand-light/40 p-2.5 rounded-lg">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold shrink-0 mt-1.5" />
-                    <span><strong className="text-stone-100">Wrought &amp; Cast Iron Work:</strong> Grand entrance gates, custom fencing, and ornamental details crafted with perfection.</span>
-                  </div>
-                  <div className="flex items-start gap-2 bg-black/40 border border-brand-light/40 p-2.5 rounded-lg">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold shrink-0 mt-1.5" />
-                    <span><strong className="text-stone-100">Precision Steel &amp; Pipe Works:</strong> High-strength structural framework and heavy-duty fabrication.</span>
-                  </div>
-                  <div className="flex items-start gap-2 bg-black/40 border border-brand-light/40 p-2.5 rounded-lg">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold shrink-0 mt-1.5" />
-                    <span><strong className="text-stone-100">Custom Staircases:</strong> Elegant and durable modern architectural stairs.</span>
-                  </div>
-                  <div className="flex items-start gap-2 bg-black/40 border border-brand-light/40 p-2.5 rounded-lg">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold shrink-0 mt-1.5" />
-                    <span><strong className="text-stone-100">Architectural Aluminum Work:</strong> Premium-grade windows and fittings.</span>
-                  </div>
-                </div>
-
-                <p className="text-xs sm:text-sm text-stone-200 font-medium">
-                  Experience total perfection in metalwork and construction with Mughal Steel Fabrication, Rawalpindi.
-                </p>
-              </div>
             </div>
-            
-            <Link 
-              to="/portfolio"
-              className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1.5 uppercase tracking-wider shrink-0 self-start lg:self-start mt-1 bg-black/60 px-4 py-2.5 rounded-lg border border-brand-gold/40 shadow-md hover:border-brand-gold transition"
-            >
-              <span>Explore All {projects.length} Projects</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
           </div>
 
-          {/* 6 Featured Portfolio Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {((projects && projects.length > 0 ? projects.slice(0, 6) : SEED_PROJECTS.slice(0, 6)) as any[]).map((project: any) => (
-              <Link
-                key={project.id}
-                to={`/portfolio/${project.slug || project.id}`}
-                className="group relative aspect-[4/3] rounded-xl overflow-hidden border border-brand-light/60 hover:border-brand-gold transition-all duration-300 shadow-2xl bg-black flex flex-col justify-between card-interactive"
-              >
-                <img 
-                  src={project.image || (project as any).coverImage || FALLBACK_IMAGE_URL} 
-                  alt={project.title}
-                  loading="lazy"
-                  decoding="async"
-                  onError={handleImageError}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                />
-                
-                <div className="absolute top-3 left-3 flex items-center gap-1.5">
-                  <span className="bg-brand-dark/90 backdrop-blur-md border border-brand-gold/40 text-brand-gold text-[9px] font-mono font-bold px-2 py-0.5 rounded">
-                    {project.category}
-                  </span>
-                </div>
+          {/* Company Heritage & Milestone Statistics Strip */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="bg-gradient-to-br from-brand-navy to-[#060A12] border border-brand-light/60 p-5 rounded-xl space-y-1 shadow-lg hover:border-brand-gold transition-all card-interactive">
+              <div className="flex items-center justify-between text-brand-gold">
+                <span className="text-xs font-mono font-bold uppercase">Experience</span>
+                <Award className="w-4 h-4" />
+              </div>
+              <p className="text-2xl sm:text-3xl font-heading font-black text-white">Since 1994</p>
+              <p className="text-[11px] text-slate-400 font-sans">30+ Years of Metalworking &amp; Structural Heritage</p>
+            </div>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent p-5 flex flex-col justify-end">
-                  <span className="text-[10px] text-brand-gold font-mono font-bold flex items-center gap-1">
-                    <MapPin className="w-3 h-3" /> {project.location || 'Islamabad, Pakistan'}
-                  </span>
-                  <h3 className="text-sm sm:text-base font-heading font-black text-white group-hover:text-brand-gold transition-colors uppercase leading-tight mt-1">
-                    {project.title}
-                  </h3>
-                  <p className="text-[11px] text-slate-300 line-clamp-1 mt-1 font-sans">
-                    {project.description}
-                  </p>
-                </div>
-              </Link>
-            ))}
+            <div className="bg-gradient-to-br from-brand-navy to-[#060A12] border border-brand-light/60 p-5 rounded-xl space-y-1 shadow-lg hover:border-brand-gold transition-all card-interactive">
+              <div className="flex items-center justify-between text-brand-gold">
+                <span className="text-xs font-mono font-bold uppercase">Completed</span>
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              </div>
+              <p className="text-2xl sm:text-3xl font-heading font-black text-white">1,500+ Projects</p>
+              <p className="text-[11px] text-slate-400 font-sans">Delivered Nationwide with Zero Defect Rate</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-brand-navy to-[#060A12] border border-brand-light/60 p-5 rounded-xl space-y-1 shadow-lg hover:border-brand-gold transition-all card-interactive">
+              <div className="flex items-center justify-between text-brand-gold">
+                <span className="text-xs font-mono font-bold uppercase">Certified Standard</span>
+                <ShieldCheck className="w-4 h-4 text-brand-gold" />
+              </div>
+              <p className="text-2xl sm:text-3xl font-heading font-black text-white">100% Gauge</p>
+              <p className="text-[11px] text-slate-400 font-sans">14G / 12G Certified High-Tensile Mild Steel</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-brand-navy to-[#060A12] border border-brand-light/60 p-5 rounded-xl space-y-1 shadow-lg hover:border-brand-gold transition-all card-interactive">
+              <div className="flex items-center justify-between text-brand-gold">
+                <span className="text-xs font-mono font-bold uppercase">Warranty</span>
+                <Clock className="w-4 h-4 text-amber-400" />
+              </div>
+              <p className="text-2xl sm:text-3xl font-heading font-black text-white">10-Year Cover</p>
+              <p className="text-[11px] text-slate-400 font-sans">Official Structural Strength &amp; Anti-Rust Guarantee</p>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+          {/* Interactive Status Filter Tabs: All vs Completed vs Ongoing Sites */}
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            {[
+              { id: 'all', label: 'All Projects (8)', badge: 'Overview' },
+              { id: 'completed', label: 'Completed & Handed Over (5)', badge: '100% Verified', color: 'text-emerald-400' },
+              { id: 'ongoing', label: 'Active On-Site Installations (3)', badge: 'Live Erection', color: 'text-amber-400' }
+            ].map((tab) => {
+              const isActive = portfolioStatusTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setPortfolioStatusTab(tab.id as any)}
+                  className={`px-5 py-2.5 rounded-lg font-heading font-bold text-xs uppercase tracking-wider transition-all duration-300 flex items-center gap-2 cursor-pointer card-interactive ${
+                    isActive
+                      ? 'bg-brand-gold text-brand-dark shadow-[0_0_20px_rgba(204,160,75,0.4)] scale-105'
+                      : 'bg-brand-navy/80 border border-brand-light/60 text-stone-300 hover:border-brand-gold/60 hover:text-brand-gold'
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full ${tab.id === 'ongoing' ? 'bg-amber-400 animate-pulse' : tab.id === 'completed' ? 'bg-emerald-400' : 'bg-brand-gold'}`} />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Projects Showcase Cards Grid */}
+          {(() => {
+            const allPortfolioProjects = [
+              {
+                id: 'proj-comp-1',
+                status: 'completed',
+                statusLabel: 'Completed & Handed Over',
+                title: '1 Kanal Luxury Residence - Faisalabad',
+                location: 'Canal Road, Faisalabad',
+                clientType: 'Private Luxury Villa',
+                gaugeSpec: '14-Gauge MS & ±0.1mm CNC Fiber Laser',
+                finishSpec: 'Matte Jet-Black Electrostatic Powder Coat (200°C)',
+                deliverables: 'Main Driveway Gate, Boundary Wall Grills, Balcony Railings, Spiral Stairs',
+                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+                link: '/portfolio/1-kanal-house-steel-fabrication'
+              },
+              {
+                id: 'proj-comp-2',
+                status: 'completed',
+                statusLabel: 'Completed & Handed Over',
+                title: 'Gulberg Greens Modern Farmhouse',
+                location: 'Gulberg Greens, Islamabad',
+                clientType: 'Country Estate & Farmhouse',
+                gaugeSpec: 'Schedule 40 Galvanized Heavy MS Pipes',
+                finishSpec: 'Triple Hot-Zinc Chemical Primer & Protective Powder Coat',
+                deliverables: 'Grand Entrance Gate, 1,200 RFT Security Fencing, Custom Porch Pergola',
+                image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
+                link: '/portfolio/gulberg-greens-farmhouse'
+              },
+              {
+                id: 'proj-comp-3',
+                status: 'completed',
+                statusLabel: 'Completed & Handed Over',
+                title: 'National Defence University (NDU) Handover',
+                location: 'Sector E-9, Islamabad',
+                clientType: 'Institutional & High-Security',
+                gaugeSpec: '12-Gauge Heavy Mild Steel Structural Channels',
+                finishSpec: 'Anti-Rust Zinc-Rich Epoxy Coating',
+                deliverables: 'Heavy Guarded Security Gates, Pedestrian Turnstiles, Automated Barriers',
+                image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
+                link: '/portfolio/ndu-islamabad'
+              },
+              {
+                id: 'proj-comp-4',
+                status: 'completed',
+                statusLabel: 'Completed & Handed Over',
+                title: 'Bahria Town Modern Villa Main Gate',
+                location: 'Bahria Town Phase 7, Rawalpindi',
+                clientType: 'Residential Bungalow',
+                gaugeSpec: '14-Gauge CNC Geometric Laser Cut MS',
+                finishSpec: 'Charcoal Grey Electrostatic Powder Coat',
+                deliverables: 'Automated Sliding Gate with Italian Motor, Frameless Glass Balconies',
+                image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80',
+                link: '/portfolio/bahria-town-villa'
+              },
+              {
+                id: 'proj-comp-5',
+                status: 'completed',
+                statusLabel: 'Completed & Handed Over',
+                title: 'Classical Arch Spanish Kothi',
+                location: 'DHA Phase 2, Islamabad',
+                clientType: 'Classical Heritage Villa',
+                gaugeSpec: 'Solid Hand-Forged Carbon Steel (20mm solid bars)',
+                finishSpec: 'Hand-Rubbed Antique Roman Bronze & Gold Leaf Accents',
+                deliverables: 'Arched Double Wrought Iron Driveway Gate, Curved Balustrades',
+                image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+                link: '/portfolio/classical-arch-residence'
+              },
+              {
+                id: 'proj-ong-1',
+                status: 'ongoing',
+                statusLabel: 'Active On-Site Erection (85%)',
+                title: 'Oversized Pivot Door Installation',
+                location: 'Sector F-7/2, Islamabad',
+                clientType: 'Contemporary Architect Villa',
+                gaugeSpec: '6063-T6 Thermal-Break Profile with 12mm Acoustic Glass',
+                finishSpec: 'Deep Matte Anodized Architectural Black',
+                deliverables: '5x10 ft Hydraulic Floor-Spring Pivot Entrance Door & Laser Leveling',
+                image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80',
+                link: '/portfolio/sector-f7-pivot-door'
+              },
+              {
+                id: 'proj-ong-2',
+                status: 'ongoing',
+                statusLabel: 'Active On-Site Erection (60%)',
+                title: 'Commercial Plaza Glass & Steel Sub-Frame',
+                location: 'Sector G-13 Markaz, Islamabad',
+                clientType: 'Commercial Corporate Plaza',
+                gaugeSpec: 'Heavy I-Beam & Structural Channel Portal Trusses',
+                finishSpec: 'AkzoNobel High-Endurance Powder Coat',
+                deliverables: 'Multi-Storey Glass Curtain Sub-Frame, Fire Spiral Escape Stairs',
+                image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+                link: '/portfolio/commercial-plaza-g13'
+              },
+              {
+                id: 'proj-ong-3',
+                status: 'ongoing',
+                statusLabel: 'Fabrication Yard Stage (45%)',
+                title: 'High-Security Double Gate & Perimeter Spikes',
+                location: 'Naval Anchorage, Islamabad',
+                clientType: 'Private Residence Estate',
+                gaugeSpec: '12-Gauge Thick Cold-Rolled Mild Steel',
+                finishSpec: '7-Stage Chemical Pre-Treatment & Powder Oven Baked',
+                deliverables: 'Heavy Automated Swing Gate, 180 RFT Laser Precision Anti-Climb Spikes',
+                image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
+                link: '/portfolio/naval-anchorage-residence'
+              }
+            ];
+
+            const filteredProjects = portfolioStatusTab === 'all'
+              ? allPortfolioProjects
+              : allPortfolioProjects.filter(p => p.status === portfolioStatusTab);
+
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+                {filteredProjects.map((proj) => {
+                  const isOngoing = proj.status === 'ongoing';
+                  return (
+                    <div 
+                      key={proj.id}
+                      className="group bg-brand-navy border border-brand-light/60 rounded-xl overflow-hidden hover:border-brand-gold transition-all duration-300 shadow-2xl flex flex-col justify-between card-interactive"
+                    >
+                      {/* Image Header with Status Tag */}
+                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
+                        <img 
+                          src={proj.image || FALLBACK_IMAGE_URL} 
+                          alt={proj.title}
+                          loading="lazy"
+                          decoding="async"
+                          onError={handleImageError}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                        
+                        {/* Live Status Tag */}
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                          <span className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md border ${
+                            isOngoing
+                              ? 'bg-amber-950/80 border-amber-500/50 text-amber-300'
+                              : 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300'
+                          }`}>
+                            <span className={`inline-block w-1.5 h-1.5 rounded-full mr-1.5 ${isOngoing ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'}`} />
+                            {proj.statusLabel}
+                          </span>
+                        </div>
+
+                        {/* Location Tag */}
+                        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-stone-200">
+                          <span className="text-[11px] font-mono font-bold text-brand-gold flex items-center gap-1 drop-shadow">
+                            <MapPin className="w-3.5 h-3.5" />
+                            <span>{proj.location}</span>
+                          </span>
+                          <span className="text-[10px] font-mono bg-black/60 px-2 py-0.5 rounded text-stone-300 border border-white/10">
+                            {proj.clientType}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Content Body */}
+                      <div className="p-5 space-y-3.5 flex-1 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <h3 className="font-heading font-black text-sm sm:text-base text-stone-100 group-hover:text-brand-gold transition-colors uppercase leading-snug">
+                            {proj.title}
+                          </h3>
+                          
+                          {/* Specs Box */}
+                          <div className="bg-black/50 border border-brand-light/40 p-2.5 rounded-lg space-y-1 text-[11px] font-sans">
+                            <div className="flex items-start gap-1.5 text-stone-200">
+                              <strong className="text-brand-gold shrink-0">Steel Gauge:</strong>
+                              <span className="text-slate-300 truncate">{proj.gaugeSpec}</span>
+                            </div>
+                            <div className="flex items-start gap-1.5 text-stone-200">
+                              <strong className="text-brand-gold shrink-0">Finishing:</strong>
+                              <span className="text-slate-300 truncate">{proj.finishSpec}</span>
+                            </div>
+                            <div className="flex items-start gap-1.5 text-stone-200">
+                              <strong className="text-brand-gold shrink-0">Scope:</strong>
+                              <span className="text-slate-300 truncate">{proj.deliverables}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="pt-2 border-t border-brand-light/40 flex items-center justify-between gap-2">
+                          <a
+                            href={getWhatsAppUrl(`*PROJECT INQUIRY*\nI am interested in project: ${proj.title} located at ${proj.location}.\nPlease share complete technical drawing, material specifications, and quotation.`)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-navy text-[10px] py-2 px-3.5 font-bold uppercase tracking-wider flex items-center gap-1.5 w-full justify-center"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Inquire On Site</span>
+                          </a>
+
+                          <Link
+                            to="/quote"
+                            className="btn-gold text-[10px] py-2 px-3.5 font-bold uppercase tracking-wider flex items-center gap-1 shrink-0"
+                          >
+                            <span>Get Rate</span>
+                            <ArrowRight className="w-3 h-3" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
+
+          {/* Bottom Action Strip */}
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-brand-light/30">
             <Link 
               to="/portfolio"
               className="btn-gold text-xs py-3 px-8 uppercase font-bold tracking-wider shadow-lg"
             >
-              <span>View Complete Portfolio Gallery</span>
+              <span>View All 10 Architectural Categories</span>
             </Link>
 
             <a
-              href={getWhatsAppUrl('Hello Mughal Steel Team, I am viewing your Featured Portfolio and would like to discuss a custom fabrication project.')}
+              href={getWhatsAppUrl('Hello Mughal Steel Fabrication, I want to schedule a site laser survey for my upcoming house project.')}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-navy text-xs py-3 px-6 uppercase font-bold tracking-wider flex items-center gap-2"
+              className="btn-outline text-xs py-3 px-6 uppercase font-bold tracking-wider flex items-center gap-2"
             >
-              <MessageCircle className="w-4 h-4 text-emerald-400" />
-              <span>Chat on WhatsApp</span>
+              <Phone className="w-4 h-4 text-brand-gold" />
+              <span>Book Site Laser Survey</span>
             </a>
           </div>
 
@@ -1503,33 +1601,38 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ======================================================== */}
-      {/* REVIEWS SECTION: VERIFIED FEEDBACK & CLIENT REVIEWS */}
+      {/* 4. REVIEWS SECTION: VERIFIED FEEDBACK & CLIENT REVIEWS   */}
+      {/* Placed Directly Below Projects as Requested             */}
       {/* ======================================================== */}
-      <section id="reviews" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <section id="reviews" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-20 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-light/40 pb-4">
-            <div className="space-y-1">
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
-                CLIENT REVIEWS & TESTIMONIALS
-              </h2>
-              <div className="flex items-center gap-2 pt-1 text-xs text-slate-300">
-                <div className="flex text-amber-400 gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400" />
-                  ))}
-                </div>
-                <span>5.0 Rating Across 500+ Fabrication Projects in Pakistan</span>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-brand-light/40 pb-6">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-[10px] font-heading font-black uppercase tracking-widest rounded-full shadow-sm">
+                <Star className="w-3.5 h-3.5 fill-brand-gold text-brand-gold" />
+                <span>5.0 Star Rating Across 500+ Projects in Pakistan</span>
               </div>
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-black text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+                <span>CLIENT REVIEWS &amp;</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
+                  HANDOVER FEEDBACK
+                </span>
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-3xl">
+                Read real verified feedback from homeowners, commercial developers, overseas Pakistanis, and architects who trusted Mughal Steel Fabrication for their architectural metalwork.
+              </p>
             </div>
 
-            <button
-              onClick={() => setShowReviewModal(true)}
-              className="btn-gold text-xs py-2.5 px-4 uppercase font-bold tracking-wider flex items-center gap-1.5"
-            >
-              <Star className="w-3.5 h-3.5 fill-brand-dark" />
-              <span>+ Add Your Project Review</span>
-            </button>
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                onClick={() => setShowReviewModal(true)}
+                className="btn-gold text-xs py-2.5 px-4 uppercase font-bold tracking-wider flex items-center gap-1.5 cursor-pointer"
+              >
+                <Star className="w-3.5 h-3.5 fill-brand-dark" />
+                <span>+ Add Your Project Review</span>
+              </button>
+            </div>
           </div>
 
           {/* Active Review Spotlight Card & Slider Controls */}
@@ -1691,6 +1794,33 @@ export const HomePage: React.FC = () => {
             );
           })()}
 
+          {/* Video Feedback Spotlight Banner */}
+          <div className="bg-gradient-to-r from-[#0B1320] via-brand-navy to-[#0B1320] border border-brand-gold/40 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+            <div className="space-y-1.5 text-center sm:text-left">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-brand-gold bg-brand-gold/10 px-2.5 py-0.5 rounded border border-brand-gold/30">
+                Official Project Handover Video
+              </span>
+              <h3 className="text-lg sm:text-xl font-heading font-black text-white uppercase">
+                Customer Review: NDU Islamabad Project Handover
+              </h3>
+              <p className="text-xs text-slate-300 font-sans max-w-xl">
+                Watch verified on-camera client feedback upon final laser inspection, gate motor calibration, and official handover.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setActiveVideoModal({
+                title: 'Customer Review & Feedback - NDU Islamabad Project',
+                videoUrl: 'https://res.cloudinary.com/dfh28zk9/video/upload/q_auto,vc_h264/v1788502154/Customer_Review_NDU_Islamabad_Project_completed_by_Mughal_Steel_Fab.mp4',
+                description: 'Verified client review and project handover at National Defence University (NDU) Islamabad. Client shares detailed feedback on structural craftsmanship, timely delivery, and professional installation standards.'
+              })}
+              className="btn-gold text-xs py-3 px-6 uppercase font-bold tracking-wider flex items-center gap-2 shrink-0 cursor-pointer shadow-lg"
+            >
+              <Play className="w-4 h-4 fill-brand-dark" />
+              <span>Watch Video Review</span>
+            </button>
+          </div>
+
           <div className="flex justify-center pt-2">
             <Link 
               to="/reviews"
@@ -1699,6 +1829,466 @@ export const HomePage: React.FC = () => {
               <span>View All Verified Client Reviews</span>
             </Link>
           </div>
+
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 5. OUR SPECIALIZED SERVICES (WITH LARGE PROMINENT PHOTOS) */}
+      {/* Placed Below Client Reviews with Big Image Showcase     */}
+      {/* ======================================================== */}
+      <section id="services" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-20 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-brand-light/40 pb-6">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-[10px] font-heading font-black uppercase tracking-widest rounded-full shadow-sm">
+                <Hammer className="w-3.5 h-3.5 text-brand-gold" />
+                <span>Full-Spectrum Fabrication Capabilities</span>
+              </div>
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-black text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+                <span>OUR SPECIALIZED</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
+                  FABRICATION SERVICES
+                </span>
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-3xl">
+                Precision mild steel fabrication, hand-forged wrought iron, and architectural glass systems accompanied by dedicated on-site engineering and certified 10-year structural warranty.
+              </p>
+            </div>
+
+            <Link 
+              to="/services" 
+              className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1.5 uppercase tracking-wider bg-black/60 px-4 py-2.5 rounded-lg border border-brand-gold/40 shadow-md hover:border-brand-gold transition shrink-0"
+            >
+              <span>View All Services</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Interactive Service Switcher Tabs */}
+          {(() => {
+            const allServicesList = [
+              {
+                id: 'srv-1',
+                title: 'Steel Fabrication & CNC Laser Works',
+                shortTitle: 'CNC Laser & Mild Steel',
+                subtitle: 'High-Tensile Structural Mild Steel (14G / 16G Certified) & Millimeter CNC Laser Precision',
+                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+                desc: 'High-tensile CNC laser cut gates, security boundary grills, and heavy structural warehouse trusses.',
+                fullDescription: 'Mughal Steel Fabrication delivers turnkey architectural steel fabrication solutions combining heavy structural carbon steel box channels with ±0.1mm fiber laser-cut steel sheets. Every assembly is precision welded, anti-rust zinc-primed, and oven-baked with electrostatic polyester powder coat for extreme longevity.',
+                badge: '14G/16G Certified MS',
+                specs: [
+                  '14-Gauge (2.0mm) & 12-Gauge (2.5mm) Certified Mild Steel Frame',
+                  'High-Speed CNC Fiber Laser Tolerance: ±0.1mm',
+                  'Hot-Zinc Anti-Rust Primer & Electrostatic Powder Oven Bake (200°C)',
+                  'Italian / German Automated Gate Motor Compatibility',
+                  'Heavy-Duty Ball-Bearing Hinges & High-Tensile Ground Anchor Bolts'
+                ],
+                deliverables: [
+                  'Main Villa Driveway Sliding & Swing Gates',
+                  'Telescopic & Bi-Fold High-Clearance Driveway Gates',
+                  'Security Window Grills & French Sliding Frames',
+                  'Boundary Wall Security Panels & Anti-Climb Spikes',
+                  'Architectural Facade Louver Cladding'
+                ],
+                process: [
+                  '1. On-Site Digital Laser Survey & Sizing',
+                  '2. 3D CAD Shop Drawing & Motif Blueprint Approval',
+                  '3. CNC Fiber Laser Plate Cutting',
+                  '4. Precision TIG/MIG Structural Welding',
+                  '5. 7-Stage Anti-Corrosion Treatment & Oven Bake',
+                  '6. On-Site Precision Laser Leveling & Installation'
+                ],
+                categoryLink: '/categories/modern-home',
+                categoryLabel: 'View Modern Home Category Designs'
+              },
+              {
+                id: 'srv-2',
+                title: 'Wrought Iron & Classical Artisan Work',
+                shortTitle: 'Wrought Iron Artisan',
+                subtitle: 'Master Hand-Forged Solid Carbon Steel Scrolls, Haveli Archways & Antique Patinas',
+                image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
+                desc: 'Hand-forged ornamental scrolls, haveli gates, and antique gold balustrades.',
+                fullDescription: 'Preserving centuries of Mughal and European blacksmith artistry, our master artisans hand-forge solid carbon steel bars on heavy anvils to craft bespoke ornamental scrolls, acanthus leaves, classical rosettes, and antique brass accents.',
+                badge: 'Hand-Forged Solid MS',
+                specs: [
+                  'Solid Heavy Carbon Steel Bars (16mm to 25mm solid forged)',
+                  'Hand-Hammered Ornamental Scrolls & Cast Monograms',
+                  'Triple-Coat Antique Patina (Spanish Gold, Roman Bronze, Copper Rust-Proof)',
+                  'Concealed Heavy Anchor Bolts for Masonry Pillars',
+                  '10-Year Structural & Anti-Corrosion Guarantee'
+                ],
+                deliverables: [
+                  'Grand Classical Entrance Gates with Family Monograms',
+                  'Majestic Curved Balcony Railings & Terrace Barriers',
+                  'Artisan Wrought Iron Double Front Doors',
+                  'Spiral Staircases with Ornate Gold Balusters',
+                  'Garden Estate Gazebos & Classical Pergolas'
+                ],
+                process: [
+                  '1. Heritage Motif Consultation & Elevation Study',
+                  '2. Full-Scale 1:1 Scale Blacksmith Template Drawing',
+                  '3. Traditional Forge Heating & Hand-Hammering',
+                  '4. Structural Framework Joinery & Grind Finishing',
+                  '5. Hand-Rubbed Antique Metallic Patina Application',
+                  '6. White-Glove On-Site Erection & Leveling'
+                ],
+                categoryLink: '/categories/classical-home',
+                categoryLabel: 'View Classical Home Category Designs'
+              },
+              {
+                id: 'srv-3',
+                title: 'Aluminum & Glass Pivot Systems',
+                shortTitle: 'Aluminum & Glass Systems',
+                subtitle: 'Architectural Pivot Doors, Thermally Isolated Facades & Acoustic Laminated Glass Systems',
+                image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80',
+                desc: 'Thermally isolated pivot doors, glass balustrades, and soundproof partitions.',
+                fullDescription: 'Ultra-slim architectural aluminum framing paired with high-performance 12mm tempered or acoustic double-glazed glass. Engineered for modern villa pivot entrance doors, office glass partitions, frameless balcony balustrades, and expansive sliding patio enclosures.',
+                badge: 'German Hydraulic Pivot',
+                specs: [
+                  'Commercial-Grade 6063-T6 Thermal-Break Aluminum Extrusions',
+                  '12mm / 16mm Laminated Toughened Safety Glass (EN 12150 Certified)',
+                  'German Concealed Hydraulic Floor Springs (Up to 350kg Capacity)',
+                  'Acoustic Soundproofing Rating: Up to 42dB Noise Isolation',
+                  'Weather-Sealed EPDM Gaskets & Multi-Point Security Locks'
+                ],
+                deliverables: [
+                  'Oversized Frameless Glass Pivot Entrance Doors',
+                  'Floor-to-Ceiling Acoustic Office Partitions',
+                  'Frameless Balcony Tempered Glass Balustrades',
+                  'Commercial Showroom & Storefront Glass Facades',
+                  'Double-Glazed Soundproof French Windows'
+                ],
+                process: [
+                  '1. Precision Optical Laser Alignment Survey',
+                  '2. Architectural Glass Specification & Thickness Engineering',
+                  '3. CNC Aluminum Profile Milling & Thermal Isolator Assembly',
+                  '4. High-Temperature Glass Tempering & Edge Polishing',
+                  '5. Hydraulic Floor Spring Anchoring',
+                  '6. Turnkey On-Site Glazing & Weatherproofing'
+                ],
+                categoryLink: '/categories/aluminum-glass',
+                categoryLabel: 'View Aluminum & Glass Category Designs'
+              },
+              {
+                id: 'srv-4',
+                title: 'Structural & Commercial Steel Solutions',
+                shortTitle: 'Structural Steel & Sheds',
+                subtitle: 'Heavy Industrial Trusses, Mezzanine Floors, Warehouse Sheds & Fire-Escape Spines',
+                image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
+                desc: 'Mezzanine platforms, fire-escape spiral stairs, automated sliding barrier frames, and industrial sheds.',
+                fullDescription: 'Heavy structural steel engineering designed to meet Pakistan Building Code (PBC) standards. From large-span warehouse portal frames and industrial mezzanine storage decks to commercial exterior spiral escape stairs.',
+                badge: 'I-Beam Portal Frame',
+                specs: [
+                  'Heavy I-Beam, H-Beam & Hollow Structural Section (HSS) Steel',
+                  'Certified Coded Structural Welders (ASME / AWS D1.1 Standard)',
+                  'High-Tensile Grade 8.8 Structural Foundation Anchor Bolts',
+                  'Structural Load Proof Tested up to 1500 kg/m²',
+                  'Fire-Retardant Intumescent Paint Coating Option'
+                ],
+                deliverables: [
+                  'Industrial Warehouse & Factory Portal Frame Sheds',
+                  'Multi-Tier Mezzanine Steel Storage Decks',
+                  'Commercial Exterior Fire-Escape Spiral Staircases',
+                  'Commercial Tensile Parking Canopies & Walkways',
+                  'High-Rise Building Steel Sub-Frames & Trusses'
+                ],
+                process: [
+                  '1. Structural Load & Wind Velocity Calculations',
+                  '2. Coded Steel Fabrication in Industrial Workshop',
+                  '3. Full Ultrasonic Weld Testing & Primer Application',
+                  '4. On-Site Heavy Crane Hoisting & Bolt Tensioning',
+                  '5. Structural Safety Certification & Load Sign-off'
+                ],
+                categoryLink: '/categories/commercial',
+                categoryLabel: 'View Commercial Category Designs'
+              },
+              {
+                id: 'srv-5',
+                title: 'Farm & Agricultural Solutions',
+                shortTitle: 'Farm & Agricultural',
+                subtitle: 'Hot-Dip Galvanized Cattle Barriers, Heavy Equipment Sheds & Estate Perimeter Security',
+                image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+                desc: 'Hot-dip galvanized cattle barriers, heavy equipment shed trusses, and durable agrarian estate fencing.',
+                fullDescription: 'Robust, heavy-gauge weather-proof steel fabrication built to withstand harsh outdoor agrarian environments, animal livestock pressure, and heavy tractor/harvester machinery.',
+                badge: 'Hot-Dip Galvanized',
+                specs: [
+                  'Hot-Dip Galvanized Steel Coating (ISO 1461 Certified, 85+ Microns)',
+                  'High-Yield Schedule 40 Seamless Round & Square Tubular Pipes',
+                  'Livestock-Safe Smooth Finished Radiused Welds',
+                  'Heavy-Duty Ground Anchors & Locking Slam-Latches',
+                  'Weatherproof Galvanized Corrugated Roofing Profiles'
+                ],
+                deliverables: [
+                  'Estate Main Entrance Farmhouse Grand Gates',
+                  'Livestock Corrals, Cattle Crushes & Feeding Barriers',
+                  'Heavy Tractor & Agricultural Machinery Sheds',
+                  'Perimeter Chain-Link & Tubular Steel Security Fencing',
+                  'Farmhouse Shaded Steel Porches & Pergolas'
+                ],
+                process: [
+                  '1. Agricultural Terrain & Livestock Flow Survey',
+                  '2. Heavy Schedule 40 Pipe Bending & Framing',
+                  '3. Deep-Dip Molten Zinc Hot Galvanization',
+                  '4. On-Site Deep Foundation Excavation & Concreting',
+                  '5. Heavy Hinge & Motor Alignment Setup'
+                ],
+                categoryLink: '/categories/farm',
+                categoryLabel: 'View Farm Category Designs'
+              },
+              {
+                id: 'srv-6',
+                title: 'Custom Design & Turnkey Installation',
+                shortTitle: 'Turnkey 3D CAD & Setup',
+                subtitle: 'Turnkey 3D CAD Modeling, Laser Leveling, Structural Foundation Anchoring & Motor Setup',
+                image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80',
+                desc: 'Turnkey 3D CAD modeling, laser leveling, structural foundation anchoring, and automated motor setup.',
+                fullDescription: 'Complete end-to-end bespoke design and engineering consultancy. We take your architectural blueprints or site measurements, generate detailed 3D CAD elevations with virtual try-on previews, and manage complete on-site crane and laser installation with warranty certification.',
+                badge: 'Laser Survey & Erection',
+                specs: [
+                  'Detailed 3D CAD & Structural Elevation Shop Drawings',
+                  '±0.5mm Precision On-Site Digital Laser Leveling',
+                  'Heavy Core Drilling & High-Strength Chemical Epoxy Anchoring',
+                  'Complete German / Italian Automation Setup & Wiring',
+                  'Mughal Steel Official 10-Year Fabrication Warranty Certificate'
+                ],
+                deliverables: [
+                  'Turnkey 3D CAD Visualizer & Blueprint Service',
+                  'Custom House Elevation Gate & Door Fitting',
+                  'Automated Sliding & Swing Roller Motor Setup',
+                  'On-Site Core Drilling & Structural Pillar Anchoring',
+                  '10-Year Warranty & Annual Maintenance Support'
+                ],
+                process: [
+                  '1. Free On-Site Digital Survey in Twin Cities',
+                  '2. 3D Elevation Simulation & Material Quotation',
+                  '3. Dedicated Fabrication in Rawalpindi Industrial Yard',
+                  '4. Quality Inspection & Multi-Stage Powder Coat',
+                  '5. Complete On-Site Crane Installation & Testing',
+                  '6. Delivery of Official Warranty Certificate'
+                ],
+                categoryLink: '/quote',
+                categoryLabel: 'Request Custom Elevation & Quote'
+              }
+            ];
+
+            const activeService = allServicesList[activeServiceTab % allServicesList.length];
+
+            return (
+              <div className="space-y-8">
+                
+                {/* 6 Tabs for Quick Selection */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                  {allServicesList.map((srv, idx) => {
+                    const isSelected = activeServiceTab === idx;
+                    return (
+                      <button
+                        key={srv.id}
+                        onClick={() => setActiveServiceTab(idx)}
+                        className={`p-3 rounded-xl border text-left transition-all duration-300 flex flex-col justify-between cursor-pointer card-interactive ${
+                          isSelected
+                            ? 'bg-gradient-to-b from-brand-medium to-brand-navy border-brand-gold shadow-[0_0_20px_rgba(204,160,75,0.3)]'
+                            : 'bg-black/40 border-brand-light/40 hover:border-brand-gold/50 opacity-75 hover:opacity-100'
+                        }`}
+                      >
+                        <span className={`text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded self-start ${
+                          isSelected ? 'bg-brand-gold text-brand-dark' : 'bg-stone-800 text-stone-300'
+                        }`}>
+                          {srv.badge}
+                        </span>
+                        <span className={`font-heading font-black text-xs uppercase tracking-tight mt-2 line-clamp-1 ${
+                          isSelected ? 'text-brand-gold' : 'text-stone-200'
+                        }`}>
+                          {srv.shortTitle}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* FEATURED SERVICE PROMINENT LARGE PICTURE SHOWCASE (Split-Screen Layout) */}
+                <div className="bg-gradient-to-br from-brand-navy/95 to-[#060A12] border border-brand-gold/60 rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 card-interactive">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                    
+                    {/* LEFT / TOP: LARGE HIGH-RESOLUTION ARCHITECTURAL PHOTOGRAPH */}
+                    <div className="lg:col-span-6 relative aspect-[16/10] lg:aspect-auto lg:h-full min-h-[360px] sm:min-h-[440px] bg-black overflow-hidden group">
+                      <img 
+                        src={activeService.image} 
+                        alt={activeService.title} 
+                        loading="lazy"
+                        decoding="async"
+                        onError={handleImageError}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter contrast-[1.04]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
+                      
+                      {/* Top Badges */}
+                      <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
+                        <span className="bg-brand-dark/95 text-brand-gold border border-brand-gold/60 text-[10px] font-mono font-bold px-3 py-1 rounded shadow-lg uppercase">
+                          Featured Capability
+                        </span>
+                        <span className="bg-black/80 text-stone-200 border border-white/20 text-[10px] font-mono px-2.5 py-1 rounded shadow">
+                          {activeService.badge}
+                        </span>
+                      </div>
+
+                      {/* Bottom Image Caption */}
+                      <div className="absolute bottom-4 left-4 right-4 text-white space-y-1">
+                        <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-brand-gold bg-black/85 px-3 py-1 rounded border border-brand-gold/40">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Mughal Steel On-Site Execution Standard</span>
+                        </div>
+                        <p className="text-xs text-stone-200 font-sans drop-shadow-md">
+                          Executed with certified gauges, digital laser leveling, and multi-stage anti-rust treatment.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* RIGHT: IN-DEPTH ENGINEERING DETAILS, SPECS & WORKFLOW */}
+                    <div className="lg:col-span-6 p-6 sm:p-8 lg:p-10 space-y-6 flex flex-col justify-between">
+                      <div className="space-y-4">
+                        <div className="space-y-1.5">
+                          <span className="text-[11px] font-mono font-bold text-brand-gold uppercase tracking-wider block">
+                            Service 0{activeServiceTab + 1} of 0{allServicesList.length}
+                          </span>
+                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-heading font-black text-stone-100 uppercase tracking-tight">
+                            {activeService.title}
+                          </h3>
+                          <p className="text-xs font-mono text-brand-gold/90 font-medium">
+                            {activeService.subtitle}
+                          </p>
+                        </div>
+
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+                          {activeService.fullDescription}
+                        </p>
+
+                        {/* Specs & Deliverables Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                          <div className="bg-black/50 border border-brand-light/50 p-3.5 rounded-xl space-y-2">
+                            <h4 className="font-heading font-bold text-[11px] uppercase tracking-wider text-brand-gold flex items-center gap-1.5">
+                              <Shield className="w-3.5 h-3.5" />
+                              <span>Material Standards</span>
+                            </h4>
+                            <ul className="space-y-1 text-slate-300 font-sans text-[11px]">
+                              {activeService.specs.slice(0, 3).map((spec, i) => (
+                                <li key={i} className="flex items-start gap-1.5">
+                                  <span className="text-brand-gold font-bold">✓</span>
+                                  <span>{spec}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <div className="bg-black/50 border border-brand-light/50 p-3.5 rounded-xl space-y-2">
+                            <h4 className="font-heading font-bold text-[11px] uppercase tracking-wider text-brand-gold flex items-center gap-1.5">
+                              <Layers className="w-3.5 h-3.5" />
+                              <span>Key Deliverables</span>
+                            </h4>
+                            <ul className="space-y-1 text-slate-300 font-sans text-[11px]">
+                              {activeService.deliverables.slice(0, 3).map((item, i) => (
+                                <li key={i} className="flex items-start gap-1.5">
+                                  <span className="text-brand-gold font-bold">•</span>
+                                  <span>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Bottom CTAs */}
+                      <div className="pt-4 border-t border-brand-light/40 flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <button
+                            onClick={() => setActiveServiceModal(activeService as any)}
+                            className="btn-outline text-xs py-2.5 px-4 font-bold uppercase tracking-wider cursor-pointer"
+                          >
+                            <span>View Full Specifications</span>
+                          </button>
+                          
+                          <Link
+                            to={activeService.categoryLink}
+                            className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1 uppercase"
+                          >
+                            <span>Browse Catalog</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </Link>
+                        </div>
+
+                        <a
+                          href={getWhatsAppUrl(`*SERVICE INQUIRY*\nService: ${activeService.title}\nSubtitle: ${activeService.subtitle}\n\nHello Mughal Steel Team, I am planning a project and would like to discuss engineering details and receive a quotation.`)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-gold text-xs py-2.5 px-5 font-bold uppercase tracking-wider flex items-center gap-1.5"
+                        >
+                          <MessageCircle className="w-4 h-4 text-brand-dark" />
+                          <span>Get Quote on WhatsApp</span>
+                        </a>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                {/* 6-Card Summary Grid with Large Pictures */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+                  {allServicesList.map((srv, idx) => {
+                    const isSelected = activeServiceTab === idx;
+                    return (
+                      <div
+                        key={srv.id}
+                        onClick={() => {
+                          setActiveServiceTab(idx);
+                          // smooth scroll to top of service showcase
+                          document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className={`group bg-brand-navy border rounded-xl overflow-hidden flex flex-col justify-between transition-all duration-300 shadow-xl cursor-pointer card-interactive ${
+                          isSelected ? 'border-brand-gold shadow-glow-gold' : 'border-brand-light/60 hover:border-brand-gold/60'
+                        }`}
+                      >
+                        {/* Service Large Image Thumbnail */}
+                        <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
+                          <img 
+                            src={srv.image} 
+                            alt={srv.title}
+                            loading="lazy"
+                            decoding="async"
+                            onError={handleImageError}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                          />
+                          <div className="absolute top-2.5 left-2.5 bg-black/80 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-brand-gold/40">
+                            {srv.badge}
+                          </div>
+                          {isSelected && (
+                            <div className="absolute inset-0 border-2 border-brand-gold pointer-events-none" />
+                          )}
+                        </div>
+
+                        <div className="p-5 space-y-3 flex-1 flex flex-col justify-between">
+                          <div className="space-y-1.5">
+                            <h4 className="font-heading font-bold text-sm sm:text-base text-stone-100 group-hover:text-brand-gold transition-colors uppercase leading-snug">
+                              {srv.title}
+                            </h4>
+                            <p className="text-xs text-slate-400 font-sans line-clamp-2">
+                              {srv.desc}
+                            </p>
+                          </div>
+
+                          <div className="pt-2 border-t border-brand-light/40 flex items-center justify-between text-xs font-heading font-bold text-brand-gold uppercase tracking-wider">
+                            <span>{isSelected ? 'Currently Viewing' : 'Inspect Service'}</span>
+                            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+              </div>
+            );
+          })()}
 
         </div>
       </section>
