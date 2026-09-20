@@ -138,6 +138,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const AppContent: React.FC = () => {
   const location = useLocation();
   const { isDark } = useTheme();
+  const isHomePage = location.pathname === '/' || location.pathname === '';
   const isAdminPage = location.pathname.startsWith('/admin') && !location.pathname.startsWith('/admin/login') && !location.pathname.startsWith('/admin/reset-password');
   const isAuthPage = [
     '/login', '/register', '/signin', '/signup', 
@@ -155,6 +156,8 @@ const AppContent: React.FC = () => {
 
   return (
     <div className={`flex flex-col min-h-screen transition-colors duration-300 font-sans ${
+      isHomePage ? 'page-is-home' : 'page-is-other'
+    } ${
       isDark 
         ? 'bg-[#070C15] text-stone-100 selection:bg-brand-gold selection:text-brand-dark' 
         : 'bg-[#F8F9FA] text-slate-800 selection:bg-amber-400 selection:text-slate-900'
@@ -166,7 +169,7 @@ const AppContent: React.FC = () => {
       {showNav && <CartDrawer />}
 
       {/* Main Content View */}
-      <main className="flex-grow">
+      <main className={`flex-grow ${isHomePage ? 'page-is-home-main' : 'page-is-other-main'}`}>
         <Suspense fallback={<AuthLoadingScreen />}>
           <Routes>
             {/* Public Auth Routes (Accessible only when logged out) */}

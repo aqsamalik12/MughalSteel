@@ -414,7 +414,7 @@ export const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-[#05080E] text-stone-100 font-sans">
+    <div className="page-home-root w-full bg-[#05080E] text-stone-100 font-sans">
             {/* ======================================================== */}
       {/* 1. HOME SECTION: FULL-WIDTH CINEMATIC HERO SLIDER        */}
       {/* Slide 0: Glowing Hot Steel Rolling Mill Image            */}

@@ -57,12 +57,6 @@
     @apply font-heading font-bold text-stone-100;
     letter-spacing: 0.05em;
     word-spacing: 0.12em;
-    transform-style: preserve-3d;
-    perspective: 1200px;
-    backface-visibility: hidden;
-    will-change: transform, text-shadow, filter;
-    animation: headingBackToFront 5.2s cubic-bezier(0.42, 0, 0.58, 1) infinite;
-    transform-origin: center center;
   }
 
   html.light h1, html.light h2, html.light h3, html.light h4, html.light h5, html.light h6, html.light .heading-spaced {
@@ -125,22 +119,22 @@
   }
 
   .card-interactive {
-    @apply transition-all duration-500;
-    transform: translate3d(0, 0, 0);
-    will-change: transform, box-shadow, border-color;
-    animation: productCardLoop 6s ease-in-out infinite;
+    @apply transition-all duration-300;
     position: relative;
     overflow: hidden;
   }
 
   .card-interactive:hover {
-    animation-play-state: paused;
-    transform: translate3d(0, -6px, 0) !important;
-    border-color: rgba(212, 175, 55, 0.95) !important;
-    box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.35) !important;
+    transform: translate3d(0, -6px, 0);
+    border-color: rgba(212, 175, 55, 0.95);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.85), 0 0 25px rgba(212, 175, 55, 0.3);
   }
 
-  .card-interactive::after {
+  .page-is-other .card-interactive {
+    animation: productCardLoop 6s ease-in-out infinite;
+  }
+
+  .page-is-other .card-interactive::after {
     content: '';
     position: absolute;
     top: 0;
@@ -153,13 +147,13 @@
     z-index: 15;
   }
 
-  .card-interactive:nth-child(2n)::after {
+  .page-is-other .card-interactive:nth-child(2n)::after {
     animation-delay: 2.2s;
   }
-  .card-interactive:nth-child(3n)::after {
+  .page-is-other .card-interactive:nth-child(3n)::after {
     animation-delay: 4.5s;
   }
-  .card-interactive:nth-child(4n)::after {
+  .page-is-other .card-interactive:nth-child(4n)::after {
     animation-delay: 6.8s;
   }
 
@@ -462,89 +456,132 @@ html.light ::-webkit-scrollbar-thumb {
 }
 
 /* ======================================================== */
-/* FULL 3D BACK-TO-FRONT HEADING ANIMATION (LUXURY LOOP)    */
+/* 1. FRONT PAGE: STRICTLY ZERO ANIMATIONS                  */
+/* Guaranteed 100% static & stable per user request         */
 /* ======================================================== */
-@keyframes headingBackToFront {
+.page-is-home,
+.page-is-home *,
+.page-is-home *::before,
+.page-is-home *::after,
+.page-home-root,
+.page-home-root *,
+.page-home-root *::before,
+.page-home-root *::after {
+  animation: none !important;
+}
+
+.page-is-home h1,
+.page-is-home h2,
+.page-is-home h3,
+.page-is-home h4,
+.page-is-home h5,
+.page-is-home h6,
+.page-is-home .heading-spaced,
+.page-home-root h1,
+.page-home-root h2,
+.page-home-root h3,
+.page-home-root h4,
+.page-home-root h5,
+.page-home-root h6,
+.page-home-root .heading-spaced {
+  animation: none !important;
+  transform: none !important;
+  perspective: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+.page-is-home h1:hover,
+.page-is-home h2:hover,
+.page-is-home h3:hover,
+.page-is-home h4:hover,
+.page-is-home .heading-spaced:hover,
+.page-home-root h1:hover,
+.page-home-root h2:hover,
+.page-home-root h3:hover,
+.page-home-root h4:hover,
+.page-home-root .heading-spaced:hover {
+  transform: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+.page-is-home .card-interactive,
+.page-home-root .card-interactive {
+  animation: none !important;
+  transform: none !important;
+}
+
+.page-is-home .card-interactive::after,
+.page-home-root .card-interactive::after {
+  display: none !important;
+  animation: none !important;
+}
+
+/* ======================================================== */
+/* 2. OTHER PAGES: EASY SLIDE-IN ANIMATION FOR HEADINGS     */
+/* Smooth, gentle, professional slide-in effect             */
+/* ======================================================== */
+@keyframes easySlideIn {
   0% {
-    transform: perspective(1200px) translate3d(0, 2px, -32px) scale(0.955);
-    opacity: 0.88;
-    filter: brightness(0.92) contrast(1.04);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85), 0 0 0px transparent;
-    letter-spacing: 0.045em;
-  }
-  50% {
-    transform: perspective(1200px) translate3d(0, -3px, 36px) scale(1.045);
-    opacity: 1;
-    filter: brightness(1.16) contrast(1.12);
-    text-shadow: 
-      0 14px 28px rgba(0, 0, 0, 0.85),
-      0 0 28px rgba(212, 175, 55, 0.52),
-      0 0 50px rgba(212, 175, 55, 0.28);
-    letter-spacing: 0.065em;
+    opacity: 0;
+    transform: translate3d(-24px, 0, 0);
   }
   100% {
-    transform: perspective(1200px) translate3d(0, 2px, -32px) scale(0.955);
-    opacity: 0.88;
-    filter: brightness(0.92) contrast(1.04);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85), 0 0 0px transparent;
-    letter-spacing: 0.045em;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
-/* Tactile 3D Hover Elevation for Headings */
-h1:hover, h2:hover, h3:hover, h4:hover, .heading-spaced:hover {
-  transform: perspective(1200px) translate3d(0, -5px, 48px) scale(1.06) !important;
-  filter: brightness(1.22) contrast(1.15) !important;
-  text-shadow: 
-    0 18px 36px rgba(0, 0, 0, 0.95),
-    0 0 35px rgba(212, 175, 55, 0.65),
-    0 0 60px rgba(212, 175, 55, 0.35) !important;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease, text-shadow 0.4s ease;
+.easy-slide-in,
+.page-is-other h1,
+.page-is-other h2,
+.page-is-other h3,
+.page-is-other h4,
+.page-is-other h5,
+.page-is-other h6,
+.page-is-other .heading-spaced {
+  animation: easySlideIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
 }
 
-/* Gentle badge pulse loop */
-@keyframes badgePulseSoft {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 0px transparent;
-  }
-  50% {
-    transform: scale(1.02);
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
+.page-is-other h2 {
+  animation-duration: 0.8s;
+  animation-delay: 0.08s;
+}
+
+.page-is-other h3 {
+  animation-duration: 0.85s;
+  animation-delay: 0.14s;
+}
+
+.page-is-other h4,
+.page-is-other h5,
+.page-is-other h6 {
+  animation-duration: 0.9s;
+  animation-delay: 0.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-is-other h1,
+  .page-is-other h2,
+  .page-is-other h3,
+  .page-is-other h4,
+  .page-is-other h5,
+  .page-is-other h6,
+  .page-is-other .heading-spaced {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
   }
 }
 
-/* Product Rate / Price Highlight Pulse */
-@keyframes priceGlowLoop {
-  0%, 100% {
-    text-shadow: 0 0 0px transparent;
-    filter: drop-shadow(0 0 0px transparent);
-  }
-  50% {
-    text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
-    filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.35));
-  }
-}
-
-/* Apply Shimmer to All Gold Gradient Headings & Text across the site */
-.text-gradient-gold,
-.text-shimmer-loop,
-[class*="bg-gradient-to-r"][class*="from-brand-gold"],
-[class*="bg-gradient-to-r"][class*="via-amber-"],
-[class*="bg-gradient-to-r"][class*="to-brand-gold"] {
-  background-size: 200% auto !important;
-  animation: textGoldShimmer 6s ease-in-out infinite !important;
-}
-
-/* Apply Soft Pulse to Badges across the site */
-.badge-pulse-loop,
-.inline-flex[class*="bg-brand-gold/"] {
+/* Optional subtle loop enhancements strictly scoped to non-home pages */
+.page-is-other .badge-pulse-loop {
   animation: badgePulseSoft 4s ease-in-out infinite;
 }
 
-/* Apply Rate / Price Highlight Pulse */
-.product-price-loop,
-.font-mono.text-brand-gold {
+.page-is-other .product-price-loop {
   animation: priceGlowLoop 3.5s ease-in-out infinite;
 }
 
