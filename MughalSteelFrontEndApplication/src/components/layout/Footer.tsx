@@ -216,7 +216,7 @@ export const Footer: React.FC = () => {
             <p>© {new Date().getFullYear()} Mughal Steel Fabrication (MSF). All rights reserved.</p>
             <span className="hidden sm:inline text-stone-700">|</span>
             <p className="text-[11px] text-slate-400">
-              Developer: <span className="text-stone-200 font-semibold tracking-wide">AQSA RASOOL</span> • <a href="tel:03356730649" className="text-brand-gold hover:underline font-mono">03356730649</a>
+              Digital Adwera Developer: <span className="text-stone-200 font-semibold tracking-wide">AQSA RASOOL</span> • <a href="tel:03356730649" className="text-brand-gold hover:underline font-mono">03356730649</a>
             </p>
           </div>
           <div className="flex items-center gap-6 text-[11px]">
