@@ -23,7 +23,7 @@ export const CategoriesPage: React.FC = () => {
             <Compass className="w-3.5 h-3.5" />
             <span>ARCHITECTURAL PORTFOLIO</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-stone-100">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-wider text-stone-100">
             {activeCategories.length} PROJECT CATEGORIES
           </h1>
           <p className="text-slate-300 text-xs sm:text-sm font-sans leading-relaxed">

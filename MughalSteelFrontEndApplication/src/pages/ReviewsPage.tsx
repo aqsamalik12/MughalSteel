@@ -67,7 +67,7 @@ export const ReviewsPage: React.FC = () => {
             <Star className="w-3.5 h-3.5 fill-brand-gold text-brand-gold" />
             <span>Verified Customer Testimonials</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase tracking-tight text-stone-100">
+          <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase tracking-wider text-stone-100">
             Client Reviews & Ratings
           </h1>
           <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">

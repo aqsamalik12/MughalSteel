@@ -190,7 +190,7 @@ export const ProjectsPage: React.FC = () => {
             <Sparkles className="w-3.5 h-3.5" />
             <span>OUR PROJECTS</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-black uppercase tracking-tight text-stone-100">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-black uppercase tracking-wider text-stone-100">
             Built with Precision. Delivered with Confidence.
           </h1>
           <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed font-sans max-w-2xl mx-auto">
@@ -444,7 +444,7 @@ export const ProjectsPage: React.FC = () => {
                 <Star className="w-3 h-3 fill-brand-gold" />
                 <span>05. VERIFIED CLIENT REVIEWS</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-heading font-black text-stone-100 uppercase tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-heading font-black text-stone-100 uppercase tracking-wider">
                 CLIENT REVIEWS & INSTALLATION FEEDBACK
               </h2>
               <div className="flex items-center gap-2 pt-0.5 text-xs text-slate-300">
@@ -559,7 +559,7 @@ export const ProjectsPage: React.FC = () => {
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/15 text-brand-gold text-xs font-mono font-bold uppercase rounded-full">
             Turnkey Elevation Fabrication
           </div>
-          <h3 className="font-heading text-2xl sm:text-3xl font-black text-stone-100 uppercase tracking-tight">
+          <h3 className="font-heading text-2xl sm:text-3xl font-black text-stone-100 uppercase tracking-wider">
             Have a custom project in mind?
           </h3>
           <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed max-w-2xl mx-auto">

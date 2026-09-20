@@ -90,7 +90,7 @@ export const AboutPage: React.FC = () => {
             <span>High Court Road, Rawalpindi • Muhammad Qasim</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-black text-stone-100 uppercase tracking-tight leading-tight drop-shadow-2xl">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-black text-stone-100 uppercase tracking-wider leading-tight drop-shadow-2xl">
             ABOUT MUGHAL STEEL FABRICATION
           </h1>
 
@@ -158,7 +158,7 @@ export const AboutPage: React.FC = () => {
               <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block">
                 1. CORE SPECIALIZATIONS & SERVICES
               </span>
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
+              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-wider">
                 Craftsmanship Meets Heavy Engineering
               </h2>
             </div>
@@ -206,7 +206,7 @@ export const AboutPage: React.FC = () => {
                 <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block">
                   2. WORKSHOP & EXPERT TEAM
                 </span>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-stone-100 uppercase tracking-wider">
                   High-Precision Yard in Rawalpindi
                 </h2>
               </div>
@@ -271,7 +271,7 @@ export const AboutPage: React.FC = () => {
             <span className="text-xs font-mono font-bold text-brand-gold uppercase tracking-widest">
               3. DIGITAL WORKFLOW & CLIENT CONSULTATION PROCESS
             </span>
-            <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-wider">
               Modern Digital Workflows & Seamless Reach
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 font-sans">

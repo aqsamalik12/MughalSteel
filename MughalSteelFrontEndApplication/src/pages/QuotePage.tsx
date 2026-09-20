@@ -156,7 +156,7 @@ export const QuotePage: React.FC = () => {
             <FileText className="w-3.5 h-3.5" />
             <span>Fast Turnaround Quotation</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-heading font-black uppercase tracking-tight text-stone-100">
+          <h1 className="text-2xl sm:text-4xl font-heading font-black uppercase tracking-wider text-stone-100">
             Request a Fabrication Quotation
           </h1>
           <p className="text-slate-400 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">

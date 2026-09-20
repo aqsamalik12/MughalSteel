@@ -90,7 +90,7 @@ export const CategoryDetailPage: React.FC = () => {
               <span className="text-brand-gold font-bold">{category.name}</span>
             </div>
             
-            <h1 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-wider">
               {category.name}
             </h1>
             

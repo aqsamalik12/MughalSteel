@@ -38,7 +38,7 @@ export const GalleryPage: React.FC = () => {
             <Sparkles className="w-3.5 h-3.5" />
             <span>Fabrication Showcase</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase tracking-tight text-stone-100">
+          <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase tracking-wider text-stone-100">
             Architectural Project Gallery
           </h1>
           <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">

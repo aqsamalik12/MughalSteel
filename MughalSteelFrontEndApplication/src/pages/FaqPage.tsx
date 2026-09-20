@@ -92,7 +92,7 @@ export const FaqPage: React.FC = () => {
             <HelpCircle className="w-3.5 h-3.5" />
             <span>CUSTOMER KNOWLEDGE BASE</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase tracking-tight text-stone-100">
+          <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase tracking-wider text-stone-100">
             FREQUENTLY ASKED QUESTIONS
           </h1>
           <p className="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed font-sans">

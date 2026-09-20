@@ -561,7 +561,7 @@ export const HomePage: React.FC = () => {
                   <p className="text-white text-sm sm:text-base lg:text-lg font-heading font-medium tracking-wide drop-shadow">
                     Welcome to
                   </p>
-                  <h1 className="flex flex-col items-start gap-0.5 font-heading font-black tracking-tight drop-shadow-2xl">
+                  <h1 className="flex flex-col items-start gap-0.5 font-heading font-black tracking-wider drop-shadow-2xl">
                     <span className="text-3xl sm:text-4xl lg:text-[48px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
                       Mughal
                     </span>
@@ -682,7 +682,7 @@ export const HomePage: React.FC = () => {
                 </div>
 
                 <div className="space-y-0.5">
-                  <h1 className="flex flex-col items-start gap-0.5 font-heading font-black tracking-tight drop-shadow-2xl">
+                  <h1 className="flex flex-col items-start gap-0.5 font-heading font-black tracking-wider drop-shadow-2xl">
                     <span className="text-3xl sm:text-4xl lg:text-[48px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
                       Mughal
                     </span>
@@ -848,7 +848,7 @@ export const HomePage: React.FC = () => {
                   <Sparkles className="w-3 h-3 text-brand-gold animate-pulse" />
                   <span>Interactive Project Finder</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-stone-100 uppercase tracking-wider flex flex-wrap items-center gap-2">
                   <span>WHAT IS</span>
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-300 to-brand-gold drop-shadow">
                     YOUR PROJECT?
@@ -939,7 +939,7 @@ export const HomePage: React.FC = () => {
                     </div>
 
                     <div className="pt-2.5 space-y-0.5">
-                      <h4 className={`font-heading font-black text-xs uppercase tracking-tight line-clamp-1 ${
+                      <h4 className={`font-heading font-black text-xs uppercase tracking-wider line-clamp-1 ${
                         isSelected ? 'text-brand-gold' : 'text-stone-100'
                       }`}>
                         {proj.title}
@@ -1010,7 +1010,7 @@ export const HomePage: React.FC = () => {
               <div className="inline-flex items-center gap-2 px-2.5 py-0.5 bg-brand-gold/10 border border-brand-gold/30 text-brand-gold text-[10px] font-heading font-black uppercase tracking-widest rounded">
                 <span>Certified Gauges &amp; CNC Laser Work</span>
               </div>
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+              <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-wider flex flex-wrap items-center gap-2">
                 <span>FRONT GATES &amp;</span>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
                   CUSTOM FABRICATIONS
@@ -1085,7 +1085,7 @@ export const HomePage: React.FC = () => {
                     onError={handleImageError}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
-                  <div className="absolute top-2.5 left-2.5 bg-black/80 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-brand-gold/40 shadow">
+                  <div className="absolute top-2.5 left-2.5 bg-black/80 text-brand-gold text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-brand-gold/40 shadow badge-pulse-loop">
                     {prod.productCode}
                   </div>
                 </Link>
@@ -1105,7 +1105,7 @@ export const HomePage: React.FC = () => {
                   <div className="pt-2 border-t border-brand-light/40 space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="text-[11px] text-slate-400">Rate:</span>
-                      <span className="text-xs font-mono font-bold text-brand-gold">
+                      <span className="text-xs font-mono font-bold text-brand-gold product-price-loop">
                         {formatPrice(prod.pricePerSqFt || 2500)} / sq.ft
                       </span>
                     </div>
@@ -1135,7 +1135,7 @@ export const HomePage: React.FC = () => {
                     <span>Continuous Gliding Gallery</span>
                   </span>
                 </div>
-                <h3 className="font-heading font-black text-xl sm:text-2xl text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+                <h3 className="font-heading font-black text-xl sm:text-2xl text-stone-100 uppercase tracking-wider flex flex-wrap items-center gap-2">
                   <span>16 MODERN HOME</span>
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
                     FABRICATION ITEMS
@@ -1297,7 +1297,7 @@ export const HomePage: React.FC = () => {
                 <Factory className="w-3.5 h-3.5 text-brand-gold" />
                 <span>Established 1994 • 30+ Years Metal Heritage</span>
               </div>
-              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-black text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-black text-stone-100 uppercase tracking-wider flex flex-wrap items-center gap-2">
                 <span>OUR PROJECTS &amp;</span>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
                   SITE EXECUTION
@@ -1629,7 +1629,7 @@ export const HomePage: React.FC = () => {
                 <Star className="w-3.5 h-3.5 fill-brand-gold text-brand-gold" />
                 <span>5.0 Star Rating Across 500+ Projects in Pakistan</span>
               </div>
-              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-black text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-black text-stone-100 uppercase tracking-wider flex flex-wrap items-center gap-2">
                 <span>CLIENT REVIEWS &amp;</span>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
                   HANDOVER FEEDBACK
@@ -1862,7 +1862,7 @@ export const HomePage: React.FC = () => {
                 <Hammer className="w-3.5 h-3.5 text-brand-gold" />
                 <span>Full-Spectrum Fabrication Capabilities</span>
               </div>
-              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-black text-stone-100 uppercase tracking-tight flex flex-wrap items-center gap-2">
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-black text-stone-100 uppercase tracking-wider flex flex-wrap items-center gap-2">
                 <span>OUR SPECIALIZED</span>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
                   FABRICATION SERVICES
@@ -2113,7 +2113,7 @@ export const HomePage: React.FC = () => {
                         }`}>
                           {srv.badge}
                         </span>
-                        <span className={`font-heading font-black text-xs uppercase tracking-tight mt-2 line-clamp-1 ${
+                        <span className={`font-heading font-black text-xs uppercase tracking-wider mt-2 line-clamp-1 ${
                           isSelected ? 'text-brand-gold' : 'text-stone-200'
                         }`}>
                           {srv.shortTitle}
@@ -2168,7 +2168,7 @@ export const HomePage: React.FC = () => {
                           <span className="text-[11px] font-mono font-bold text-brand-gold uppercase tracking-wider block">
                             Service 0{activeServiceTab + 1} of 0{allServicesList.length}
                           </span>
-                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-heading font-black text-stone-100 uppercase tracking-tight">
+                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-heading font-black text-stone-100 uppercase tracking-wider">
                             {activeService.title}
                           </h3>
                           <p className="text-xs font-mono text-brand-gold/90 font-medium">
@@ -2327,7 +2327,7 @@ export const HomePage: React.FC = () => {
               <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block drop-shadow">
                 HIGH COURT ROAD, RAWALPINDI • MUHAMMAD QASIM
               </span>
-              <h2 className="text-2xl sm:text-4xl font-heading font-black text-white uppercase tracking-tight drop-shadow-2xl">
+              <h2 className="text-2xl sm:text-4xl font-heading font-black text-white uppercase tracking-wider drop-shadow-2xl">
                 ABOUT MUGHAL STEEL FABRICATION
               </h2>
               <p className="text-xs sm:text-sm text-stone-200 font-sans max-w-3xl drop-shadow-md">
@@ -2356,7 +2356,7 @@ export const HomePage: React.FC = () => {
               <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block drop-shadow">
                 TRADITIONAL CRAFTSMANSHIP & DIGITAL WORKFLOWS
               </span>
-              <h3 className="text-xl sm:text-3xl font-heading font-black text-white uppercase tracking-tight drop-shadow-md">
+              <h3 className="text-xl sm:text-3xl font-heading font-black text-white uppercase tracking-wider drop-shadow-md">
                 Dedicated Yard in Rawalpindi with Modern 3D & AI Design
               </h3>
               <p className="text-stone-200 text-xs sm:text-sm leading-relaxed font-sans drop-shadow">
@@ -2459,7 +2459,7 @@ export const HomePage: React.FC = () => {
               <MapPin className="w-3.5 h-3.5" />
               <span>Workshop & Fabrication Yard</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-wider">
               CONTACT & LIVE LOCATION
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 font-sans">
@@ -2856,7 +2856,7 @@ export const HomePage: React.FC = () => {
                     Pakistan Building Code Compliant
                   </span>
                 </div>
-                <h3 className="font-heading font-black text-sm sm:text-base text-stone-100 uppercase tracking-tight truncate">
+                <h3 className="font-heading font-black text-sm sm:text-base text-stone-100 uppercase tracking-wider truncate">
                   {activeServiceModal.title}
                 </h3>
               </div>

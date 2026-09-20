@@ -74,7 +74,7 @@ export const CartPage: React.FC = () => {
             <span className="font-mono text-xs font-bold text-brand-gold uppercase tracking-wider block">
               QUOTATION CART & INQUIRY BUILDER
             </span>
-            <h1 className="text-2xl sm:text-4xl font-heading font-black uppercase tracking-tight text-stone-100">
+            <h1 className="text-2xl sm:text-4xl font-heading font-black uppercase tracking-wider text-stone-100">
               YOUR SELECTED FABRICATIONS
             </h1>
           </div>

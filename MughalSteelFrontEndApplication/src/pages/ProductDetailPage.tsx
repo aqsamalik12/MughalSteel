@@ -489,7 +489,7 @@ export const ProductDetailPage: React.FC = () => {
                 <span className="text-slate-400 text-xs font-mono">• {product.category} • {product.item}</span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-heading font-black text-stone-100 uppercase tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-heading font-black text-stone-100 uppercase tracking-wider">
                 {product.name}
               </h1>
 

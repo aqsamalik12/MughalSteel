@@ -142,7 +142,7 @@ export const ProjectDetailPage: React.FC = () => {
         <div className="inline-flex p-4 rounded-full bg-brand-gold/10 text-brand-gold">
           <Building2 className="w-12 h-12" />
         </div>
-        <h1 className="font-heading text-2xl sm:text-3xl font-black text-stone-100 uppercase tracking-tight">
+        <h1 className="font-heading text-2xl sm:text-3xl font-black text-stone-100 uppercase tracking-wider">
           Project Not Found
         </h1>
         <p className="text-slate-300 font-sans text-sm max-w-md mx-auto">
@@ -218,7 +218,7 @@ export const ProjectDetailPage: React.FC = () => {
           )}
         </div>
 
-        <h1 className="font-heading font-black text-2xl sm:text-4xl text-stone-100 uppercase tracking-tight">
+        <h1 className="font-heading font-black text-2xl sm:text-4xl text-stone-100 uppercase tracking-wider">
           {project.title}
         </h1>
 
@@ -429,7 +429,7 @@ export const ProjectDetailPage: React.FC = () => {
       <div className="space-y-4 pt-4 border-t border-brand-light/40">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <h2 className="font-heading font-black text-lg sm:text-xl text-stone-100 uppercase tracking-tight flex items-center gap-2">
+            <h2 className="font-heading font-black text-lg sm:text-xl text-stone-100 uppercase tracking-wider flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-brand-gold" />
               <span>Project Multi-Angle Gallery</span>
             </h2>
@@ -475,7 +475,7 @@ export const ProjectDetailPage: React.FC = () => {
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/15 text-brand-gold text-xs font-mono font-bold uppercase rounded-full">
           Custom Fabrication Consultation
         </div>
-        <h3 className="font-heading text-xl sm:text-3xl font-black text-stone-100 uppercase tracking-tight">
+        <h3 className="font-heading text-xl sm:text-3xl font-black text-stone-100 uppercase tracking-wider">
           Have a similar project in mind?
         </h3>
         <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed max-w-2xl mx-auto">

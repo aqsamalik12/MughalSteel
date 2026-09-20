@@ -22,7 +22,7 @@ export const TermsPage: React.FC = () => {
             <FileText className="w-4 h-4" />
             <span>Commercial Policy</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase tracking-tight text-stone-100">
+          <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase tracking-wider text-stone-100">
             TERMS & CONDITIONS
           </h1>
           <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">

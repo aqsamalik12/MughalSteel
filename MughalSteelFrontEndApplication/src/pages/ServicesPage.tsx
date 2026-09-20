@@ -44,7 +44,7 @@ export const ServicesPage: React.FC = () => {
             <Hammer className="w-3.5 h-3.5" />
             <span>09. INDUSTRIAL & ARCHITECTURAL EXPERTISE</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-stone-100">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-wider text-stone-100">
             STEEL FABRICATION SERVICES
           </h1>
           <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-sans">

@@ -57,7 +57,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       
       {/* Product Code Badge */}
       <div className="absolute top-3 left-3 z-10">
-        <span className="bg-brand-navy/90 text-brand-gold border border-brand-gold/40 text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded shadow">
+        <span className="bg-brand-navy/90 text-brand-gold border border-brand-gold/40 text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded shadow badge-pulse-loop">
           {product.productCode}
         </span>
       </div>
@@ -108,7 +108,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="flex items-center justify-between">
             <div>
               <span className="text-[10px] text-slate-400 block">Estimated Rate:</span>
-              <span className="text-sm font-heading font-bold text-brand-gold">
+              <span className="text-sm font-heading font-bold text-brand-gold product-price-loop">
                 Rs. {(product.pricePerSqFt || product.price || 0).toLocaleString()} <span className="text-[10px] font-normal text-slate-400">/ sq.ft</span>
               </span>
             </div>

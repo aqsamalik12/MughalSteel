@@ -509,7 +509,7 @@ export const VirtualTryOnPage: React.FC = () => {
               <Sparkles className="w-3.5 h-3.5" />
               <span>Live Architectural Elevation Visualizer</span>
             </div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-heading font-black uppercase tracking-tight text-stone-100">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-heading font-black uppercase tracking-wider text-stone-100">
               Try Gates & Doors On Your House Photo
             </h1>
             <p className="text-slate-400 text-xs max-w-xl leading-relaxed">

@@ -108,7 +108,7 @@ export const CheckoutPage: React.FC = () => {
             <Lock className="w-3.5 h-3.5" />
             <span>Direct Project Booking</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-heading font-black uppercase tracking-tight text-stone-100">
+          <h1 className="text-2xl sm:text-4xl font-heading font-black uppercase tracking-wider text-stone-100">
             Confirm Project Quotation & Booking
           </h1>
         </div>

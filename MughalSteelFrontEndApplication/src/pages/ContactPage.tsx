@@ -106,7 +106,7 @@ export const ContactPage: React.FC = () => {
             <MessageCircle className="w-3.5 h-3.5" />
             <span>Direct Communication</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase tracking-tight text-stone-100">
+          <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase tracking-wider text-stone-100">
             Contact Mughal Steel Fabrication
           </h1>
           <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
