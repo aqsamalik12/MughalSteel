@@ -108,7 +108,15 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [orders, setOrders] = useState<Order[]>([]);
   const [savedDesigns, setSavedDesigns] = useState<CustomDesign[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [settings, setSettings] = useState<WebsiteSettings>(DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState<WebsiteSettings>(() => {
+    try {
+      const saved = localStorage.getItem('mfg_settings');
+      if (saved) {
+        return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
+      }
+    } catch {}
+    return DEFAULT_SETTINGS;
+  });
   const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [blogs, setBlogs] = useState<BlogPost[]>(SEED_BLOGS);
   const [testimonials, setTestimonials] = useState<Testimonial[]>(SEED_TESTIMONIALS);
@@ -231,7 +239,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (cachedSettings) {
-        setSettings(prev => ({ ...prev, ...cachedSettings }));
+        setSettings(prev => {
+          const merged = { ...prev, ...cachedSettings };
+          try {
+            localStorage.setItem('mfg_settings', JSON.stringify(merged));
+          } catch {}
+          return merged;
+        });
       } else {
         await dbService.saveSettings(DEFAULT_SETTINGS);
       }
@@ -270,13 +284,16 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (settingsRes.status === 'fulfilled' && settingsRes.value) {
         const s = settingsRes.value;
         const liveSettings = s.data || s;
-        if (liveSettings && (liveSettings.companyName || liveSettings.phone)) {
+        if (liveSettings && (liveSettings.companyName || liveSettings.phone || liveSettings.streetAddress)) {
           const mergedSettings: WebsiteSettings = {
             ...DEFAULT_SETTINGS,
             ...liveSettings,
             whatsappNumber: liveSettings.whatsappNumber || DEFAULT_SETTINGS.whatsappNumber
           };
           setSettings(mergedSettings);
+          try {
+            localStorage.setItem('mfg_settings', JSON.stringify(mergedSettings));
+          } catch {}
           dbService.saveSettings(mergedSettings).catch(() => {});
         }
       }
@@ -434,26 +451,54 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
     const handleOffline = () => setIsOnline(false);
 
+    // Cross-tab and instant live settings update synchronization
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'mfg_settings' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          setSettings(prev => ({ ...prev, ...parsed }));
+        } catch {}
+      }
+    };
+
+    const handleCustomSettingsUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail) {
+        setSettings(prev => ({ ...prev, ...customEvent.detail }));
+      }
+    };
+
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('mfg_settings_updated', handleCustomSettingsUpdate);
 
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('mfg_settings_updated', handleCustomSettingsUpdate);
     };
   }, [syncWithBackend]);
 
   const updateSettings = async (s: WebsiteSettings) => {
-    setSettings(s);
-    await dbService.saveSettings(s);
+    const merged: WebsiteSettings = { ...DEFAULT_SETTINGS, ...s };
+    setSettings(merged);
+    try {
+      localStorage.setItem('mfg_settings', JSON.stringify(merged));
+      window.dispatchEvent(new CustomEvent('mfg_settings_updated', { detail: merged }));
+    } catch (e) {
+      console.warn('localStorage settings save notice:', e);
+    }
+    await dbService.saveSettings(merged);
     await updateStats();
     try {
       await apiRequest('/api/settings', {
         method: 'PUT',
-        body: JSON.stringify(s)
+        body: JSON.stringify(merged)
       });
     } catch (_) {
-      await dbService.enqueueSync('/api/settings', 'PUT', s);
+      await dbService.enqueueSync('/api/settings', 'PUT', merged);
     }
   };
 

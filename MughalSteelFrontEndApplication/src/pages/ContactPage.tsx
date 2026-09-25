@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
 import { openDirectEmail } from '../utils/emailHelper';
+import { getGoogleMapsEmbedUrl, getGoogleMapsDirectionsUrl } from '../utils/mapsHelper';
 
 export const ContactPage: React.FC = () => {
   useSEO({
@@ -351,11 +352,14 @@ export const ContactPage: React.FC = () => {
               
               <div className="space-y-1 text-xs text-slate-300 leading-relaxed font-sans">
                 <p className="text-sm font-heading font-bold text-stone-100 uppercase">
-                  Mughal Steel Fabrication Complex
+                  {settings.companyName || 'Mughal Steel Fabrication Complex'}
                 </p>
-                <p>{settings.streetAddress}</p>
-                <p>{settings.city}, {settings.country} (Postcode: {settings.zipCode})</p>
-                <p className="text-brand-gold font-mono pt-1">Coordinates: 33.6593° N, 73.0450° E</p>
+                <p>{settings.streetAddress || 'Main Workshop & Yard, Plot 42, Sector I-9 Industrial Area'}</p>
+                <p>
+                  {settings.city || 'Rawalpindi / Islamabad'}
+                  {settings.state ? `, ${settings.state}` : ''}, {settings.country || 'Pakistan'}
+                  {settings.zipCode ? ` (Postcode: ${settings.zipCode})` : ''}
+                </p>
               </div>
 
               <div className="space-y-2 text-xs text-slate-400 font-sans pt-2 border-t border-brand-light/40">
@@ -377,7 +381,7 @@ export const ContactPage: React.FC = () => {
               <div className="relative h-64 sm:h-72 bg-brand-dark border-2 border-brand-gold/40 rounded-lg overflow-hidden shadow-xl group">
                 <iframe
                   title="Mughal Steel Fabrication Real Live Map"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13284.184347209772!2d73.03608145!3d33.65934525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df957778b40efd%3A0xcda6b0559f2a969!2sSector%20I-9%20Industrial%20Area%2C%20Islamabad%2C%20Rawalpindi%2C%20Pakistan!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s"
+                  src={getGoogleMapsEmbedUrl(settings)}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -391,7 +395,7 @@ export const ContactPage: React.FC = () => {
               {/* Direct Live Action Buttons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <a 
-                  href="https://www.google.com/maps/search/?api=1&query=Mughal+Steel+Fabrication+I-9+Industrial+Area+Islamabad+Rawalpindi"
+                  href={getGoogleMapsDirectionsUrl(settings)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-gold text-xs py-3 text-center justify-center font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md"
@@ -401,7 +405,7 @@ export const ContactPage: React.FC = () => {
                 </a>
 
                 <a 
-                  href={whatsappDirectUrl}
+                  href={getWhatsAppUrl(`Hello Mughal Steel Fabrication, please share your workshop location pin for ${settings.streetAddress || 'your yard'}, ${settings.city || 'Rawalpindi'}.`)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-whatsapp text-xs py-3 text-center justify-center font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md"

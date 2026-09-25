@@ -15,6 +15,7 @@ import { useSEO } from '../utils/useSEO';
 import { openDirectEmail } from '../utils/emailHelper';
 import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 import { CountUp } from '../components/common/CountUp';
+import { getGoogleMapsEmbedUrl, getGoogleMapsDirectionsUrl } from '../utils/mapsHelper';
 
 
 export const HomePage: React.FC = () => {
@@ -2353,13 +2354,13 @@ export const HomePage: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/20 pb-5 bg-black/55 backdrop-blur-md p-6 rounded-2xl border">
             <div className="space-y-1">
               <span className="text-brand-gold text-xs font-mono font-bold uppercase tracking-widest block drop-shadow">
-                HIGH COURT ROAD, RAWALPINDI • MUHAMMAD QASIM
+                {settings?.streetAddress ? `${settings.streetAddress.toUpperCase()}, ${settings.city?.toUpperCase()} • MUHAMMAD QASIM` : 'HIGH COURT ROAD, RAWALPINDI • MUHAMMAD QASIM'}
               </span>
               <h2 className="text-2xl sm:text-4xl font-heading font-black text-white uppercase tracking-wider drop-shadow-2xl">
                 ABOUT MUGHAL STEEL FABRICATION
               </h2>
               <p className="text-xs sm:text-sm text-stone-200 font-sans max-w-3xl drop-shadow-md">
-                Premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. Recognized for combining traditional craftsmanship with modern engineering and digital workflows.
+                Premier metal fabrication business located on {settings?.streetAddress || 'High Court Road'} in {settings?.city || 'Rawalpindi'}, Pakistan, owned and operated by Muhammad Qasim. Recognized for combining traditional craftsmanship with modern engineering and digital workflows.
               </p>
             </div>
             <Link to="/about" className="text-xs font-heading font-bold text-brand-gold hover:text-white hover:underline flex items-center gap-1.5 shrink-0 bg-black/60 px-4 py-2.5 rounded-lg border border-brand-gold/50 shadow-md">
@@ -2385,13 +2386,13 @@ export const HomePage: React.FC = () => {
                 TRADITIONAL CRAFTSMANSHIP & DIGITAL WORKFLOWS
               </span>
               <h3 className="text-xl sm:text-3xl font-heading font-black text-white uppercase tracking-wider drop-shadow-md">
-                Dedicated Yard in Rawalpindi with Modern 3D & AI Design
+                Dedicated Yard in {settings?.city || 'Rawalpindi'} with Modern 3D & AI Design
               </h3>
               <p className="text-stone-200 text-xs sm:text-sm leading-relaxed font-sans drop-shadow">
-                Mughal Steel Fabrication is a premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. The enterprise is recognized for combining traditional craftsmanship with modern engineering and digital workflows.
+                Mughal Steel Fabrication is a premier metal fabrication business located on {settings?.streetAddress || 'High Court Road'} in {settings?.city || 'Rawalpindi'}, Pakistan, owned and operated by Muhammad Qasim. The enterprise is recognized for combining traditional craftsmanship with modern engineering and digital workflows.
               </p>
               <p className="text-stone-200 text-xs sm:text-sm leading-relaxed font-sans drop-shadow">
-                Operating a dedicated fabrication yard in Rawalpindi equipped with modern machinery and tools, powered by skilled steel fabricators, welders, and operational managers who ensure high structural standards and precision.
+                Operating a dedicated fabrication yard in {settings?.city || 'Rawalpindi'} equipped with modern machinery and tools, powered by skilled steel fabricators, welders, and operational managers who ensure high structural standards and precision.
               </p>
 
               <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
@@ -2426,7 +2427,7 @@ export const HomePage: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent flex flex-col justify-end p-5 sm:p-6">
                   <span className="text-xs font-mono font-bold text-brand-gold bg-black/90 px-3 py-1 rounded border border-brand-gold/50 self-start">
-                    High Court Road Fabrication Yard • Muhammad Qasim & Team
+                    {settings?.streetAddress || 'High Court Road'} Fabrication Yard • Muhammad Qasim & Team
                   </span>
                   <span className="text-xs text-slate-200 font-sans mt-1.5 leading-relaxed">
                     Powered by skilled steel fabricators, welders, and operational managers ensuring high structural standards and precision.
@@ -2491,7 +2492,7 @@ export const HomePage: React.FC = () => {
               CONTACT & LIVE LOCATION
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 font-sans">
-              Visit our fabrication yard in Sector I-9 Industrial Area or send project dimensions for an immediate estimate.
+              Visit our fabrication yard in {settings?.streetAddress ? `${settings.streetAddress}, ${settings.city}` : 'Sector I-9 Industrial Area'} or send project dimensions for an immediate estimate.
             </p>
           </div>
 
@@ -2606,19 +2607,25 @@ export const HomePage: React.FC = () => {
               </div>
 
               <div className="space-y-1 text-xs text-slate-300 font-sans">
-                <p className="font-bold text-stone-100">Plot 42, Sector I-9 Industrial Area</p>
+                <p className="font-bold text-stone-100">{settings?.streetAddress || 'Main Workshop & Yard, Plot 42, Sector I-9 Industrial Area'}</p>
+                <p className="text-slate-400 text-xs">{settings?.city || 'Rawalpindi / Islamabad'}{settings?.state ? `, ${settings.state}` : ''}, {settings?.country || 'Pakistan'}</p>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-brand-gold font-mono font-bold text-[11px]">
-                  <a href="tel:03268575643" className="hover:underline flex items-center gap-1">📞 0326-8575643</a>
-                  <a href="tel:03464277539" className="hover:underline flex items-center gap-1">📞 0346-4277539</a>
-                  <a href="https://wa.me/923239898317" target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1 text-emerald-400">💬 0323-9898317</a>
-                  <a 
-                    href="mailto:mughalsteelfabrication51@gmail.com?subject=Website%20Inquiry%20%E2%80%93%20Mughal%20Steel%20Fabrication" 
-                    onClick={(e) => { e.preventDefault(); openDirectEmail(); }}
-                    className="hover:underline flex items-center gap-1 text-stone-200 hover:text-brand-gold transition-colors cursor-pointer"
-                    title="Send Email to Mughal Steel"
-                  >
-                    ✉️ mughalsteelfabrication51@gmail.com
-                  </a>
+                  {settings?.phone && (
+                    <a href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`} className="hover:underline flex items-center gap-1">📞 {settings.phone}</a>
+                  )}
+                  {settings?.whatsappNumber && (
+                    <a href={getWhatsAppUrl('Hello Mughal Steel, I would like to inquire about steel fabrication services.')} target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1 text-emerald-400">💬 {settings.whatsappNumber}</a>
+                  )}
+                  {settings?.email && (
+                    <a 
+                      href={`mailto:${settings.email}?subject=Website%20Inquiry%20%E2%80%93%20Mughal%20Steel%20Fabrication`} 
+                      onClick={(e) => { e.preventDefault(); openDirectEmail(settings.email); }}
+                      className="hover:underline flex items-center gap-1 text-stone-200 hover:text-brand-gold transition-colors cursor-pointer"
+                      title="Send Email to Mughal Steel"
+                    >
+                      ✉️ {settings.email}
+                    </a>
+                  )}
                 </div>
               </div>
 
@@ -2626,7 +2633,7 @@ export const HomePage: React.FC = () => {
               <div className="relative h-60 sm:h-64 bg-brand-dark border-2 border-brand-gold/40 rounded-lg overflow-hidden shadow-xl">
                 <iframe
                   title="Mughal Steel Fabrication Live Map Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13284.184347209772!2d73.03608145!3d33.65934525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df957778b40efd%3A0xcda6b0559f2a969!2sSector%20I-9%20Industrial%20Area%2C%20Islamabad%2C%20Rawalpindi%2C%20Pakistan!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s"
+                  src={getGoogleMapsEmbedUrl(settings)}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -2640,7 +2647,7 @@ export const HomePage: React.FC = () => {
               {/* Map CTA Actions */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <a 
-                  href="https://www.google.com/maps/search/?api=1&query=Mughal+Steel+Fabrication+I-9+Industrial+Area+Islamabad+Rawalpindi"
+                  href={getGoogleMapsDirectionsUrl(settings)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-gold text-xs py-2.5 text-center justify-center font-bold uppercase tracking-wider flex items-center gap-1.5 shadow"
@@ -2650,8 +2657,8 @@ export const HomePage: React.FC = () => {
                 </a>
 
                 <a 
-                  href="mailto:mughalsteelfabrication51@gmail.com?subject=Website%20Inquiry%20%E2%80%93%20Mughal%20Steel%20Fabrication"
-                  onClick={(e) => { e.preventDefault(); openDirectEmail(); }}
+                  href={`mailto:${settings?.email || 'mughalsteelfabrication51@gmail.com'}?subject=Website%20Inquiry%20%E2%80%93%20Mughal%20Steel%20Fabrication`}
+                  onClick={(e) => { e.preventDefault(); openDirectEmail(settings?.email); }}
                   className="btn-outline text-xs py-2.5 text-center justify-center font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer"
                   title="Click to Email Directly"
                 >

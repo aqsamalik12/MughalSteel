@@ -4,9 +4,10 @@ import { useData } from '../../context/DataContext';
 import { Phone, MessageCircle, Mail, MapPin, ArrowRight, ShieldCheck, Clock, Award } from 'lucide-react';
 import { openDirectEmail } from '../../utils/emailHelper';
 import { handleImageError } from '../../utils/imageFallback';
+import { getGoogleMapsDirectionsUrl } from '../../utils/mapsHelper';
 
 export const Footer: React.FC = () => {
-  const { getWhatsAppUrl } = useData();
+  const { getWhatsAppUrl, settings } = useData();
 
   const whatsappDirect = getWhatsAppUrl(
     'Hello Mughal Steel Fabrication, I would like to inquire about steel fabrication services and get a price estimate.'
@@ -53,8 +54,8 @@ export const Footer: React.FC = () => {
               <MapPin className="w-5 h-5 text-brand-gold" />
             </div>
             <div>
-              <p className="font-heading font-black text-stone-100 uppercase tracking-wide">Rawalpindi & Islamabad</p>
-              <p className="text-slate-400 text-[11px]">Nationwide project execution</p>
+              <p className="font-heading font-black text-stone-100 uppercase tracking-wide">{settings?.city || 'Rawalpindi & Islamabad'}</p>
+              <p className="text-slate-400 text-[11px]">{settings?.streetAddress || 'Nationwide project execution'}</p>
             </div>
           </div>
         </div>
@@ -77,45 +78,55 @@ export const Footer: React.FC = () => {
             </Link>
 
             <p className="text-xs text-slate-400 leading-relaxed">
-              Premier metal fabrication business on High Court Road in Rawalpindi, Pakistan, owned and operated by Muhammad Qasim. Combining traditional craftsmanship with modern engineering and digital workflows.
+              Premier metal fabrication business in {settings?.city || 'Rawalpindi, Pakistan'} ({settings?.streetAddress || 'High Court Road'}), owned and operated by Muhammad Qasim. Combining traditional craftsmanship with modern engineering and digital workflows.
             </p>
 
             {/* Direct Contact Details */}
             <div className="space-y-2.5 text-xs text-slate-300">
-              <a href="tel:03268575643" className="flex items-center gap-3 hover:text-brand-gold transition-colors">
-                <div className="w-7 h-7 rounded-full bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center shrink-0">
-                  <Phone className="w-3.5 h-3.5 text-brand-gold" />
-                </div>
-                <span className="font-mono text-xs font-bold">0326-8575643</span>
-              </a>
+              {settings?.streetAddress && (
+                <a 
+                  href={getGoogleMapsDirectionsUrl(settings)} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 hover:text-brand-gold transition-colors group"
+                  title="Open Workshop Location in Google Maps"
+                >
+                  <div className="w-7 h-7 rounded-full bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center shrink-0 group-hover:border-brand-gold">
+                    <MapPin className="w-3.5 h-3.5 text-brand-gold" />
+                  </div>
+                  <span className="text-xs text-stone-200 group-hover:text-brand-gold leading-tight">
+                    {settings.streetAddress}, {settings.city}
+                  </span>
+                </a>
+              )}
 
-              <a href="tel:03464277539" className="flex items-center gap-3 hover:text-brand-gold transition-colors">
-                <div className="w-7 h-7 rounded-full bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center shrink-0">
-                  <Phone className="w-3.5 h-3.5 text-brand-gold" />
-                </div>
-                <span className="font-mono text-xs font-bold">0346-4277539</span>
-              </a>
+              {settings?.phone && (
+                <a href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`} className="flex items-center gap-3 hover:text-brand-gold transition-colors">
+                  <div className="w-7 h-7 rounded-full bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center shrink-0">
+                    <Phone className="w-3.5 h-3.5 text-brand-gold" />
+                  </div>
+                  <span className="font-mono text-xs font-bold">{settings.phone}</span>
+                </a>
+              )}
 
-              <a href="https://wa.me/923239898317" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-brand-gold transition-colors">
+              <a href={whatsappDirect} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-brand-gold transition-colors">
                 <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center shrink-0">
                   <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
                 </div>
-                <span className="font-mono text-xs font-bold">0323-9898317 (WhatsApp)</span>
+                <span className="font-mono text-xs font-bold">{settings?.whatsappNumber || '0323-9898317'} (WhatsApp)</span>
               </a>
 
               <a 
-                href="mailto:mughalsteelfabrication51@gmail.com?subject=Website%20Inquiry%20%E2%80%93%20Mughal%20Steel%20Fabrication" 
-                onClick={(e) => { e.preventDefault(); openDirectEmail(); }}
+                href={`mailto:${settings?.email || 'mughalsteelfabrication51@gmail.com'}?subject=Website%20Inquiry%20%E2%80%93%20Mughal%20Steel%20Fabrication`} 
+                onClick={(e) => { e.preventDefault(); openDirectEmail(settings?.email); }}
                 className="flex items-center gap-3 hover:text-brand-gold transition-colors group cursor-pointer"
                 title="Send Email to Mughal Steel Fabrication"
               >
                 <div className="w-7 h-7 rounded-full bg-brand-gold/15 border border-brand-gold/40 flex items-center justify-center shrink-0 group-hover:border-brand-gold">
                   <Mail className="w-3.5 h-3.5 text-brand-gold" />
                 </div>
-                <span className="font-mono text-xs text-stone-200 group-hover:text-brand-gold">mughalsteelfabrication51@gmail.com</span>
+                <span className="font-mono text-xs text-stone-200 group-hover:text-brand-gold">{settings?.email || 'mughalsteelfabrication51@gmail.com'}</span>
               </a>
-
-
             </div>
 
             {/* Social Icons */}

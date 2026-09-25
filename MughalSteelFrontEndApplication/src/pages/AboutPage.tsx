@@ -17,7 +17,7 @@ export const AboutPage: React.FC = () => {
     url: '/about'
   });
 
-  const { getWhatsAppUrl } = useData();
+  const { getWhatsAppUrl, settings } = useData();
 
   useEffect(() => { 
     window.scrollTo(0, 0); 
@@ -87,7 +87,7 @@ export const AboutPage: React.FC = () => {
         <div className="max-w-4xl px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-brand-gold/15 border border-brand-gold/50 text-brand-gold text-xs font-mono font-bold uppercase tracking-widest rounded-full backdrop-blur-md">
             <MapPin className="w-3.5 h-3.5" />
-            <span>High Court Road, Rawalpindi • Muhammad Qasim</span>
+            <span>{settings?.streetAddress || 'High Court Road'}, {settings?.city || 'Rawalpindi'} • Muhammad Qasim</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-black text-stone-100 uppercase tracking-wider leading-tight drop-shadow-2xl">
@@ -95,7 +95,7 @@ export const AboutPage: React.FC = () => {
           </h1>
 
           <p className="text-slate-200 text-sm sm:text-base lg:text-lg leading-relaxed max-w-3xl mx-auto font-sans font-normal drop-shadow">
-            Mughal Steel Fabrication is a premier metal fabrication business located on High Court Road in Rawalpindi, Pakistan, owned and operated by <span className="text-brand-gold font-semibold">Muhammad Qasim</span>. The enterprise is recognized for combining traditional craftsmanship with modern engineering and digital workflows.
+            Mughal Steel Fabrication is a premier metal fabrication business located on {settings?.streetAddress || 'High Court Road'} in {settings?.city || 'Rawalpindi'}, Pakistan, owned and operated by <span className="text-brand-gold font-semibold">Muhammad Qasim</span>. The enterprise is recognized for combining traditional craftsmanship with modern engineering and digital workflows.
           </p>
 
           <div className="pt-3 flex flex-wrap justify-center gap-3.5">
@@ -111,13 +111,15 @@ export const AboutPage: React.FC = () => {
               <MessageCircle className="w-4 h-4" />
               <span>WhatsApp Consultation</span>
             </a>
-            <a 
-              href="tel:03005197825"
-              className="inline-flex items-center gap-2 bg-black/50 hover:bg-black/75 border border-stone-600 text-stone-200 hover:text-white text-xs py-3 px-6 rounded font-heading font-bold uppercase tracking-wider transition-colors"
-            >
-              <Phone className="w-4 h-4 text-brand-gold" />
-              <span>0300-5197825</span>
-            </a>
+            {settings?.phone && (
+              <a 
+                href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`}
+                className="inline-flex items-center gap-2 bg-black/50 hover:bg-black/75 border border-stone-600 text-stone-200 hover:text-white text-xs py-3 px-6 rounded font-heading font-bold uppercase tracking-wider transition-colors"
+              >
+                <Phone className="w-4 h-4 text-brand-gold" />
+                <span>{settings.phone}</span>
+              </a>
+            )}
           </div>
         </div>
       </section>
@@ -132,8 +134,8 @@ export const AboutPage: React.FC = () => {
           </div>
           <div className="space-y-1">
             <p className="text-xs font-mono uppercase tracking-widest text-slate-400">Location</p>
-            <p className="text-lg sm:text-xl font-heading font-black text-brand-gold">High Court Road</p>
-            <p className="text-[11px] text-slate-400">Rawalpindi, Pakistan</p>
+            <p className="text-lg sm:text-xl font-heading font-black text-brand-gold">{settings?.streetAddress || 'High Court Road'}</p>
+            <p className="text-[11px] text-slate-400">{settings?.city || 'Rawalpindi'}, {settings?.country || 'Pakistan'}</p>
           </div>
           <div className="space-y-1">
             <p className="text-xs font-mono uppercase tracking-widest text-slate-400">Workshop Yard</p>
@@ -227,7 +229,7 @@ export const AboutPage: React.FC = () => {
               <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
                 <div className="flex items-center gap-2.5 text-slate-200">
                   <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
-                  <span>High Court Road Yard</span>
+                  <span>{settings?.streetAddress || 'High Court Road Yard'}</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-slate-200">
                   <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
@@ -248,13 +250,13 @@ export const AboutPage: React.FC = () => {
               <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-brand-gold/60 shadow-2xl bg-black group">
                 <img 
                   src="/mughal-steel-workshop-master.jpg" 
-                  alt="Muhammad Qasim & Mughal Steel Fabrication Team - High Court Road Yard" 
+                  alt="Muhammad Qasim & Mughal Steel Fabrication Team Yard" 
                   onError={handleImageError}
                   className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent flex flex-col justify-end p-5 sm:p-6">
                   <span className="font-mono text-xs font-bold text-brand-gold uppercase tracking-wider bg-black/80 px-2.5 py-1 rounded border border-brand-gold/40 self-start">
-                    High Court Road Yard • Muhammad Qasim & Expert Team
+                    {settings?.streetAddress || 'High Court Road'} Yard • Muhammad Qasim & Expert Team
                   </span>
                   <span className="text-xs text-slate-200 font-sans mt-2 leading-relaxed drop-shadow">
                     Powered by skilled steel fabricators, welders, and operational managers who ensure high structural standards and precision.

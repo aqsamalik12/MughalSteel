@@ -14,6 +14,7 @@ import {
   Hammer, Factory, Wrench, ShieldCheck, Maximize2, Upload, FolderUp, Camera, RotateCw, Building2
 } from 'lucide-react';
 import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
+import { getGoogleMapsEmbedUrl, getGoogleMapsDirectionsUrl } from '../utils/mapsHelper';
 
 export const AdminPage: React.FC = () => {
   const navigate = useNavigate();
@@ -2471,29 +2472,29 @@ export const AdminPage: React.FC = () => {
           </div>
         )}
 
-        {/* ------------------------------------------------------------- */}
-        {/* TAB 12: GLOBAL WEBSITE SETTINGS */}
+        {/* -----------------------------------------------------        {/* TAB 12: GLOBAL WEBSITE SETTINGS */}
         {/* ------------------------------------------------------------- */}
         {activeTab === 'settings' && settingsForm && (
           <form 
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              updateSettings(settingsForm);
-              addActivityLog('SETTINGS_UPDATED', 'Updated central company fabrication coordinates & rates');
-              alert('Website settings updated successfully! Live website refreshed.');
+              await updateSettings(settingsForm);
+              addActivityLog('SETTINGS_UPDATED', `Updated central company fabrication coordinates & location: ${settingsForm.streetAddress || ''}, ${settingsForm.city || ''}`);
+              alert('Website settings & location updated successfully! Public website, map pins, and contact pages have been refreshed.');
             }}
             className="bg-[#0C1322] border border-brand-light/60 p-6 rounded-xl space-y-6 text-xs text-stone-300 animate-fade-in"
           >
             <div className="border-b border-brand-light/40 pb-4 flex justify-between items-center">
               <div>
                 <h3 className="font-heading font-bold text-sm uppercase text-stone-100">Central Website & Company Coordinates</h3>
-                <p className="text-slate-400 text-[11px]">Update phone numbers, WhatsApp contact, workshop address, and standard fabrication rates</p>
+                <p className="text-slate-400 text-[11px]">Update phone numbers, WhatsApp contact, workshop address, live map pin, and emails</p>
               </div>
               <button 
                 type="submit"
-                className="px-4 py-2 bg-brand-gold text-brand-dark rounded-lg font-heading font-black text-xs uppercase tracking-wider hover:brightness-110 transition shadow cursor-pointer"
+                className="px-5 py-2.5 bg-brand-gold text-brand-dark rounded-lg font-heading font-black text-xs uppercase tracking-wider hover:brightness-110 transition shadow cursor-pointer flex items-center gap-1.5"
               >
-                Save Settings
+                <Check className="w-4 h-4" />
+                <span>Save Settings</span>
               </button>
             </div>
 
@@ -2553,52 +2554,6 @@ export const AdminPage: React.FC = () => {
                     className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs"
                   />
                 </div>
-              </div>
-
-              {/* Right Column */}
-              <div className="space-y-4">
-                <h4 className="font-heading font-bold text-xs text-brand-gold uppercase tracking-wider">Physical Workshop Yard & Address</h4>
-                
-                <div>
-                  <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">Street Address</label>
-                  <input 
-                    type="text" 
-                    value={settingsForm.streetAddress}
-                    onChange={(e) => setSettingsForm({ ...settingsForm, streetAddress: e.target.value })}
-                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">City / Territory</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.city}
-                      onChange={(e) => setSettingsForm({ ...settingsForm, city: e.target.value })}
-                      className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">Province / State</label>
-                    <input 
-                      type="text" 
-                      value={settingsForm.state}
-                      onChange={(e) => setSettingsForm({ ...settingsForm, state: e.target.value })}
-                      className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">Google Maps Navigation Link</label>
-                  <input 
-                    type="url" 
-                    value={settingsForm.googleMapsUrl}
-                    onChange={(e) => setSettingsForm({ ...settingsForm, googleMapsUrl: e.target.value })}
-                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs font-mono"
-                  />
-                </div>
 
                 <div className="pt-2 border-t border-stone-800">
                   <label className="block text-[10px] text-brand-gold uppercase tracking-wider mb-1 font-bold">
@@ -2607,7 +2562,7 @@ export const AdminPage: React.FC = () => {
                   <div className="flex gap-2">
                     <input 
                       type="url" 
-                      value={settingsForm.formspreeEndpoint || 'https://formspree.io/f/mppzrorn'}
+                      value={settingsForm.formspreeEndpoint || 'https://formspree.io/f/mppzrorn'} 
                       onChange={(e) => setSettingsForm({ ...settingsForm, formspreeEndpoint: e.target.value })}
                       placeholder="https://formspree.io/f/mppzrorn"
                       className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs font-mono"
@@ -2623,9 +2578,109 @@ export const AdminPage: React.FC = () => {
                     </a>
                   </div>
                   <p className="text-[10px] text-slate-400 mt-1">
-                    Website inquiries from the Contact and Quote forms are sent here and forwarded directly to your email.
+                    Website inquiries from the Contact and Quote forms are forwarded directly to your email.
                   </p>
                 </div>
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-4">
+                <h4 className="font-heading font-bold text-xs text-brand-gold uppercase tracking-wider">Physical Workshop Yard & Live Location</h4>
+                
+                <div>
+                  <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">Street Address</label>
+                  <input 
+                    type="text" 
+                    value={settingsForm.streetAddress}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, streetAddress: e.target.value })}
+                    placeholder="e.g. Main Workshop & Yard, Plot 42, Sector I-9 Industrial Area"
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">City / Territory</label>
+                    <input 
+                      type="text" 
+                      value={settingsForm.city}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, city: e.target.value })}
+                      placeholder="e.g. Rawalpindi / Islamabad"
+                      className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">Province / State</label>
+                    <input 
+                      type="text" 
+                      value={settingsForm.state}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, state: e.target.value })}
+                      placeholder="e.g. Punjab / ICT"
+                      className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">Country</label>
+                    <input 
+                      type="text" 
+                      value={settingsForm.country || 'Pakistan'}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, country: e.target.value })}
+                      className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">Postal / Zip Code</label>
+                    <input 
+                      type="text" 
+                      value={settingsForm.zipCode || ''}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, zipCode: e.target.value })}
+                      placeholder="e.g. 46000"
+                      className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1 font-bold">Custom Google Maps Link (Optional)</label>
+                  <input 
+                    type="url" 
+                    value={settingsForm.googleMapsUrl || ''}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, googleMapsUrl: e.target.value })}
+                    placeholder="Leave empty for auto-generated Google Maps pin based on address"
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs font-mono"
+                  />
+                </div>
+
+                {/* Live Location & Map Preview inside Dashboard */}
+                <div className="pt-2 border-t border-stone-800 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-brand-gold uppercase tracking-wider font-bold flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5" />
+                      <span>Live Public Map Pin Preview</span>
+                    </span>
+                    <span className="text-[9px] text-emerald-400 font-mono">● Real-Time Sync</span>
+                  </div>
+                  <div className="bg-[#070C15] p-2.5 rounded-lg border border-stone-700/80 text-[11px] text-slate-300">
+                    <p className="font-bold text-stone-100">{settingsForm.companyName || 'Mughal Steel Fabrication'}</p>
+                    <p>{settingsForm.streetAddress || 'Workshop Street Address'}, {settingsForm.city || 'City'}</p>
+                    <p className="text-[10px] text-slate-400">{settingsForm.state || 'State'} {settingsForm.zipCode || ''}, {settingsForm.country || 'Pakistan'}</p>
+                  </div>
+                  <div className="h-40 rounded-lg overflow-hidden border border-brand-gold/30 bg-[#070C15]">
+                    <iframe
+                      title="Admin Location Preview"
+                      src={getGoogleMapsEmbedUrl(settingsForm)}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      loading="lazy"
+                      className="w-full h-full"
+                    />
+                  </div>
+                </div>
+
               </div>
 
             </div>
