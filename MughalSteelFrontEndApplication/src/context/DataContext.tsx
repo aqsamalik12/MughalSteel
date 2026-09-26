@@ -312,14 +312,18 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             ? liveSettings.city
             : DEFAULT_SETTINGS.city;
 
+          const validGoogleMapsUrl = (liveSettings.googleMapsUrl && !liveSettings.googleMapsUrl.includes('Sector+I-9') && !liveSettings.googleMapsUrl.includes('Plot+42'))
+            ? liveSettings.googleMapsUrl
+            : DEFAULT_SETTINGS.googleMapsUrl;
+
           const mergedSettings: WebsiteSettings = {
             ...DEFAULT_SETTINGS,
             ...liveSettings,
             streetAddress: validStreetAddress,
             city: validCity,
-            state: DEFAULT_SETTINGS.state,
-            zipCode: DEFAULT_SETTINGS.zipCode,
-            googleMapsUrl: DEFAULT_SETTINGS.googleMapsUrl,
+            state: liveSettings.state || DEFAULT_SETTINGS.state,
+            zipCode: liveSettings.zipCode || DEFAULT_SETTINGS.zipCode,
+            googleMapsUrl: validGoogleMapsUrl,
             whatsappNumber: liveSettings.whatsappNumber || DEFAULT_SETTINGS.whatsappNumber
           };
           setSettings(mergedSettings);
