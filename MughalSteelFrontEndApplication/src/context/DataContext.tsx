@@ -113,7 +113,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const saved = localStorage.getItem('mfg_settings');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (!parsed.streetAddress || parsed.streetAddress.includes('Sector I-9')) {
+        if (!parsed.streetAddress || parsed.streetAddress.includes('Sector I-9') || parsed.streetAddress.includes('Plot 42')) {
           parsed.streetAddress = DEFAULT_SETTINGS.streetAddress;
           parsed.city = DEFAULT_SETTINGS.city;
           parsed.state = DEFAULT_SETTINGS.state;
@@ -251,7 +251,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (cachedSettings) {
         setSettings(prev => {
           const merged = { ...prev, ...cachedSettings };
-          if (!merged.streetAddress || merged.streetAddress.includes('Sector I-9')) {
+          if (!merged.streetAddress || merged.streetAddress.includes('Sector I-9') || merged.streetAddress.includes('Plot 42')) {
             merged.streetAddress = DEFAULT_SETTINGS.streetAddress;
             merged.city = DEFAULT_SETTINGS.city;
             merged.state = DEFAULT_SETTINGS.state;
@@ -303,9 +303,23 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const s = settingsRes.value;
         const liveSettings = s.data || s;
         if (liveSettings && (liveSettings.companyName || liveSettings.phone || liveSettings.streetAddress)) {
+          // If the backend has old default address with Sector I-9 or Plot 42, block it from overwriting
+          const validStreetAddress = (liveSettings.streetAddress && !liveSettings.streetAddress.includes('Sector I-9') && !liveSettings.streetAddress.includes('Plot 42'))
+            ? liveSettings.streetAddress
+            : DEFAULT_SETTINGS.streetAddress;
+
+          const validCity = (liveSettings.city && !liveSettings.city.includes('Sector I-9') && !liveSettings.city.includes('Islamabad / Rawalpindi'))
+            ? liveSettings.city
+            : DEFAULT_SETTINGS.city;
+
           const mergedSettings: WebsiteSettings = {
             ...DEFAULT_SETTINGS,
             ...liveSettings,
+            streetAddress: validStreetAddress,
+            city: validCity,
+            state: DEFAULT_SETTINGS.state,
+            zipCode: DEFAULT_SETTINGS.zipCode,
+            googleMapsUrl: DEFAULT_SETTINGS.googleMapsUrl,
             whatsappNumber: liveSettings.whatsappNumber || DEFAULT_SETTINGS.whatsappNumber
           };
           setSettings(mergedSettings);
@@ -457,6 +471,22 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 
   useEffect(() => {
+    // 0. Force sanitize any stale localStorage cache
+    try {
+      const currentStored = localStorage.getItem('mfg_settings');
+      if (currentStored && (currentStored.includes('Plot 42') || currentStored.includes('Sector I-9'))) {
+        const parsed = JSON.parse(currentStored);
+        parsed.streetAddress = DEFAULT_SETTINGS.streetAddress;
+        parsed.city = DEFAULT_SETTINGS.city;
+        parsed.state = DEFAULT_SETTINGS.state;
+        parsed.zipCode = DEFAULT_SETTINGS.zipCode;
+        parsed.googleMapsUrl = DEFAULT_SETTINGS.googleMapsUrl;
+        const cleaned = { ...DEFAULT_SETTINGS, ...parsed };
+        localStorage.setItem('mfg_settings', JSON.stringify(cleaned));
+        setSettings(cleaned);
+      }
+    } catch {}
+
     // 1. Instant local IndexedDB load
     loadFromIndexedDB().then(() => {
       // 2. Fetch live data from backend API
