@@ -73,3 +73,5 @@ pnpm-debug.log*
 test_*.mjs
 test_*.js
 test_*.cjs
+.vercel
+.env*
