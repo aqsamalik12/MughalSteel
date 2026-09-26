@@ -1,4 +1,5 @@
 {
+  "installCommand": "npm --prefix MughalSteelFrontEndApplication install && npm --prefix MughalSteelFrontEndApplication install --no-save @rollup/rollup-linux-x64-gnu@4.62.4",
   "buildCommand": "npm --prefix MughalSteelFrontEndApplication run build",
   "outputDirectory": "MughalSteelFrontEndApplication/dist",
   "rewrites": [
@@ -8,3 +9,4 @@
     }
   ]
 }
+
