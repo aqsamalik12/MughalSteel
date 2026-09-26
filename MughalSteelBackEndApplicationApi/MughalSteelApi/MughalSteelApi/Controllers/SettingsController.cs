@@ -59,7 +59,7 @@ namespace MughalSteelApi.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "SuperAdmin,Manager")]
+        [Authorize(Roles = "SuperAdmin,Manager,Admin")]
         public async Task<ActionResult<SettingsResponseDTO>> Update([FromBody] UpdateSettingsRequestDTO dto)
         {
             var settings = await _settingsRepository.GetSettingsAsync();

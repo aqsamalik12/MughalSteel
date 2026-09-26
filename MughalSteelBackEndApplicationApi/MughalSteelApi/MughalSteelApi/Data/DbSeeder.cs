@@ -38,13 +38,14 @@ namespace MughalSteelApi.Data
                 {
                     CompanyName = "Mughal Steel Fabrication",
                     Tagline = "Heavy Structural Steel, Laser Cut Main Gates, Railings & Architectural Ironwork",
-                    Phone = "+92 300 1234567",
+                    Phone = "+92 326 8575643",
+                    WhatsappNumber = "03239898317",
                     Email = "mughalsteelfabrication51@gmail.com",
                     SupportEmail = "mughalsteelfabrication51@gmail.com",
 
-                    StreetAddress = "Main Workshop & Yard, Plot 42, Sector I-9 Industrial Area",
-                    City = "Rawalpindi / Islamabad",
-                    State = "Punjab / ICT",
+                    StreetAddress = "2 High Court Road, opposite zaildaar house, Gulraiz-2 Phase 3 Gulraiz Housing Scheme",
+                    City = "Rawalpindi",
+                    State = "Punjab",
                     ZipCode = "46000",
                     Country = "Pakistan",
                     BusinessHours = "Monday - Saturday: 8:30 AM - 8:30 PM",
@@ -52,14 +53,27 @@ namespace MughalSteelApi.Data
                     FreeShippingThreshold = 0,
                     TaxRate = 0.0m,
                     Currency = "PKR",
-                    GoogleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Mughal+Steel+Fabrication+I-9+Industrial+Area+Islamabad+Rawalpindi",
-                    Facebook = "https://facebook.com",
-                    Instagram = "https://instagram.com",
+                    GoogleMapsUrl = "https://www.google.com/maps/search/?api=1&query=2+High+Court+Road+opposite+zaildaar+house+Gulraiz+Rawalpindi+Pakistan",
+                    Facebook = "https://www.facebook.com/101947381864652?ref=PROFILE_EDIT_xav_ig_profile_page_web",
+                    Instagram = "https://www.instagram.com/mughalsteelfabrication/",
                     YoutubeUrl = "https://youtube.com",
                     Announcement = "Free On-site Measurement & Custom 3D Design Consultation in Rawalpindi & Islamabad!"
                 };
                 await context.WebsiteSettings.AddAsync(settings);
                 await context.SaveChangesAsync();
+            }
+            else
+            {
+                var existing = await context.WebsiteSettings.FirstOrDefaultAsync();
+                if (existing != null && (string.IsNullOrEmpty(existing.StreetAddress) || existing.StreetAddress.Contains("Sector I-9") || existing.StreetAddress.Contains("Plot 42")))
+                {
+                    existing.StreetAddress = "2 High Court Road, opposite zaildaar house, Gulraiz-2 Phase 3 Gulraiz Housing Scheme";
+                    existing.City = "Rawalpindi";
+                    existing.State = "Punjab";
+                    existing.ZipCode = "46000";
+                    existing.GoogleMapsUrl = "https://www.google.com/maps/search/?api=1&query=2+High+Court+Road+opposite+zaildaar+house+Gulraiz+Rawalpindi+Pakistan";
+                    await context.SaveChangesAsync();
+                }
             }
 
             // 4. Seed Categories
