@@ -10,8 +10,8 @@ import { getGoogleMapsEmbedUrl, getGoogleMapsDirectionsUrl } from '../utils/maps
 
 export const ContactPage: React.FC = () => {
   useSEO({
-    title: 'Contact Mughal Steel Fabrication | Islamabad & Rawalpindi',
-    description: 'Get in touch with Mughal Steel Fabrication. Visit our workshop in Sector I-9 Industrial Area, request a site laser measurement survey, or get an instant WhatsApp quote.',
+    title: 'Contact Mughal Steel Fabrication | Rawalpindi & Islamabad',
+    description: 'Get in touch with Mughal Steel Fabrication. Visit our workshop on High Court Road, Rawalpindi, request a site laser measurement survey, or get an instant WhatsApp quote.',
     keywords: 'Contact Mughal Steel, steel fabricator phone number Islamabad, metal gate workshop Rawalpindi address',
     url: '/contact'
   });
@@ -354,9 +354,9 @@ export const ContactPage: React.FC = () => {
                 <p className="text-sm font-heading font-bold text-stone-100 uppercase">
                   {settings.companyName || 'Mughal Steel Fabrication Complex'}
                 </p>
-                <p>{settings.streetAddress || 'Main Workshop & Yard, Plot 42, Sector I-9 Industrial Area'}</p>
+                <p>{settings.streetAddress || '2 High Court Road, opposite zaildaar house, Gulraiz-2 Phase 3 Gulraiz Housing Scheme'}</p>
                 <p>
-                  {settings.city || 'Rawalpindi / Islamabad'}
+                  {settings.city || 'Rawalpindi'}
                   {settings.state ? `, ${settings.state}` : ''}, {settings.country || 'Pakistan'}
                   {settings.zipCode ? ` (Postcode: ${settings.zipCode})` : ''}
                 </p>

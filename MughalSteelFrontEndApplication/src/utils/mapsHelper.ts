@@ -7,7 +7,7 @@ import type { WebsiteSettings } from '../types';
  */
 export const getGoogleMapsEmbedUrl = (settings?: Partial<WebsiteSettings> | null): string => {
   if (!settings) {
-    return 'https://maps.google.com/maps?q=Sector%20I-9%20Industrial%20Area%20Islamabad&t=&z=15&ie=UTF8&iwloc=&output=embed';
+    return 'https://maps.google.com/maps?q=2%20High%20Court%20Road%20opposite%20zaildaar%20house%20Gulraiz%20Rawalpindi&t=&z=15&ie=UTF8&iwloc=&output=embed';
   }
 
   // If user pasted a custom Google Maps Embed URL (e.g. contains /embed or embed?pb=)
@@ -23,7 +23,7 @@ export const getGoogleMapsEmbedUrl = (settings?: Partial<WebsiteSettings> | null
     settings.country || 'Pakistan'
   ].filter(Boolean);
 
-  const query = parts.length > 0 ? parts.join(', ') : 'Plot 42, Sector I-9 Industrial Area, Rawalpindi / Islamabad, Pakistan';
+  const query = parts.length > 0 ? parts.join(', ') : '2 High Court Road, opposite zaildaar house, Gulraiz-2 Phase 3 Gulraiz Housing Scheme, Rawalpindi, 46000, Pakistan';
   return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
 };
 
@@ -32,7 +32,7 @@ export const getGoogleMapsEmbedUrl = (settings?: Partial<WebsiteSettings> | null
  */
 export const getGoogleMapsDirectionsUrl = (settings?: Partial<WebsiteSettings> | null): string => {
   if (!settings) {
-    return 'https://www.google.com/maps/search/?api=1&query=Mughal+Steel+Fabrication+I-9+Industrial+Area+Islamabad';
+    return 'https://www.google.com/maps/search/?api=1&query=Mughal+Steel+Fabrication+2+High+Court+Road+opposite+zaildaar+house+Gulraiz+Rawalpindi';
   }
 
   // If user provided a normal external link (not an iframe embed)

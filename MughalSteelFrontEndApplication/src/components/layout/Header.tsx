@@ -781,7 +781,7 @@ export const Header: React.FC = () => {
               </a>
 
               <p className="text-[10px] text-slate-400 text-center pt-1 font-mono">
-                {settings?.city || 'Rawalpindi / Islamabad'} Workshop • {settings?.phone || '0326-8575643'}
+                {settings?.city || 'Rawalpindi'} Workshop • {settings?.phone || '0326-8575643'}
               </p>
             </div>
 

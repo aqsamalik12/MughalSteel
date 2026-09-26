@@ -75,14 +75,14 @@ const DEFAULT_SETTINGS: WebsiteSettings = {
   email: 'mughalsteelfabrication51@gmail.com',
   supportEmail: 'mughalsteelfabrication51@gmail.com',
 
-  streetAddress: 'Main Workshop & Yard, Plot 42, Sector I-9 Industrial Area',
-  suite: 'Mughal Steel Fabrication Complex',
-  city: 'Rawalpindi / Islamabad',
-  state: 'Punjab / ICT',
+  streetAddress: '2 High Court Road, opposite zaildaar house, Gulraiz-2 Phase 3 Gulraiz Housing Scheme',
+  suite: 'Mughal Steel Fabrication Workshop & Yard',
+  city: 'Rawalpindi',
+  state: 'Punjab',
   zipCode: '46000',
   country: 'Pakistan',
   businessHours: 'Monday - Saturday: 8:30 AM - 8:30 PM, Sunday: On-Call Survey',
-  googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Mughal+Steel+Fabrication+I-9+Industrial+Area+Islamabad+Rawalpindi',
+  googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=2+High+Court+Road+opposite+zaildaar+house+Gulraiz+Rawalpindi+Pakistan',
   shippingCharge: 5000,
   freeShippingThreshold: 500000,
   taxRate: 0.0,
@@ -112,7 +112,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const saved = localStorage.getItem('mfg_settings');
       if (saved) {
-        return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
+        const parsed = JSON.parse(saved);
+        if (!parsed.streetAddress || parsed.streetAddress.includes('Sector I-9')) {
+          parsed.streetAddress = DEFAULT_SETTINGS.streetAddress;
+          parsed.city = DEFAULT_SETTINGS.city;
+          parsed.state = DEFAULT_SETTINGS.state;
+          parsed.zipCode = DEFAULT_SETTINGS.zipCode;
+          parsed.googleMapsUrl = DEFAULT_SETTINGS.googleMapsUrl;
+        }
+        const merged = { ...DEFAULT_SETTINGS, ...parsed };
+        localStorage.setItem('mfg_settings', JSON.stringify(merged));
+        return merged;
       }
     } catch {}
     return DEFAULT_SETTINGS;
@@ -241,6 +251,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (cachedSettings) {
         setSettings(prev => {
           const merged = { ...prev, ...cachedSettings };
+          if (!merged.streetAddress || merged.streetAddress.includes('Sector I-9')) {
+            merged.streetAddress = DEFAULT_SETTINGS.streetAddress;
+            merged.city = DEFAULT_SETTINGS.city;
+            merged.state = DEFAULT_SETTINGS.state;
+            merged.zipCode = DEFAULT_SETTINGS.zipCode;
+            merged.googleMapsUrl = DEFAULT_SETTINGS.googleMapsUrl;
+            dbService.saveSettings(merged).catch(() => {});
+          }
           try {
             localStorage.setItem('mfg_settings', JSON.stringify(merged));
           } catch {}

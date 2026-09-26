@@ -2593,7 +2593,7 @@ export const AdminPage: React.FC = () => {
                     type="text" 
                     value={settingsForm.streetAddress}
                     onChange={(e) => setSettingsForm({ ...settingsForm, streetAddress: e.target.value })}
-                    placeholder="e.g. Main Workshop & Yard, Plot 42, Sector I-9 Industrial Area"
+                    placeholder="e.g. 2 High Court Road, opposite zaildaar house, Gulraiz-2 Phase 3 Gulraiz Housing Scheme"
                     className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs"
                   />
                 </div>
@@ -2605,7 +2605,7 @@ export const AdminPage: React.FC = () => {
                       type="text" 
                       value={settingsForm.city}
                       onChange={(e) => setSettingsForm({ ...settingsForm, city: e.target.value })}
-                      placeholder="e.g. Rawalpindi / Islamabad"
+                      placeholder="e.g. Rawalpindi"
                       className="w-full bg-[#070C15] border border-stone-700 rounded-lg px-3 py-2 text-stone-100 focus:outline-none focus:border-brand-gold text-xs"
                     />
                   </div>

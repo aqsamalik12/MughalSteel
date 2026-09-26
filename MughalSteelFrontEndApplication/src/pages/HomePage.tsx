@@ -2492,7 +2492,7 @@ export const HomePage: React.FC = () => {
               CONTACT & LIVE LOCATION
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 font-sans">
-              Visit our fabrication yard in {settings?.streetAddress ? `${settings.streetAddress}, ${settings.city}` : 'Sector I-9 Industrial Area'} or send project dimensions for an immediate estimate.
+              Visit our fabrication yard in {settings?.streetAddress ? `${settings.streetAddress}, ${settings.city}` : '2 High Court Road, opposite zaildaar house, Gulraiz-2 Phase 3 Gulraiz Housing Scheme, Rawalpindi'} or send project dimensions for an immediate estimate.
             </p>
           </div>
 
@@ -2607,8 +2607,8 @@ export const HomePage: React.FC = () => {
               </div>
 
               <div className="space-y-1 text-xs text-slate-300 font-sans">
-                <p className="font-bold text-stone-100">{settings?.streetAddress || 'Main Workshop & Yard, Plot 42, Sector I-9 Industrial Area'}</p>
-                <p className="text-slate-400 text-xs">{settings?.city || 'Rawalpindi / Islamabad'}{settings?.state ? `, ${settings.state}` : ''}, {settings?.country || 'Pakistan'}</p>
+                <p className="font-bold text-stone-100">{settings?.streetAddress || '2 High Court Road, opposite zaildaar house, Gulraiz-2 Phase 3 Gulraiz Housing Scheme'}</p>
+                <p className="text-slate-400 text-xs">{settings?.city || 'Rawalpindi'}{settings?.state ? `, ${settings.state}` : ''}, {settings?.country || 'Pakistan'}</p>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-brand-gold font-mono font-bold text-[11px]">
                   {settings?.phone && (
                     <a href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`} className="hover:underline flex items-center gap-1">📞 {settings.phone}</a>

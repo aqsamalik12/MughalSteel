@@ -196,7 +196,7 @@ export const MughalChatbot: React.FC = () => {
       }
       // 6. Location, Delivery & Installation
       else if (q === 'delivery_details' || q.includes('location') || q.includes('address') || q.includes('delivery') || q.includes('install') || q.includes('kahan') || q.includes('lahore') || q.includes('rawalpindi') || q.includes('islamabad')) {
-        botReply.text = `📍 **Workshop & Delivery Information:**\n\n• **Head Workshop:** ${settings?.streetAddress || 'Main Workshop & Yard, Plot 42, Sector I-9 Industrial Area'}, ${settings?.city || 'Rawalpindi / Islamabad'}.\n• **Free Site Measurement:** Available in ${settings?.city || 'Islamabad, Rawalpindi'}, Bahria Town & DHA.\n• **Nationwide Delivery:** We deliver and install custom fabrication across Lahore, Peshawar, Faisalabad, Multan, and throughout Pakistan via secure crane & container transit.\n• **Installation:** On-site laser level foundation anchoring + motor programming included.`;
+        botReply.text = `📍 **Workshop & Delivery Information:**\n\n• **Head Workshop:** ${settings?.streetAddress || '2 High Court Road, opposite zaildaar house, Gulraiz-2 Phase 3 Gulraiz Housing Scheme'}, ${settings?.city || 'Rawalpindi'}.\n• **Free Site Measurement:** Available in ${settings?.city || 'Rawalpindi, Islamabad'}, Bahria Town & DHA.\n• **Nationwide Delivery:** We deliver and install custom fabrication across Lahore, Peshawar, Faisalabad, Multan, and throughout Pakistan via secure crane & container transit.\n• **Installation:** On-site laser level foundation anchoring + motor programming included.`;
         botReply.quickActions = [
           { label: '📞 Call / WhatsApp Workshop', action: 'talk_human' },
           { label: '📝 Book Free Site Measurement', action: 'open_quote' }
