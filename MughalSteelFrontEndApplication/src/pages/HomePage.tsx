@@ -566,8 +566,10 @@ export const HomePage: React.FC = () => {
                     Welcome to
                   </p>
                   <h1 className="flex flex-col items-start gap-0.5 font-heading font-black tracking-wider drop-shadow-2xl">
-                    <span className="text-3xl sm:text-4xl lg:text-[46px] xl:text-[50px] text-[#cca04b] leading-none font-black inline-block">
-                      Mughal
+                    <span className="text-3xl sm:text-4xl lg:text-[46px] xl:text-[50px] text-[#cca04b] leading-none font-black inline-flex">
+                      <span className="border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5">Mu</span>
+                      <span className="border-b-2 sm:border-b-4 border-transparent pb-0.5">g</span>
+                      <span className="border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5">hal</span>
                     </span>
                     <span className="text-2xl sm:text-3xl lg:text-[34px] xl:text-[38px] text-white leading-tight font-black">
                       Steel Fabrication.
@@ -661,8 +663,10 @@ export const HomePage: React.FC = () => {
                   </p>
                   {/* Brand Heading: Mughal (Big) & Steel Fabrication. (Big) */}
                   <h1 className="flex flex-col items-start gap-0.5 font-heading font-black tracking-wider drop-shadow-2xl">
-                    <span className="text-3xl sm:text-4xl lg:text-[46px] xl:text-[50px] text-[#cca04b] leading-none font-black inline-block">
-                      Mughal
+                    <span className="text-3xl sm:text-4xl lg:text-[46px] xl:text-[50px] text-[#cca04b] leading-none font-black inline-flex">
+                      <span className="border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5">Mu</span>
+                      <span className="border-b-2 sm:border-b-4 border-transparent pb-0.5">g</span>
+                      <span className="border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5">hal</span>
                     </span>
                     <span className="text-2xl sm:text-3xl lg:text-[34px] xl:text-[38px] text-white leading-tight font-black">
                       Steel Fabrication.
