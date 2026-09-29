@@ -1620,7 +1620,8 @@ export const HomePage: React.FC = () => {
       {/* 5. OUR PROJECTS: COMPLETED & ONGOING SITES PORTFOLIO     */}
       {/* Shows Since 1994, 1,500+ Projects, and Active Sites      */}
       {/* ======================================================== */}
-      <section id="projects" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-20 md:py-24">
+      <section id="projects" className="cv-auto scroll-mt-24 w-full bg-[#080D17] border-b border-brand-light/40 py-20 md:py-24 relative">
+        <div id="portfolio" className="absolute -top-24 left-0 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}

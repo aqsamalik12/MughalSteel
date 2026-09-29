@@ -76,7 +76,7 @@ export const Header: React.FC = () => {
     let animationFrameId: number | null = null;
     let isTicking = false;
 
-    const sections = ['home', 'products', 'services', 'portfolio', 'projects', 'reviews', 'about', 'contact'];
+    const sections = ['home', 'products', 'projects', 'reviews', 'services', 'about', 'contact'];
 
     const onScroll = () => {
       if (!isTicking) {
@@ -143,7 +143,10 @@ export const Header: React.FC = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return true;
     }
-    const el = document.getElementById(sectionId);
+    let el = document.getElementById(sectionId);
+    if (!el && (sectionId === 'portfolio' || sectionId === 'projects')) {
+      el = document.getElementById('projects') || document.getElementById('portfolio');
+    }
     if (el) {
       const headerOffset = 90;
       const elementPosition = el.getBoundingClientRect().top;
@@ -206,7 +209,12 @@ export const Header: React.FC = () => {
   };
 
   const isNavActive = (sectionId: string, path: string) => {
-    if (location.pathname === '/' && activeSection === sectionId) return true;
+    if (location.pathname === '/' || location.pathname === '') {
+      if (activeSection === sectionId) return true;
+      if (sectionId === 'portfolio' && activeSection === 'projects') return true;
+      if (sectionId === 'projects' && activeSection === 'portfolio') return true;
+      return false;
+    }
     if (location.pathname.startsWith(path) && path !== '/') return true;
     return false;
   };
@@ -307,20 +315,6 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* SERVICES (Direct Nav Button - Smooth Scroll to #services) */}
-              <button 
-                type="button"
-                onClick={() => handleNavClick('services')}
-                onMouseEnter={() => prefetchRoute('services')}
-                className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 whitespace-nowrap ${
-                  isNavActive('services', '/services')
-                    ? 'text-brand-gold font-bold' 
-                    : 'text-stone-300 hover:text-brand-gold'
-                }`}
-              >
-                SERVICES
-              </button>
-
               {/* PORTFOLIO (Direct Nav Button - Smooth Scroll to #portfolio / Page) */}
               <button 
                 type="button"
@@ -370,6 +364,20 @@ export const Header: React.FC = () => {
                 }`}
               >
                 REVIEWS
+              </button>
+
+              {/* SERVICES (Direct Nav Button - Smooth Scroll to #services) */}
+              <button 
+                type="button"
+                onClick={() => handleNavClick('services')}
+                onMouseEnter={() => prefetchRoute('services')}
+                className={`text-[11px] xl:text-xs font-heading font-black tracking-wider uppercase transition-colors duration-200 cursor-pointer py-1 whitespace-nowrap ${
+                  isNavActive('services', '/services')
+                    ? 'text-brand-gold font-bold' 
+                    : 'text-stone-300 hover:text-brand-gold'
+                }`}
+              >
+                SERVICES
               </button>
 
               {/* ABOUT US (Direct Nav Button - Smooth Scroll to #about / Page) */}
@@ -567,24 +575,7 @@ export const Header: React.FC = () => {
                 )}
               </div>
 
-              {/* 3. SERVICES (Direct Nav) */}
-              <div className="py-2">
-                <button 
-                  type="button"
-                  onClick={() => handleNavClick('services', '/#services')}
-                  className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
-                    isNavActive('services', '/services') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
-                  }`}
-                >
-                  <span className="flex items-center gap-2.5">
-                    <Cog className="w-4 h-4 text-brand-gold" />
-                    <span>SERVICES</span>
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-slate-500" />
-                </button>
-              </div>
-
-              {/* 4. PORTFOLIO (Direct Nav Button to #portfolio / Page) */}
+              {/* 3. PORTFOLIO (Direct Nav Button to #portfolio / Page) */}
               <div className="py-2">
                 <button 
                   type="button"
@@ -601,7 +592,7 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              {/* 5. PROJECTS Accordion (Project Categories) */}
+              {/* 4. PROJECTS Accordion (Project Categories) */}
               <div className="py-2 space-y-2">
                 <button 
                   onClick={() => setMobileExpandedSection(mobileExpandedSection === 'projects' ? null : 'projects')}
@@ -644,7 +635,7 @@ export const Header: React.FC = () => {
                 )}
               </div>
 
-              {/* 6. REVIEWS */}
+              {/* 5. REVIEWS */}
               <div className="py-2">
                 <button 
                   type="button"
@@ -656,6 +647,23 @@ export const Header: React.FC = () => {
                   <span className="flex items-center gap-2.5">
                     <Star className="w-4 h-4 text-amber-400" />
                     <span>REVIEWS</span>
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-slate-500" />
+                </button>
+              </div>
+
+              {/* 6. SERVICES (Direct Nav) */}
+              <div className="py-2">
+                <button 
+                  type="button"
+                  onClick={() => handleNavClick('services', '/#services')}
+                  className={`w-full flex items-center justify-between py-2 px-3 rounded text-left ${
+                    isNavActive('services', '/services') ? 'bg-brand-navy text-brand-gold border border-brand-gold/40' : 'text-stone-200'
+                  }`}
+                >
+                  <span className="flex items-center gap-2.5">
+                    <Cog className="w-4 h-4 text-brand-gold" />
+                    <span>SERVICES</span>
                   </span>
                   <ChevronRight className="w-4 h-4 text-slate-500" />
                 </button>
