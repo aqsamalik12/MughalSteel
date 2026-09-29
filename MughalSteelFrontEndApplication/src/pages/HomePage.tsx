@@ -543,25 +543,18 @@ export const HomePage: React.FC = () => {
           <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#05080E]/90 via-[#05080E]/40 to-transparent pointer-events-none z-10" />
         </div>
 
-        {/* Desktop Previous / Next Navigation Arrows */}
-        <button 
-          onClick={prevSlide}
-          aria-label="Previous Slide"
-          className="hidden md:flex absolute left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 hover:bg-black/75 border border-white/20 hover:border-brand-gold text-white hover:text-brand-gold items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-110 active:scale-95 cursor-pointer"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
+        {/* Desktop Navigation Arrows (Right Arrow only on wide desktop to prevent any left text overlap) */}
         <button 
           onClick={nextSlide}
           aria-label="Next Slide"
-          className="hidden md:flex absolute right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 hover:bg-black/75 border border-white/20 hover:border-brand-gold text-white hover:text-brand-gold items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-110 active:scale-95 cursor-pointer"
+          className="hidden xl:flex absolute right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 hover:bg-black/75 border border-white/20 hover:border-brand-gold text-white hover:text-brand-gold items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-110 active:scale-95 cursor-pointer"
         >
           <ChevronRight className="w-6 h-6" />
         </button>
 
-        {/* Hero Content Area: Left-Aligned within Dark Shadow Boundary (never crosses to the right) */}
-        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:pl-6 lg:pr-12 flex-1 flex flex-col justify-center py-6 sm:py-8 lg:py-10">
-          <div className="w-full max-w-md sm:max-w-lg lg:max-w-[420px] xl:max-w-[440px] text-left -ml-1 sm:-ml-2">
+        {/* Hero Content Area: Aligned Flush to the Left Edge of the Screen */}
+        <div className="relative z-20 w-full px-3 sm:px-5 md:px-6 lg:pl-8 lg:pr-6 xl:pl-10 flex-1 flex flex-col justify-center py-6 sm:py-8 lg:py-10">
+          <div className="w-full max-w-md sm:max-w-lg lg:max-w-[420px] xl:max-w-[450px] text-left">
             
             {currentSlide === 0 ? (
               // Intro Video Slide: Clean Left Column Layout bounded by black shadow
@@ -573,16 +566,16 @@ export const HomePage: React.FC = () => {
                     Welcome to
                   </p>
                   <h1 className="flex flex-col items-start gap-0.5 font-heading font-black tracking-wider drop-shadow-2xl">
-                    <span className="text-3xl sm:text-4xl lg:text-[48px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
+                    <span className="text-3xl sm:text-4xl lg:text-[46px] xl:text-[50px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
                       Mughal
                     </span>
-                    <span className="text-2xl sm:text-3xl lg:text-[36px] text-white leading-tight font-black">
+                    <span className="text-2xl sm:text-3xl lg:text-[34px] xl:text-[38px] text-white leading-tight font-black">
                       Steel Fabrication.
                     </span>
                   </h1>
                 </div>
 
-                {/* Tagline / Subtitle */}
+                {/* Tagline / Subtitle (Small Text) */}
                 <p className="text-[11px] sm:text-xs text-stone-200 font-sans font-semibold drop-shadow-md leading-snug">
                   Premium Steel &amp; Metal Fabrication Solutions <span className="text-[#cca04b] font-bold mx-1">|</span> Serving All Over Pakistan
                 </p>
@@ -659,34 +652,35 @@ export const HomePage: React.FC = () => {
               </div>
             ) : (
               // Video Slides: Active Project Headline & Dynamic Info
-              <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-3 sm:pl-4 space-y-2 sm:space-y-3">
+              <div className="border-l-2 sm:border-l-[3px] border-[#cca04b] pl-3 sm:pl-4 space-y-2 sm:space-y-2.5">
                 
-                {/* Project Header Tag & Byline */}
+                {/* Top: Welcome to */}
                 <div className="space-y-0.5">
-                  <p className="text-xs font-heading font-black uppercase tracking-wider text-[#cca04b] drop-shadow">
-                    COMPLETE RESIDENTIAL FABRICATION PROJECT
+                  <p className="text-white text-sm sm:text-base lg:text-lg font-heading font-medium tracking-wide drop-shadow">
+                    Welcome to
                   </p>
-                  <p className="text-[11px] font-heading font-medium text-white tracking-wide drop-shadow">
-                    Crafted With Perfection By
-                  </p>
-                </div>
-
-                <div className="space-y-0.5">
+                  {/* Brand Heading: Mughal (Big) & Steel Fabrication. (Big) */}
                   <h1 className="flex flex-col items-start gap-0.5 font-heading font-black tracking-wider drop-shadow-2xl">
-                    <span className="text-3xl sm:text-4xl lg:text-[48px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
+                    <span className="text-3xl sm:text-4xl lg:text-[46px] xl:text-[50px] text-[#cca04b] border-b-2 sm:border-b-4 border-[#cca04b] pb-0.5 leading-none font-black inline-block">
                       Mughal
                     </span>
-                    <span className="text-2xl sm:text-3xl lg:text-[36px] text-white leading-tight font-black">
+                    <span className="text-2xl sm:text-3xl lg:text-[34px] xl:text-[38px] text-white leading-tight font-black">
                       Steel Fabrication.
                     </span>
                   </h1>
+                </div>
 
-                  {/* Golden Subtitle directly under Mughal Steel Fabrication */}
-                  <p className="text-[11px] sm:text-xs font-heading font-bold text-[#cca04b] uppercase tracking-wide drop-shadow pt-0.5">
-                    Featuring custom wrought iron gates, security Grills and premium aluminum windows
+                {/* All remaining text is small as requested ("اس کے بعد باقی سارا چھوٹا لکھنا ہے") */}
+                <div className="space-y-1 pt-0.5">
+                  <p className="text-[10px] sm:text-[11px] font-heading font-bold text-[#cca04b] uppercase tracking-wider drop-shadow">
+                    COMPLETE RESIDENTIAL FABRICATION PROJECT
                   </p>
 
-                  <p className="text-xs sm:text-sm font-heading font-bold text-stone-200 uppercase tracking-wide drop-shadow pt-0.5">
+                  <p className="text-[10px] sm:text-[11px] font-sans font-medium text-stone-300 uppercase tracking-wide drop-shadow leading-snug">
+                    Featuring custom wrought iron gates, security grills and premium aluminum windows
+                  </p>
+
+                  <p className="text-xs sm:text-[13px] font-heading font-bold text-stone-100 uppercase tracking-wide drop-shadow pt-0.5">
                     {heroSlides[currentSlide].title}
                   </p>
                 </div>
@@ -706,7 +700,7 @@ export const HomePage: React.FC = () => {
 
                   <Link 
                     to="/quote" 
-                    className="inline-flex items-center justify-center bg-black/50 hover:bg-black/80 text-white border border-stone-500/70 hover:border-stone-300 font-heading font-medium text-xs px-4 sm:px-5 py-2 rounded-md backdrop-blur-md shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                    className="inline-flex items-center justify-center bg-black/60 hover:bg-black/85 text-white border border-stone-400/80 hover:border-white font-heading font-medium text-xs px-4 sm:px-5 py-2 rounded-md backdrop-blur-md shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
                     <span>Get a Free Quote</span>
                   </Link>
@@ -730,8 +724,16 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom Pagination Bar: Centered Circular Dots • • ⦿ • • */}
-        <div className="relative z-30 w-full pb-2.5 sm:pb-3 flex items-center justify-center">
+        {/* Bottom Pagination Bar: Centered Circular Dots with Prev/Next Controls • • ⦿ • • */}
+        <div className="relative z-30 w-full pb-2.5 sm:pb-3 flex items-center justify-center gap-3 sm:gap-4">
+          <button 
+            onClick={prevSlide}
+            aria-label="Previous Slide"
+            className="w-8 h-8 rounded-full bg-black/60 hover:bg-[#cca04b] text-white hover:text-stone-950 border border-white/20 hover:border-[#cca04b] flex items-center justify-center backdrop-blur-md transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
           {/* Centered Circular Dots matching reference image • • ⦿ • • */}
           <div className="flex items-center justify-center gap-2.5 sm:gap-3" role="tablist" aria-label="Slider Pagination">
             {heroSlides.map((slide, idx) => {
@@ -756,6 +758,14 @@ export const HomePage: React.FC = () => {
               );
             })}
           </div>
+
+          <button 
+            onClick={nextSlide}
+            aria-label="Next Slide"
+            className="w-8 h-8 rounded-full bg-black/60 hover:bg-[#cca04b] text-white hover:text-stone-950 border border-white/20 hover:border-[#cca04b] flex items-center justify-center backdrop-blur-md transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Continuous News Ticker Tape (Black Strip with White Text Moving Right-to-Left) */}
