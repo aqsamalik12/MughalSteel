@@ -188,7 +188,6 @@ export const AdminPage: React.FC = () => {
   // Product modal
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
-  const [imageUploadTab, setImageUploadTab] = useState<'upload' | 'url'>('upload');
   const [productForm, setProductForm] = useState({
     name: '',
     category: 'Housing Society',
@@ -2964,14 +2963,6 @@ export const AdminPage: React.FC = () => {
                         className="hidden" 
                       />
                     </label>
-
-                    <button
-                      type="button"
-                      onClick={() => setImageUploadTab(prev => prev === 'upload' ? 'url' : 'upload')}
-                      className="px-2.5 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-stone-200 rounded-lg text-[11px] font-mono transition"
-                    >
-                      {imageUploadTab === 'upload' ? '🔗 URL Mode' : '📁 File Upload'}
-                    </button>
                   </div>
                 </div>
 
@@ -3032,16 +3023,6 @@ export const AdminPage: React.FC = () => {
                         />
                       </label>
                     )}
-
-                    {imageUploadTab === 'url' && (
-                      <input 
-                        type="url" 
-                        value={productForm.frontImage} 
-                        onChange={(e) => setProductForm({ ...productForm, frontImage: e.target.value })}
-                        placeholder="Image URL..." 
-                        className="w-full bg-[#070C15] border border-stone-700 rounded px-2 py-1 text-[10px] text-stone-100 font-mono"
-                      />
-                    )}
                   </div>
 
                   {/* 2. BACK VIEW */}
@@ -3097,16 +3078,6 @@ export const AdminPage: React.FC = () => {
                           className="hidden" 
                         />
                       </label>
-                    )}
-
-                    {imageUploadTab === 'url' && (
-                      <input 
-                        type="url" 
-                        value={productForm.backImage} 
-                        onChange={(e) => setProductForm({ ...productForm, backImage: e.target.value })}
-                        placeholder="Image URL..." 
-                        className="w-full bg-[#070C15] border border-stone-700 rounded px-2 py-1 text-[10px] text-stone-100 font-mono"
-                      />
                     )}
                   </div>
 
@@ -3164,16 +3135,6 @@ export const AdminPage: React.FC = () => {
                         />
                       </label>
                     )}
-
-                    {imageUploadTab === 'url' && (
-                      <input 
-                        type="url" 
-                        value={productForm.leftSideImage} 
-                        onChange={(e) => setProductForm({ ...productForm, leftSideImage: e.target.value })}
-                        placeholder="Image URL..." 
-                        className="w-full bg-[#070C15] border border-stone-700 rounded px-2 py-1 text-[10px] text-stone-100 font-mono"
-                      />
-                    )}
                   </div>
 
                   {/* 4. RIGHT SIDE VIEW */}
@@ -3229,16 +3190,6 @@ export const AdminPage: React.FC = () => {
                           className="hidden" 
                         />
                       </label>
-                    )}
-
-                    {imageUploadTab === 'url' && (
-                      <input 
-                        type="url" 
-                        value={productForm.rightSideImage} 
-                        onChange={(e) => setProductForm({ ...productForm, rightSideImage: e.target.value })}
-                        placeholder="Image URL..." 
-                        className="w-full bg-[#070C15] border border-stone-700 rounded px-2 py-1 text-[10px] text-stone-100 font-mono"
-                      />
                     )}
                   </div>
 
@@ -3327,54 +3278,65 @@ export const AdminPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Hero Image (Photo or URL)</label>
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <input 
-                      type="url" 
-                      value={categoryForm.heroImage} 
-                      onChange={(e) => setCategoryForm({ ...categoryForm, heroImage: e.target.value })}
-                      placeholder="https://... image URL"
-                      className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold font-mono text-xs"
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Hero Image (Photo)</label>
+                {categoryForm.heroImage ? (
+                  <div className="relative h-28 w-full rounded-lg overflow-hidden border border-stone-700 bg-black group">
+                    <img 
+                      src={categoryForm.heroImage || FALLBACK_IMAGE_URL} 
+                      alt="Category Preview" 
+                      onError={handleImageError}
+                      className="w-full h-full object-cover" 
                     />
-                    <label className="px-3 py-2 bg-brand-gold/15 hover:bg-brand-gold/25 border border-brand-gold/40 text-brand-gold rounded-lg font-mono text-xs font-bold cursor-pointer shrink-0 flex items-center gap-1">
-                      <Upload className="w-3.5 h-3.5" />
-                      <span>Upload</span>
-                      <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (!file) return;
-                          const reader = new FileReader();
-                          reader.onload = (loadEvt) => {
-                            const dataUrl = loadEvt.target?.result as string;
-                            if (dataUrl) setCategoryForm(prev => ({ ...prev, heroImage: dataUrl }));
-                          };
-                          reader.readAsDataURL(file);
-                        }} 
-                        className="hidden" 
-                      />
-                    </label>
-                  </div>
-                  {categoryForm.heroImage && (
-                    <div className="relative h-28 w-full rounded-lg overflow-hidden border border-stone-700 bg-black">
-                      <img 
-                        src={categoryForm.heroImage || FALLBACK_IMAGE_URL} 
-                        alt="Preview" 
-                        onError={handleImageError}
-                        className="w-full h-full object-cover" 
-                      />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2 p-2">
+                      <label className="px-2.5 py-1 bg-brand-gold text-brand-dark rounded text-[10px] font-bold cursor-pointer hover:brightness-110">
+                        Change Photo
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const reader = new FileReader();
+                            reader.onload = (loadEvt) => {
+                              const dataUrl = loadEvt.target?.result as string;
+                              if (dataUrl) setCategoryForm(prev => ({ ...prev, heroImage: dataUrl }));
+                            };
+                            reader.readAsDataURL(file);
+                          }} 
+                          className="hidden" 
+                        />
+                      </label>
                       <button 
                         type="button" 
                         onClick={() => setCategoryForm(prev => ({ ...prev, heroImage: '' }))}
-                        className="absolute top-1.5 right-1.5 p-1 bg-red-600/80 hover:bg-red-600 text-white rounded-md text-[10px]"
+                        className="px-2 py-1 bg-red-600 text-white rounded text-[10px] font-bold hover:bg-red-500"
                       >
-                        ✕
+                        Remove
                       </button>
                     </div>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <label className="h-28 w-full rounded-lg border-2 border-dashed border-brand-gold/40 hover:border-brand-gold bg-brand-gold/5 hover:bg-brand-gold/10 transition flex flex-col items-center justify-center p-2 text-center cursor-pointer group">
+                    <Upload className="w-5 h-5 text-brand-gold group-hover:scale-110 transition mb-1" />
+                    <span className="text-[11px] font-bold text-stone-200 block">Upload Category Photo</span>
+                    <span className="text-[9px] text-stone-400 font-mono mt-0.5">Click to choose image file</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (loadEvt) => {
+                          const dataUrl = loadEvt.target?.result as string;
+                          if (dataUrl) setCategoryForm(prev => ({ ...prev, heroImage: dataUrl }));
+                        };
+                        reader.readAsDataURL(file);
+                      }} 
+                      className="hidden" 
+                    />
+                  </label>
+                )}
               </div>
 
               <div>
@@ -3821,14 +3783,65 @@ export const AdminPage: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Cover Image URL</label>
-                  <input 
-                    type="url" 
-                    required 
-                    value={serviceForm.image} 
-                    onChange={(e) => setServiceForm({ ...serviceForm, image: e.target.value })}
-                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold font-mono text-xs"
-                  />
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Cover Image (Photo)</label>
+                  {serviceForm.image ? (
+                    <div className="relative h-28 w-full rounded-lg overflow-hidden border border-stone-700 bg-black group">
+                      <img 
+                        src={serviceForm.image || FALLBACK_IMAGE_URL} 
+                        alt="Service Preview" 
+                        onError={handleImageError}
+                        className="w-full h-full object-cover" 
+                      />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2 p-2">
+                        <label className="px-2.5 py-1 bg-brand-gold text-brand-dark rounded text-[10px] font-bold cursor-pointer hover:brightness-110">
+                          Change Photo
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              const reader = new FileReader();
+                              reader.onload = (loadEvt) => {
+                                const dataUrl = loadEvt.target?.result as string;
+                                if (dataUrl) setServiceForm(prev => ({ ...prev, image: dataUrl }));
+                              };
+                              reader.readAsDataURL(file);
+                            }} 
+                            className="hidden" 
+                          />
+                        </label>
+                        <button 
+                          type="button" 
+                          onClick={() => setServiceForm(prev => ({ ...prev, image: '' }))}
+                          className="px-2 py-1 bg-red-600 text-white rounded text-[10px] font-bold hover:bg-red-500"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <label className="h-28 w-full rounded-lg border-2 border-dashed border-brand-gold/40 hover:border-brand-gold bg-brand-gold/5 hover:bg-brand-gold/10 transition flex flex-col items-center justify-center p-2 text-center cursor-pointer group">
+                      <Upload className="w-5 h-5 text-brand-gold group-hover:scale-110 transition mb-1" />
+                      <span className="text-[11px] font-bold text-stone-200 block">Upload Service Photo</span>
+                      <span className="text-[9px] text-stone-400 font-mono mt-0.5">Click to choose image file</span>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = (loadEvt) => {
+                            const dataUrl = loadEvt.target?.result as string;
+                            if (dataUrl) setServiceForm(prev => ({ ...prev, image: dataUrl }));
+                          };
+                          reader.readAsDataURL(file);
+                        }} 
+                        className="hidden" 
+                      />
+                    </label>
+                  )}
                 </div>
               </div>
 
