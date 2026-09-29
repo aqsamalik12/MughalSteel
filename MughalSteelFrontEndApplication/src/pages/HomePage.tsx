@@ -1430,121 +1430,6 @@ export const HomePage: React.FC = () => {
             })()}
           </div>
 
-          {/* 16 Modern Home Items Row with Infinite Smooth Marquee & Controls */}
-          <div className="space-y-6 pt-6 border-t border-brand-light/30">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-brand-light/40 pb-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono font-bold text-brand-gold uppercase tracking-widest bg-brand-gold/10 px-2.5 py-0.5 rounded border border-brand-gold/30 inline-flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse" />
-                    <span>Continuous Gliding Gallery</span>
-                  </span>
-                </div>
-                <h3 className="font-heading font-black text-xl sm:text-2xl text-stone-100 uppercase tracking-wider flex flex-wrap items-center gap-2">
-                  <span>16 MODERN HOME</span>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
-                    FABRICATION ITEMS
-                  </span>
-                </h3>
-                <p className="text-xs text-slate-300 font-sans">
-                  Smooth gliding architectural elements • Hover mouse over any item to pause and inspect specifications
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <button 
-                    onClick={() => scrollMarquee('left')}
-                    aria-label="Scroll left"
-                    className="p-1.5 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all text-xs cursor-pointer shadow active:scale-95"
-                  >
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                  </button>
-                  <button 
-                    onClick={() => scrollMarquee('right')}
-                    aria-label="Scroll right"
-                    className="p-1.5 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all text-xs cursor-pointer shadow active:scale-95"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                <Link to="/categories/modern-home" className="text-xs text-brand-gold font-bold hover:underline">
-                  Explore Category →
-                </Link>
-              </div>
-            </div>
-
-            {/* Continuous Infinite Marquee Track with Double Buffer */}
-            <div 
-              ref={marqueeSliderRef}
-              className="overflow-x-auto no-scrollbar scroll-smooth relative py-2"
-            >
-              <div className="flex gap-4 w-max marquee-track hover:[animation-play-state:paused] animate-marquee">
-                {[
-                  { name: 'Front Gate', subtitle: 'CNC Laser & Heavy MS', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Balcony Railing', subtitle: 'Stainless & Tempered Glass', link: '/items?item=Balcony+Railing', image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Boundary Wall Grills', subtitle: 'Anti-Climb Security Grills', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Window Grills', subtitle: 'Designer Security Frames', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Pivot Front Door', subtitle: 'Heavy Structural Pivot', link: '/items?item=Doors', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Spiral Staircase', subtitle: 'Cantilever & Spiral Steps', link: '/items?item=Stair+Railing', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Stair Railings', subtitle: 'TIG Welded MS & SS 304', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Car Porch Shed', subtitle: 'Heavy Cantilever Canopy', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'AC Outdoor Cage', subtitle: 'Security & Anti-Theft Guard', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Architectural Louvers', subtitle: 'Sunshade Airflow Panels', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Steel Pergola', subtitle: 'Rooftop & Garden Pergola', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Frameless Glass Balustrade', subtitle: '12mm Tempered Core', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Modern Duct Covers', subtitle: 'Laser Cut Floor Trench Grates', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Planters & Trellis', subtitle: 'Vertical Garden Steel Work', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Boundary Spikes', subtitle: 'Laser Precision Security Spikes', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Automated Gate Motors', subtitle: 'Italian Heavy-Duty Automation', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
-                  // Buffer duplicate for infinite loop
-                  { name: 'Front Gate', subtitle: 'CNC Laser & Heavy MS', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Balcony Railing', subtitle: 'Stainless & Tempered Glass', link: '/items?item=Balcony+Railing', image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Boundary Wall Grills', subtitle: 'Anti-Climb Security Grills', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Window Grills', subtitle: 'Designer Security Frames', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Pivot Front Door', subtitle: 'Heavy Structural Pivot', link: '/items?item=Doors', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Spiral Staircase', subtitle: 'Cantilever & Spiral Steps', link: '/items?item=Stair+Railing', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Stair Railings', subtitle: 'TIG Welded MS & SS 304', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Car Porch Shed', subtitle: 'Heavy Cantilever Canopy', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'AC Outdoor Cage', subtitle: 'Security & Anti-Theft Guard', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Architectural Louvers', subtitle: 'Sunshade Airflow Panels', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Steel Pergola', subtitle: 'Rooftop & Garden Pergola', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Frameless Glass Balustrade', subtitle: '12mm Tempered Core', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Modern Duct Covers', subtitle: 'Laser Cut Floor Trench Grates', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Planters & Trellis', subtitle: 'Vertical Garden Steel Work', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Boundary Spikes', subtitle: 'Laser Precision Security Spikes', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
-                  { name: 'Automated Gate Motors', subtitle: 'Italian Heavy-Duty Automation', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' }
-                ].map((item, idx) => (
-                  <Link
-                    key={`${item.name}-${idx}`}
-                    to={item.link}
-                    className="group w-40 sm:w-48 shrink-0 bg-brand-navy border border-brand-light/60 hover:border-brand-gold rounded-lg overflow-hidden p-2.5 space-y-2 transition-all duration-300 shadow-md text-center block card-interactive"
-                  >
-                    <div className="aspect-[4/3] rounded overflow-hidden bg-black relative">
-                      <img 
-                        src={item.image || FALLBACK_IMAGE_URL} 
-                        alt={item.name} 
-                        loading="lazy"
-                        decoding="async"
-                        onError={handleImageError}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                    <div className="space-y-0.5">
-                      <h4 className="font-heading font-bold text-xs text-stone-100 group-hover:text-brand-gold transition-colors truncate uppercase">
-                        {item.name}
-                      </h4>
-                      <p className="text-[10px] text-slate-400 font-mono truncate">
-                        {item.subtitle}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -1839,6 +1724,127 @@ export const HomePage: React.FC = () => {
                   </Link>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 16 MODERN HOME FABRICATION ITEMS (CONTINUOUS GLIDING)    */}
+      {/* Placed Immediately After Elevation Studio As Requested   */}
+      {/* ======================================================== */}
+      <section className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-brand-light/40 pb-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono font-bold text-brand-gold uppercase tracking-widest bg-brand-gold/10 px-2.5 py-0.5 rounded border border-brand-gold/30 inline-flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse" />
+                  <span>Continuous Gliding Gallery</span>
+                </span>
+              </div>
+              <h3 className="font-heading font-black text-xl sm:text-2xl text-stone-100 uppercase tracking-wider flex flex-wrap items-center gap-2">
+                <span>16 MODERN HOME</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
+                  FABRICATION ITEMS
+                </span>
+              </h3>
+              <p className="text-xs text-slate-300 font-sans">
+                Smooth gliding architectural elements • Hover mouse over any item to pause and inspect specifications
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5">
+                <button 
+                  onClick={() => scrollMarquee('left')}
+                  aria-label="Scroll left"
+                  className="p-1.5 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all text-xs cursor-pointer shadow active:scale-95"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <button 
+                  onClick={() => scrollMarquee('right')}
+                  aria-label="Scroll right"
+                  className="p-1.5 rounded-full border border-brand-gold/40 bg-brand-navy hover:bg-brand-gold hover:text-brand-dark text-brand-gold transition-all text-xs cursor-pointer shadow active:scale-95"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <Link to="/categories/modern-home" className="text-xs text-brand-gold font-bold hover:underline">
+                Explore Category →
+              </Link>
+            </div>
+          </div>
+
+          {/* Continuous Infinite Marquee Track with Double Buffer */}
+          <div 
+            ref={marqueeSliderRef}
+            className="overflow-x-auto no-scrollbar scroll-smooth relative py-2"
+          >
+            <div className="flex gap-4 w-max marquee-track hover:[animation-play-state:paused] animate-marquee">
+              {[
+                { name: 'Front Gate', subtitle: 'CNC Laser & Heavy MS', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Balcony Railing', subtitle: 'Stainless & Tempered Glass', link: '/items?item=Balcony+Railing', image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Boundary Wall Grills', subtitle: 'Anti-Climb Security Grills', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Window Grills', subtitle: 'Designer Security Frames', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Pivot Front Door', subtitle: 'Heavy Structural Pivot', link: '/items?item=Doors', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Spiral Staircase', subtitle: 'Cantilever & Spiral Steps', link: '/items?item=Stair+Railing', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Stair Railings', subtitle: 'TIG Welded MS & SS 304', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Car Porch Shed', subtitle: 'Heavy Cantilever Canopy', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=400&q=80' },
+                { name: 'AC Outdoor Cage', subtitle: 'Security & Anti-Theft Guard', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Architectural Louvers', subtitle: 'Sunshade Airflow Panels', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Steel Pergola', subtitle: 'Rooftop & Garden Pergola', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Frameless Glass Balustrade', subtitle: '12mm Tempered Core', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Modern Duct Covers', subtitle: 'Laser Cut Floor Trench Grates', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Planters & Trellis', subtitle: 'Vertical Garden Steel Work', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Boundary Spikes', subtitle: 'Laser Precision Security Spikes', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Automated Gate Motors', subtitle: 'Italian Heavy-Duty Automation', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
+                // Buffer duplicate for infinite loop
+                { name: 'Front Gate', subtitle: 'CNC Laser & Heavy MS', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Balcony Railing', subtitle: 'Stainless & Tempered Glass', link: '/items?item=Balcony+Railing', image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Boundary Wall Grills', subtitle: 'Anti-Climb Security Grills', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Window Grills', subtitle: 'Designer Security Frames', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Pivot Front Door', subtitle: 'Heavy Structural Pivot', link: '/items?item=Doors', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Spiral Staircase', subtitle: 'Cantilever & Spiral Steps', link: '/items?item=Stair+Railing', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Stair Railings', subtitle: 'TIG Welded MS & SS 304', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Car Porch Shed', subtitle: 'Heavy Cantilever Canopy', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=400&q=80' },
+                { name: 'AC Outdoor Cage', subtitle: 'Security & Anti-Theft Guard', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Architectural Louvers', subtitle: 'Sunshade Airflow Panels', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Steel Pergola', subtitle: 'Rooftop & Garden Pergola', link: '/items?item=Sheds+%26+Canopies', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Frameless Glass Balustrade', subtitle: '12mm Tempered Core', link: '/items?item=Railing', image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Modern Duct Covers', subtitle: 'Laser Cut Floor Trench Grates', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Planters & Trellis', subtitle: 'Vertical Garden Steel Work', link: '/items?item=Grills', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Boundary Spikes', subtitle: 'Laser Precision Security Spikes', link: '/items?item=Boundary+Wall+Grills', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+                { name: 'Automated Gate Motors', subtitle: 'Italian Heavy-Duty Automation', link: '/items?item=Front+Gates', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' }
+              ].map((item, idx) => (
+                <Link
+                  key={`${item.name}-${idx}`}
+                  to={item.link}
+                  className="group w-40 sm:w-48 shrink-0 bg-brand-navy border border-brand-light/60 hover:border-brand-gold rounded-lg overflow-hidden p-2.5 space-y-2 transition-all duration-300 shadow-md text-center block card-interactive"
+                >
+                  <div className="aspect-[4/3] rounded overflow-hidden bg-black relative">
+                    <img 
+                      src={item.image || FALLBACK_IMAGE_URL} 
+                      alt={item.name} 
+                      loading="lazy"
+                      decoding="async"
+                      onError={handleImageError}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <div className="space-y-0.5">
+                    <h4 className="font-heading font-bold text-xs text-stone-100 group-hover:text-brand-gold transition-colors truncate uppercase">
+                      {item.name}
+                    </h4>
+                    <p className="text-[10px] text-slate-400 font-mono truncate">
+                      {item.subtitle}
+                    </p>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
