@@ -1545,46 +1545,6 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Try at Home Live Visualizer Studio Strip */}
-          <div className="bg-gradient-to-r from-[#0B1320] via-brand-navy to-[#0B1320] border border-brand-gold/50 rounded-lg p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center shadow-2xl">
-            <div className="lg:col-span-8 space-y-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-gold/20 text-brand-gold text-[10px] font-heading font-bold uppercase tracking-widest rounded border border-brand-gold/40">
-                <Sparkles className="w-3.5 h-3.5" /> Interactive Elevation Studio
-              </span>
-              <h3 className="text-xl sm:text-3xl font-heading font-black text-stone-100 uppercase">
-                Test Gates & Doors on Your House Photo
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Upload your house elevation picture, overlay any gate or door model, adjust scaling and perspective, and get instant square footage pricing directly on WhatsApp.
-              </p>
-              <div className="pt-1">
-                <Link to="/try-at-home" className="btn-gold text-xs py-3 px-6 inline-flex items-center gap-2 shadow-lg hover:shadow-glow-gold uppercase font-bold tracking-wider">
-                  <Eye className="w-4 h-4" />
-                  <span>Launch Live Elevation Studio</span>
-                </Link>
-              </div>
-            </div>
-
-            <div className="lg:col-span-4">
-              <div className="relative rounded-lg overflow-hidden border border-brand-gold/50 aspect-video shadow-xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" 
-                  alt="Live visualizer tool" 
-                  loading="lazy"
-                  decoding="async"
-                  onError={handleImageError}
-                  className="w-full h-full object-cover" 
-                />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <span className="btn-gold text-[10px] py-1.5 px-3 font-bold uppercase">
-                    Open Studio
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
         </div>
       </section>
 
@@ -1819,6 +1779,68 @@ export const HomePage: React.FC = () => {
             </a>
           </div>
 
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* 3. INTERACTIVE ELEVATION STUDIO: TEST GATES & DOORS      */}
+      {/* Placed Immediately After Projects (3rd Position)        */}
+      {/* ======================================================== */}
+      <section id="try-at-home-section" className="cv-auto scroll-mt-24 w-full bg-[#05080E] border-b border-brand-light/40 py-16 md:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-r from-[#0B1320] via-brand-navy to-[#0B1320] border border-brand-gold/50 rounded-2xl p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center shadow-2xl relative overflow-hidden">
+            <div className="absolute -top-24 -right-24 w-72 h-72 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="lg:col-span-8 space-y-4 relative z-10">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-gold/20 text-brand-gold text-[10px] font-heading font-black uppercase tracking-widest rounded border border-brand-gold/40 shadow-sm">
+                <Sparkles className="w-3.5 h-3.5 text-brand-gold animate-pulse" />
+                <span>Interactive Elevation Studio • 3D House Preview</span>
+              </span>
+              <h3 className="text-2xl sm:text-4xl font-heading font-black text-stone-100 uppercase tracking-wider">
+                <span>TEST GATES &amp; DOORS ON</span>{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold drop-shadow">
+                  YOUR HOUSE PHOTO
+                </span>
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans max-w-2xl">
+                Upload your house elevation picture, overlay any gate or door model, adjust scaling and perspective, and get instant square footage pricing directly on WhatsApp.
+              </p>
+              <div className="pt-2 flex flex-wrap items-center gap-3">
+                <Link to="/try-at-home" className="btn-gold text-xs py-3.5 px-7 inline-flex items-center gap-2 shadow-lg hover:shadow-[0_0_25px_rgba(204,160,75,0.4)] uppercase font-bold tracking-wider rounded-lg transition-transform hover:-translate-y-0.5 active:translate-y-0">
+                  <Eye className="w-4 h-4" />
+                  <span>Launch Live Elevation Studio</span>
+                </Link>
+                <a
+                  href={getWhatsAppUrl('Hello Mughal Steel, I would like guidance on using the Virtual Try-On tool with my house photo.')}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-outline text-xs py-3.5 px-6 inline-flex items-center gap-2 uppercase font-bold tracking-wider rounded-lg"
+                >
+                  <MessageCircle className="w-4 h-4 text-brand-gold" />
+                  <span>Need Help With Elevation?</span>
+                </a>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 relative z-10">
+              <div className="relative rounded-xl overflow-hidden border border-brand-gold/50 aspect-video shadow-2xl group">
+                <img 
+                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" 
+                  alt="Live visualizer tool" 
+                  loading="lazy"
+                  decoding="async"
+                  onError={handleImageError}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                  <Link to="/try-at-home" className="btn-gold text-[11px] py-2 px-4 font-bold uppercase tracking-wider shadow-lg flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Open Studio</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
