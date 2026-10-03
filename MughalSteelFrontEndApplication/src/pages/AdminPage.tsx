@@ -1079,7 +1079,7 @@ export const AdminPage: React.FC = () => {
             >
               <div className="flex items-center space-x-2.5">
                 <ShieldCheck className="w-4 h-4 text-brand-gold shrink-0" />
-                <span>Team &amp; Leadership</span>
+                <span>Our Team</span>
               </div>
               <span className="text-[10px] bg-brand-gold/10 text-brand-gold px-1.5 py-0.5 rounded font-mono font-bold">
                 {teamMembers.length}
@@ -1182,7 +1182,7 @@ export const AdminPage: React.FC = () => {
               {activeTab === 'services' && 'Services Management'}
               {activeTab === 'projects' && 'Projects / Portfolio'}
               {activeTab === 'showcase' && "What's Your Project (Site Execution Showcase)"}
-              {activeTab === 'team' && 'Team & Leadership Management'}
+              {activeTab === 'team' && 'Team Management'}
               {activeTab === 'gallery' && 'Portfolio & Visual Gallery'}
               {activeTab === 'testimonials' && 'Testimonials / Reviews'}
               {activeTab === 'messages' && 'Client Messages / Inquiries'}
@@ -2413,13 +2413,13 @@ export const AdminPage: React.FC = () => {
               <div>
                 <h3 className="font-heading font-black text-base uppercase text-stone-100 flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-brand-gold" />
-                  <span>Team &amp; Leadership Management</span>
+                  <span>Team Management</span>
                   <span className="text-[10px] bg-brand-gold/15 text-brand-gold border border-brand-gold/40 px-2 py-0.5 rounded font-mono font-bold">
                     Executive Directory
                   </span>
                 </h3>
                 <p className="text-slate-400 text-[11px]">
-                  Manage executive leads, engineers, master craftsmen, and site directors displayed on the About &amp; Leadership section.
+                  Manage executive leads, engineers, master craftsmen, and site directors displayed on the Team section.
                 </p>
               </div>
 

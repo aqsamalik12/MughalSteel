@@ -30,11 +30,11 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-heading font-black text-stone-100 uppercase tracking-tight">
-            Our Leadership!
+            Our Team!
           </h2>
 
           <p className="text-xs sm:text-sm md:text-base text-slate-300 font-sans leading-relaxed max-w-3xl mx-auto">
-            The people at Mughal Steel Fabrication are a team of professionals with diverse backgrounds and unique talents. Even though each of us plays a unique function, we draw on our colleagues&apos; knowledge and experiences to create strategies and plans that can be put into practice. Our Executive Leadership invests consistently in the development of the employees to foster innovation and advancement to each degree.
+            The people at Mughal Steel Fabrication are a team of professionals with diverse backgrounds and unique talents. Even though each of us plays a unique function, we draw on our colleagues&apos; knowledge and experiences to create strategies and plans that can be put into practice. Our Executive Team invests consistently in the development of the employees to foster innovation and advancement to each degree.
           </p>
         </div>
 
