@@ -1,4 +1,4 @@
-import type { Product, BlogPost, Testimonial, ProjectCategory, ProductItemType } from '../types';
+import type { Product, BlogPost, Testimonial, ProjectCategory, ProductItemType, TeamMember, ProjectShowcaseItem } from '../types';
 
 export interface CategoryInfo {
   id: string;
@@ -948,7 +948,7 @@ export const SEED_TESTIMONIALS: Testimonial[] = [
 export const SEED_PROJECTS = [
   {
     id: 'proj-gulberg-greens',
-    title: 'COMPLETED PROJECT: GULBERG GREENS FARMHOUSE',
+    title: 'GULBERG GREENS FARMHOUSE - MASTER METALWORK',
     slug: 'gulberg-greens-farmhouse',
     category: 'Modern Farmhouse',
     image: '/mughal-luxury-architectural-villa.jpg',
@@ -959,7 +959,7 @@ export const SEED_PROJECTS = [
       'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80'
     ],
     shortDescription: 'Executed Entirely by Mughal Steel Fabrication: Grand entrance gates, custom fencing, precision structural framework, architectural stairs & aluminum works.',
-    description: `COMPLETED PROJECT: GULBERG GREENS FARMHOUSE\nExecuted Entirely by Mughal Steel Fabrication\n\nWrought & Cast Iron Work: Grand entrance gates, custom fencing, and ornamental details crafted with perfection.\n\nPrecision Steel & Pipe Works: High-strength structural framework and heavy-duty fabrication.\n\nCustom Staircases: Elegant and durable modern architectural stairs.\n\nArchitectural Aluminum Work: Premium-grade windows and fittings.\n\nExperience total perfection in metalwork and construction with Mughal Steel Fabrication, Rawalpindi.`,
+    description: `GULBERG GREENS FARMHOUSE\nExecuted Entirely by Mughal Steel Fabrication\n\nWrought & Cast Iron Work: Grand entrance gates, custom fencing, and ornamental details crafted with perfection.\n\nPrecision Steel & Pipe Works: High-strength structural framework and heavy-duty fabrication.\n\nCustom Staircases: Elegant and durable modern architectural stairs.\n\nArchitectural Aluminum Work: Premium-grade windows and fittings.\n\nExperience total perfection in metalwork and construction with Mughal Steel Fabrication, Rawalpindi.`,
     location: 'Gulberg Greens, Islamabad',
     projectType: 'Turnkey Farmhouse Architectural Metalwork & Fabrication',
     clientType: 'Private Luxury Farmhouse Estate',
@@ -1121,4 +1121,176 @@ export const SEED_GALLERY = [
   { id: 'gal-4', title: 'Mono Stringer Floating Staircase', category: 'Modern Home', style: 'Architectural', image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80' },
   { id: 'gal-5', title: 'Commercial Cantilever Automatic Gate', category: 'Commercial', style: 'Industrial', image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80' },
   { id: 'gal-6', title: 'Modern Farmhouse Sonoma Gate', category: 'Modern Farmhouse', style: 'Rustic Modern', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80' }
+];
+
+export const SEED_TEAM_MEMBERS: TeamMember[] = [
+  {
+    id: 'team-1',
+    name: 'Muhammad Qasim',
+    role: 'Founder & Managing Director',
+    image: '/image/team-1.jpg',
+    bio: 'Founder and executive head leading Mughal Steel Fabrication with over 15 years of precision metal engineering and craftsmanship.',
+    displayOrder: 1,
+    published: true
+  },
+  {
+    id: 'team-2',
+    name: 'Engr. Arsalan Mughal',
+    role: 'Head of Structural Engineering',
+    image: '/image/team-2.jpg',
+    bio: 'Specialist in 3D CAD modeling, structural load calculations, and computer-guided fiber CNC laser cutting standards.',
+    displayOrder: 2,
+    published: true
+  },
+  {
+    id: 'team-3',
+    name: 'Ustad Rashid Khan',
+    role: 'Master Blacksmith & Forge Supervisor',
+    image: '/image/team-3.jpg',
+    bio: 'Directs on-floor forge operations, traditional hand-beaten wrought iron scrolls, and multi-stage anti-rust primer coatings.',
+    displayOrder: 3,
+    published: true
+  },
+  {
+    id: 'team-4',
+    name: 'Hamza Tariq Mughal',
+    role: 'Operations & Site Installation Director',
+    image: '/image/team-4.jpg',
+    bio: 'Oversees site civil surveys, laser alignment installations, automated motor commissioning, and client site handovers.',
+    displayOrder: 4,
+    published: true
+  },
+  {
+    id: 'team-5',
+    name: 'Bilal Ahmed',
+    role: 'CNC Laser & Architectural Metal Designer',
+    image: '/image/team-5.jpg',
+    bio: 'Leads computational CNC fiber laser sheet cutting, parametric gate patterns, and precision CAD architectural detailing.',
+    displayOrder: 5,
+    published: true
+  },
+  {
+    id: 'team-6',
+    name: 'Zain Ul Abideen',
+    role: 'Metallurgic QA & Powder Coating Specialist',
+    image: '/image/team-6.jpg',
+    bio: 'Directs multi-stage chemical rust protection, 200°C electrostatic powder coat curing, and structural weld inspection.',
+    displayOrder: 6,
+    published: true
+  }
+];
+
+export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
+  {
+    id: 'proj-showcase-1',
+    title: '1 Kanal Luxury Residence - Faisalabad',
+    location: 'Canal Road, Faisalabad',
+    clientType: 'Private Luxury Villa',
+    gaugeSpec: '14-Gauge MS & ±0.1mm CNC Fiber Laser',
+    finishSpec: 'Matte Jet-Black Electrostatic Powder Coat (200°C)',
+    deliverables: 'Main Driveway Gate, Boundary Wall Grills, Balcony Railings, Spiral Stairs',
+    status: 'completed',
+    statusLabel: '',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+    link: '/portfolio',
+    displayOrder: 1
+  },
+  {
+    id: 'proj-showcase-2',
+    title: 'Gulberg Greens Modern Farmhouse',
+    location: 'Gulberg Greens, Islamabad',
+    clientType: 'Country Estate & Farmhouse',
+    gaugeSpec: 'Schedule 40 Galvanized Heavy MS Pipes',
+    finishSpec: 'Triple Hot-Zinc Chemical Primer & Protective Powder Coat',
+    deliverables: 'Grand Entrance Gate, 1,200 RFT Security Fencing, Custom Porch Pergola',
+    status: 'completed',
+    statusLabel: '',
+    image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
+    link: '/portfolio',
+    displayOrder: 2
+  },
+  {
+    id: 'proj-showcase-3',
+    title: 'National Defence University (NDU) Handover',
+    location: 'Sector E-9, Islamabad',
+    clientType: 'Institutional & High-Security',
+    gaugeSpec: '12-Gauge Heavy Mild Steel Structural Channels',
+    finishSpec: 'Anti-Rust Zinc-Rich Epoxy Coating',
+    deliverables: 'Heavy Guarded Security Gates, Pedestrian Turnstiles, Automated Barriers',
+    status: 'completed',
+    statusLabel: '',
+    image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
+    link: '/portfolio',
+    displayOrder: 3
+  },
+  {
+    id: 'proj-showcase-4',
+    title: 'Bahria Town Modern Villa Main Gate',
+    location: 'Bahria Town Phase 7, Rawalpindi',
+    clientType: 'Residential Bungalow',
+    gaugeSpec: '14-Gauge CNC Geometric Laser Cut MS',
+    finishSpec: 'Charcoal Grey Electrostatic Powder Coat',
+    deliverables: 'Automated Sliding Gate with Italian Motor, Frameless Glass Balconies',
+    status: 'completed',
+    statusLabel: '',
+    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80',
+    link: '/portfolio',
+    displayOrder: 4
+  },
+  {
+    id: 'proj-showcase-5',
+    title: 'Classical Arch Spanish Kothi',
+    location: 'DHA Phase 2, Islamabad',
+    clientType: 'Classical Heritage Villa',
+    gaugeSpec: 'Solid Hand-Forged Carbon Steel (20mm solid bars)',
+    finishSpec: 'Hand-Rubbed Antique Roman Bronze & Gold Leaf Accents',
+    deliverables: 'Arched Double Wrought Iron Driveway Gate, Curved Balustrades',
+    status: 'completed',
+    statusLabel: '',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+    link: '/portfolio',
+    displayOrder: 5
+  },
+  {
+    id: 'proj-showcase-6',
+    title: 'Oversized Pivot Door Installation',
+    location: 'Sector F-7/2, Islamabad',
+    clientType: 'Contemporary Architect Villa',
+    gaugeSpec: '6063-T6 Thermal-Break Profile with 12mm Acoustic Glass',
+    finishSpec: 'Deep Matte Anodized Architectural Black',
+    deliverables: '5x10 ft Hydraulic Floor-Spring Pivot Entrance Door & Laser Leveling',
+    status: 'ongoing',
+    statusLabel: 'Active On-Site Erection (85%)',
+    image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80',
+    link: '/portfolio',
+    displayOrder: 6
+  },
+  {
+    id: 'proj-showcase-7',
+    title: 'Commercial Plaza Glass & Steel Sub-Frame',
+    location: 'Sector G-13 Markaz, Islamabad',
+    clientType: 'Commercial Corporate Plaza',
+    gaugeSpec: 'Heavy I-Beam & Structural Channel Portal Trusses',
+    finishSpec: 'AkzoNobel High-Endurance Powder Coat',
+    deliverables: 'Multi-Storey Glass Curtain Sub-Frame, Fire Spiral Escape Stairs',
+    status: 'ongoing',
+    statusLabel: 'Active On-Site Erection (60%)',
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+    link: '/portfolio',
+    displayOrder: 7
+  },
+  {
+    id: 'proj-showcase-8',
+    title: 'High-Security Double Gate & Perimeter Spikes',
+    location: 'Naval Anchorage, Islamabad',
+    clientType: 'Private Residence Estate',
+    gaugeSpec: '12-Gauge Thick Cold-Rolled Mild Steel',
+    finishSpec: '7-Stage Chemical Pre-Treatment & Powder Oven Baked',
+    deliverables: 'Heavy Automated Swing Gate, 180 RFT Laser Precision Anti-Climb Spikes',
+    status: 'ongoing',
+    statusLabel: 'Fabrication Yard Stage (45%)',
+    image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
+    link: '/portfolio',
+    displayOrder: 8
+  }
 ];

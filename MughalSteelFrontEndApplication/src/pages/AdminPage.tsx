@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import type { Product, Quote, Order, CustomDesign, Testimonial, ContactMessage, ActivityLog, ProjectShowcase, ServiceItem } from '../types';
+import type { Product, Quote, Order, CustomDesign, Testimonial, ContactMessage, ActivityLog, ProjectShowcase, ServiceItem, TeamMember, ProjectShowcaseItem } from '../types';
 import { type CategoryInfo } from '../data/seedData';
 import { 
   BarChart3, Box, ClipboardList, ShoppingCart, Users, 
@@ -27,6 +27,8 @@ export const AdminPage: React.FC = () => {
     services, addService, updateService, deleteService,
     projects, addProject, updateProject, deleteProject,
     categories, addCategory, updateCategory, deleteCategory,
+    teamMembers, addTeamMember, updateTeamMember, deleteTeamMember,
+    projectShowcases, addProjectShowcase, updateProjectShowcase, deleteProjectShowcase,
     contactMessages, updateContactMessageStatus,
     activityLogs, addActivityLog,
     fetchQuotes, fetchOrders, fetchContactMessages
@@ -46,10 +48,10 @@ export const AdminPage: React.FC = () => {
     }
   }, [isAdmin, navigate]);
 
-  // Tab State (including Services, Projects, Portfolio / Gallery, and Categories)
+  // Tab State (including Services, Projects, What's Your Project, Team, Gallery, and Categories)
   const [activeTab, setActiveTab] = useState<
     'dashboard' | 'products' | 'categories' | 'quotes' | 'orders' | 
-    'designs' | 'customers' | 'services' | 'projects' | 'gallery' | 'testimonials' | 'messages' | 'settings' | 'logs'
+    'designs' | 'customers' | 'services' | 'projects' | 'showcase' | 'team' | 'gallery' | 'testimonials' | 'messages' | 'settings' | 'logs'
   >('dashboard');
 
   // Fetch live quotes, orders, and messages on demand
@@ -273,6 +275,54 @@ export const AdminPage: React.FC = () => {
   // Testimonial modal
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
   const [testimonialForm, setTestimonialForm] = useState({ name: '', location: '', rating: 5, text: '', featured: true, published: true });
+
+  // Team modal state
+  const [showTeamModal, setShowTeamModal] = useState(false);
+  const [editingTeamMember, setEditingTeamMember] = useState<TeamMember | null>(null);
+  const [teamForm, setTeamForm] = useState<{
+    name: string;
+    role: string;
+    image: string;
+    bio: string;
+    displayOrder: number;
+    published: boolean;
+  }>({
+    name: '',
+    role: '',
+    image: '',
+    bio: '',
+    displayOrder: 1,
+    published: true
+  });
+
+  // Showcase ("What's Your Project") modal state
+  const [showShowcaseModal, setShowShowcaseModal] = useState(false);
+  const [editingShowcase, setEditingShowcase] = useState<ProjectShowcaseItem | null>(null);
+  const [showcaseForm, setShowcaseForm] = useState<{
+    title: string;
+    location: string;
+    clientType: string;
+    gaugeSpec: string;
+    finishSpec: string;
+    deliverables: string;
+    status: 'completed' | 'ongoing';
+    statusLabel: string;
+    image: string;
+    link: string;
+    displayOrder: number;
+  }>({
+    title: '',
+    location: '',
+    clientType: '',
+    gaugeSpec: '',
+    finishSpec: '',
+    deliverables: '',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over',
+    image: '',
+    link: '/portfolio',
+    displayOrder: 1
+  });
 
   // Detail inspection modals
   const [viewingQuote, setViewingQuote] = useState<Quote | null>(null);
@@ -701,6 +751,112 @@ export const AdminPage: React.FC = () => {
     setEditingQuoteId(null);
   };
 
+  const handleOpenAddTeam = () => {
+    setEditingTeamMember(null);
+    setTeamForm({
+      name: '',
+      role: '',
+      image: '',
+      bio: '',
+      displayOrder: (teamMembers?.length || 0) + 1,
+      published: true
+    });
+    setShowTeamModal(true);
+  };
+
+  const handleOpenEditTeam = (member: TeamMember) => {
+    setEditingTeamMember(member);
+    setTeamForm({
+      name: member.name,
+      role: member.role,
+      image: member.image || '',
+      bio: member.bio || '',
+      displayOrder: member.displayOrder || 1,
+      published: member.published !== false
+    });
+    setShowTeamModal(true);
+  };
+
+  const handleSaveTeam = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingTeamMember) {
+      updateTeamMember({
+        ...editingTeamMember,
+        ...teamForm
+      });
+      addActivityLog('TEAM_UPDATED', `Updated team member: ${teamForm.name}`);
+    } else {
+      addTeamMember(teamForm);
+      addActivityLog('TEAM_CREATED', `Added new team member: ${teamForm.name}`);
+    }
+    setShowTeamModal(false);
+  };
+
+  const handleDeleteTeam = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this team member?')) {
+      deleteTeamMember(id);
+      addActivityLog('TEAM_DELETED', `Deleted team member ID: ${id}`);
+    }
+  };
+
+  const handleOpenAddShowcase = () => {
+    setEditingShowcase(null);
+    setShowcaseForm({
+      title: '',
+      location: 'Islamabad / Rawalpindi',
+      clientType: 'Private Luxury Villa',
+      gaugeSpec: '14-Gauge MS & ±0.1mm CNC Fiber Laser',
+      finishSpec: 'Matte Jet-Black Electrostatic Powder Coat (200°C)',
+      deliverables: 'Main Driveway Gate, Boundary Wall Grills, Balcony Railings',
+      status: 'completed',
+      statusLabel: 'Completed & Handed Over',
+      image: '',
+      link: '/portfolio',
+      displayOrder: (projectShowcases?.length || 0) + 1
+    });
+    setShowShowcaseModal(true);
+  };
+
+  const handleOpenEditShowcase = (item: ProjectShowcaseItem) => {
+    setEditingShowcase(item);
+    setShowcaseForm({
+      title: item.title,
+      location: item.location,
+      clientType: item.clientType,
+      gaugeSpec: item.gaugeSpec,
+      finishSpec: item.finishSpec,
+      deliverables: item.deliverables,
+      status: item.status,
+      statusLabel: item.statusLabel,
+      image: item.image,
+      link: item.link || '/portfolio',
+      displayOrder: item.displayOrder || 1
+    });
+    setShowShowcaseModal(true);
+  };
+
+  const handleSaveShowcase = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingShowcase) {
+      updateProjectShowcase({
+        ...editingShowcase,
+        ...showcaseForm
+      });
+      addActivityLog('SHOWCASE_UPDATED', `Updated project showcase: ${showcaseForm.title}`);
+    } else {
+      addProjectShowcase(showcaseForm);
+      addActivityLog('SHOWCASE_CREATED', `Added new project showcase: ${showcaseForm.title}`);
+    }
+    setShowShowcaseModal(false);
+  };
+
+  const handleDeleteShowcase = (id: string) => {
+    if (window.confirm("Are you sure you want to remove this project from What's Your Project?")) {
+      deleteProjectShowcase(id);
+      addActivityLog('SHOWCASE_DELETED', `Deleted showcase project ID: ${id}`);
+    }
+  };
+
   // Filtered Products
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(productSearch.toLowerCase()) || 
@@ -898,6 +1054,38 @@ export const AdminPage: React.FC = () => {
               </span>
             </button>
 
+            {/* 11. What's Your Project Showcase */}
+            <button 
+              onClick={() => setActiveTab('showcase')}
+              className={`py-2 px-3 text-left rounded-lg flex items-center justify-between transition-all cursor-pointer ${
+                activeTab === 'showcase' ? 'bg-brand-gold/15 text-brand-gold font-bold border border-brand-gold/40' : 'hover:bg-white/5 hover:text-stone-100'
+              }`}
+            >
+              <div className="flex items-center space-x-2.5">
+                <Sparkles className="w-4 h-4 text-brand-gold shrink-0" />
+                <span>What&apos;s Your Project</span>
+              </div>
+              <span className="text-[10px] bg-brand-gold/10 text-brand-gold px-1.5 py-0.5 rounded font-mono font-bold">
+                {projectShowcases.length}
+              </span>
+            </button>
+
+            {/* 12. Team & Leadership */}
+            <button 
+              onClick={() => setActiveTab('team')}
+              className={`py-2 px-3 text-left rounded-lg flex items-center justify-between transition-all cursor-pointer ${
+                activeTab === 'team' ? 'bg-brand-gold/15 text-brand-gold font-bold border border-brand-gold/40' : 'hover:bg-white/5 hover:text-stone-100'
+              }`}
+            >
+              <div className="flex items-center space-x-2.5">
+                <ShieldCheck className="w-4 h-4 text-brand-gold shrink-0" />
+                <span>Team &amp; Leadership</span>
+              </div>
+              <span className="text-[10px] bg-brand-gold/10 text-brand-gold px-1.5 py-0.5 rounded font-mono font-bold">
+                {teamMembers.length}
+              </span>
+            </button>
+
             {/* 10. Testimonials / Reviews */}
             <button 
               onClick={() => setActiveTab('testimonials')}
@@ -993,6 +1181,9 @@ export const AdminPage: React.FC = () => {
               {activeTab === 'customers' && 'Customers'}
               {activeTab === 'services' && 'Services Management'}
               {activeTab === 'projects' && 'Projects / Portfolio'}
+              {activeTab === 'showcase' && "What's Your Project (Site Execution Showcase)"}
+              {activeTab === 'team' && 'Team & Leadership Management'}
+              {activeTab === 'gallery' && 'Portfolio & Visual Gallery'}
               {activeTab === 'testimonials' && 'Testimonials / Reviews'}
               {activeTab === 'messages' && 'Client Messages / Inquiries'}
               {activeTab === 'settings' && 'Global Settings'}
@@ -1992,13 +2183,11 @@ export const AdminPage: React.FC = () => {
                         </div>
 
                         <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
-                          <span className={`px-2 py-0.5 font-mono text-[9px] font-black uppercase rounded shadow ${
-                            proj.status?.toLowerCase() === 'in progress'
-                              ? 'bg-amber-500 text-black'
-                              : 'bg-emerald-500 text-white'
-                          }`}>
-                            {proj.status?.toUpperCase() || 'COMPLETED'}
-                          </span>
+                          {proj.status?.toLowerCase() === 'in progress' && (
+                            <span className="px-2 py-0.5 font-mono text-[9px] font-black uppercase rounded shadow bg-amber-500 text-black">
+                              IN PROGRESS
+                            </span>
+                          )}
                           {proj.featured && (
                             <span className="px-2 py-0.5 bg-brand-gold text-brand-dark font-mono text-[9px] font-black uppercase rounded shadow">
                               ★
@@ -2097,6 +2286,236 @@ export const AdminPage: React.FC = () => {
                 ))}
             </div>
 
+          </div>
+        )}
+
+        {/* ------------------------------------------------------------- */}
+        {/* TAB: WHAT'S YOUR PROJECT SHOWCASE */}
+        {/* ------------------------------------------------------------- */}
+        {activeTab === 'showcase' && (
+          <div className="bg-[#0C1322] border border-brand-light/60 p-6 rounded-xl space-y-6 text-xs text-stone-300 animate-fade-in">
+            {/* Header & Controls */}
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center border-b border-brand-light/40 pb-4 gap-4">
+              <div>
+                <h3 className="font-heading font-black text-base uppercase text-stone-100 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-brand-gold" />
+                  <span>What&apos;s Your Project (Site Execution Showcase)</span>
+                  <span className="text-[10px] bg-brand-gold/15 text-brand-gold border border-brand-gold/40 px-2 py-0.5 rounded font-mono font-bold">
+                    Homepage Live Module
+                  </span>
+                </h3>
+                <p className="text-slate-400 text-[11px]">
+                  Manage the real executed project showcase cards displayed on the homepage under &quot;What is Your Project?&quot;.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/#products"
+                  target="_blank"
+                  className="px-3.5 py-2 bg-white/5 hover:bg-white/10 text-stone-200 border border-brand-light/60 rounded-lg text-xs font-bold flex items-center gap-1.5 transition"
+                >
+                  <Eye className="w-3.5 h-3.5 text-brand-gold" />
+                  <span>View On Homepage</span>
+                </Link>
+
+                <button 
+                  type="button"
+                  onClick={handleOpenAddShowcase}
+                  className="px-4 py-2 bg-brand-gold hover:brightness-110 text-brand-dark rounded-lg text-xs font-heading font-black uppercase tracking-wider flex items-center gap-1.5 transition shadow-lg cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Showcase Project</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Showcase Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {projectShowcases.map((proj) => {
+                const isOngoing = proj.status === 'ongoing';
+                return (
+                  <div key={proj.id} className="bg-[#070C15] border border-brand-light/60 rounded-xl overflow-hidden shadow-xl flex flex-col justify-between group hover:border-brand-gold/60 transition-all duration-300">
+                    <div>
+                      {/* Image Thumbnail with Status Badge */}
+                      <div className="h-44 relative overflow-hidden bg-black">
+                        <img 
+                          src={proj.image || FALLBACK_IMAGE_URL} 
+                          alt={proj.title} 
+                          onError={handleImageError}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#070C15] via-transparent to-black/30" />
+                        
+                        <div className="absolute top-2.5 left-2.5 flex items-center gap-1">
+                          <span className={`px-2 py-0.5 font-mono text-[9px] font-black uppercase rounded shadow ${
+                            isOngoing ? 'bg-amber-500 text-black' : 'bg-emerald-500 text-white'
+                          }`}>
+                            {proj.statusLabel}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-4 space-y-2">
+                        <h4 className="font-heading font-black text-sm text-stone-100 group-hover:text-brand-gold transition-colors line-clamp-1">
+                          {proj.title}
+                        </h4>
+                        
+                        <p className="text-[10px] text-brand-gold font-mono flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-brand-gold" />
+                          <span>{proj.location}</span>
+                          <span className="text-slate-500">•</span>
+                          <span>{proj.clientType}</span>
+                        </p>
+
+                        <div className="bg-black/60 border border-brand-light/30 p-2 rounded text-[10px] space-y-0.5">
+                          <p><strong className="text-brand-gold">Gauge:</strong> {proj.gaugeSpec}</p>
+                          <p><strong className="text-brand-gold">Finish:</strong> {proj.finishSpec}</p>
+                          <p className="line-clamp-1"><strong className="text-brand-gold">Scope:</strong> {proj.deliverables}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions Toolbar */}
+                    <div className="p-3 border-t border-brand-light/20 flex justify-end items-center gap-2">
+                      <button 
+                        type="button"
+                        onClick={() => handleOpenEditShowcase(proj)}
+                        className="px-2.5 py-1 text-slate-300 hover:text-brand-gold bg-white/5 hover:bg-brand-gold/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs font-bold"
+                      >
+                        <Edit className="w-3.5 h-3.5" />
+                        <span>Edit</span>
+                      </button>
+
+                      <button 
+                        type="button"
+                        onClick={() => handleDeleteShowcase(proj.id)}
+                        className="px-2.5 py-1 text-slate-400 hover:text-red-400 bg-white/5 hover:bg-red-500/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs font-bold"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ------------------------------------------------------------- */}
+        {/* TAB: TEAM & LEADERSHIP */}
+        {/* ------------------------------------------------------------- */}
+        {activeTab === 'team' && (
+          <div className="bg-[#0C1322] border border-brand-light/60 p-6 rounded-xl space-y-6 text-xs text-stone-300 animate-fade-in">
+            {/* Header & Controls */}
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center border-b border-brand-light/40 pb-4 gap-4">
+              <div>
+                <h3 className="font-heading font-black text-base uppercase text-stone-100 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-brand-gold" />
+                  <span>Team &amp; Leadership Management</span>
+                  <span className="text-[10px] bg-brand-gold/15 text-brand-gold border border-brand-gold/40 px-2 py-0.5 rounded font-mono font-bold">
+                    Executive Directory
+                  </span>
+                </h3>
+                <p className="text-slate-400 text-[11px]">
+                  Manage executive leads, engineers, master craftsmen, and site directors displayed on the About &amp; Leadership section.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/about"
+                  target="_blank"
+                  className="px-3.5 py-2 bg-white/5 hover:bg-white/10 text-stone-200 border border-brand-light/60 rounded-lg text-xs font-bold flex items-center gap-1.5 transition"
+                >
+                  <Eye className="w-3.5 h-3.5 text-brand-gold" />
+                  <span>Preview About Page</span>
+                </Link>
+
+                <button 
+                  type="button"
+                  onClick={handleOpenAddTeam}
+                  className="px-4 py-2 bg-brand-gold hover:brightness-110 text-brand-dark rounded-lg text-xs font-heading font-black uppercase tracking-wider flex items-center gap-1.5 transition shadow-lg cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Team Member</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Team Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...teamMembers]
+                .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
+                .map((member) => (
+                  <div key={member.id} className="bg-[#070C15] border border-brand-light/60 rounded-xl overflow-hidden shadow-xl flex flex-col justify-between group hover:border-brand-gold/60 transition-all duration-300">
+                    <div>
+                      {/* Photo Thumbnail */}
+                      <div className="relative aspect-[4/5] bg-gradient-to-b from-[#0B1426] to-[#040810] overflow-hidden flex items-end justify-center p-3">
+                        <div className="absolute inset-x-6 top-6 bottom-0 bg-gradient-to-t from-brand-gold/80 to-amber-600/70 rounded-t-xl opacity-80" />
+                        <img 
+                          src={member.image || FALLBACK_IMAGE_URL} 
+                          alt={member.name}
+                          onError={handleImageError}
+                          className="relative z-10 w-full h-full object-cover object-top rounded-t-lg group-hover:scale-105 transition-transform duration-500" 
+                        />
+                        <div className="absolute top-2.5 right-2.5 z-20">
+                          <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider border ${
+                            member.published !== false 
+                              ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-300' 
+                              : 'bg-stone-900/90 border-stone-600 text-stone-400'
+                          }`}>
+                            {member.published !== false ? 'Live' : 'Hidden'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-4 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-heading font-black text-sm text-stone-100 group-hover:text-brand-gold transition-colors line-clamp-1">
+                            {member.name}
+                          </h4>
+                          <span className="text-[10px] font-mono text-slate-500 bg-white/5 px-1.5 py-0.5 rounded">
+                            #{member.displayOrder || 1}
+                          </span>
+                        </div>
+
+                        <p className="text-xs font-mono font-bold text-brand-gold tracking-wide uppercase line-clamp-1">
+                          {member.role}
+                        </p>
+
+                        {member.bio && (
+                          <p className="text-slate-400 text-[11px] line-clamp-2 leading-relaxed">
+                            {member.bio}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Actions Toolbar */}
+                    <div className="p-3 border-t border-brand-light/20 flex justify-end items-center gap-2">
+                      <button 
+                        type="button"
+                        onClick={() => handleOpenEditTeam(member)}
+                        className="px-2.5 py-1 text-slate-300 hover:text-brand-gold bg-white/5 hover:bg-brand-gold/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs font-bold"
+                      >
+                        <Edit className="w-3.5 h-3.5" />
+                        <span>Edit</span>
+                      </button>
+
+                      <button 
+                        type="button"
+                        onClick={() => handleDeleteTeam(member.id)}
+                        className="px-2.5 py-1 text-slate-400 hover:text-red-400 bg-white/5 hover:bg-red-500/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs font-bold"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
         )}
 
@@ -3952,6 +4371,379 @@ export const AdminPage: React.FC = () => {
                 </button>
                 <button type="submit" className="px-5 py-2 bg-brand-gold text-brand-dark rounded-lg font-heading font-black text-xs uppercase tracking-wider hover:brightness-110">
                   Publish Testimonial
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* MODAL: ADD / EDIT TEAM MEMBER */}
+      {/* ------------------------------------------------------------- */}
+      {showTeamModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0C1322] border border-brand-gold/50 rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl animate-fade-in max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-brand-light/40 pb-3">
+              <h3 className="font-heading font-black text-base uppercase text-brand-gold flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-brand-gold" />
+                <span>{editingTeamMember ? 'Edit Team Member' : 'Add New Team Member'}</span>
+              </h3>
+              <button onClick={() => setShowTeamModal(false)} className="text-slate-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveTeam} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Full Name *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={teamForm.name} 
+                  onChange={(e) => setTeamForm({ ...teamForm, name: e.target.value })}
+                  placeholder="e.g. Muhammad Qasim"
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2.5 text-stone-100 focus:outline-none focus:border-brand-gold font-bold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Role / Designation *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={teamForm.role} 
+                  onChange={(e) => setTeamForm({ ...teamForm, role: e.target.value })}
+                  placeholder="e.g. Founder & Managing Director"
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2.5 text-stone-100 focus:outline-none focus:border-brand-gold"
+                />
+              </div>
+
+              {/* Direct Photo Upload & Preview */}
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">
+                  Executive Portrait Photo (Direct Upload)
+                </label>
+                {teamForm.image ? (
+                  <div className="relative h-44 w-full rounded-xl overflow-hidden border border-brand-gold/50 bg-[#070D18] flex items-center justify-center group">
+                    <div className="absolute inset-x-12 top-6 bottom-0 bg-gradient-to-t from-brand-gold/80 to-amber-600/70 rounded-t-xl opacity-80" />
+                    <img 
+                      src={teamForm.image} 
+                      alt="Team Member Preview" 
+                      onError={handleImageError}
+                      className="relative z-10 h-full object-cover rounded-t-lg" 
+                    />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition z-20 flex items-center justify-center gap-2 p-2">
+                      <label className="px-3 py-1.5 bg-brand-gold text-brand-dark rounded text-[11px] font-bold cursor-pointer hover:brightness-110 flex items-center gap-1">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Change Photo</span>
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const reader = new FileReader();
+                            reader.onload = (loadEvt) => {
+                              const dataUrl = loadEvt.target?.result as string;
+                              if (dataUrl) setTeamForm(prev => ({ ...prev, image: dataUrl }));
+                            };
+                            reader.readAsDataURL(file);
+                          }} 
+                          className="hidden" 
+                        />
+                      </label>
+                      <button 
+                        type="button" 
+                        onClick={() => setTeamForm(prev => ({ ...prev, image: '' }))}
+                        className="px-3 py-1.5 bg-red-600 text-white rounded text-[11px] font-bold hover:bg-red-500"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label className="h-36 w-full rounded-xl border-2 border-dashed border-brand-gold/40 hover:border-brand-gold bg-brand-gold/5 hover:bg-brand-gold/10 transition flex flex-col items-center justify-center p-3 text-center cursor-pointer group">
+                    <Upload className="w-6 h-6 text-brand-gold group-hover:scale-110 transition mb-1" />
+                    <span className="text-xs font-bold text-stone-200 block">Upload Portrait Photo</span>
+                    <span className="text-[10px] text-stone-400 font-mono mt-0.5">Click to choose image file (PNG, JPG, WEBP)</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (loadEvt) => {
+                          const dataUrl = loadEvt.target?.result as string;
+                          if (dataUrl) setTeamForm(prev => ({ ...prev, image: dataUrl }));
+                        };
+                        reader.readAsDataURL(file);
+                      }} 
+                      className="hidden" 
+                    />
+                  </label>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Bio / Profile Description</label>
+                <textarea 
+                  rows={3} 
+                  value={teamForm.bio} 
+                  onChange={(e) => setTeamForm({ ...teamForm, bio: e.target.value })}
+                  placeholder="e.g. Directs structural CAD drafting, laser cut fabrication, and custom forge standards."
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2.5 text-stone-100 focus:outline-none focus:border-brand-gold"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Display Order</label>
+                  <input 
+                    type="number" 
+                    min={1}
+                    value={teamForm.displayOrder} 
+                    onChange={(e) => setTeamForm({ ...teamForm, displayOrder: Number(e.target.value) || 1 })}
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold font-mono"
+                  />
+                </div>
+                <div className="flex items-center pt-5">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={teamForm.published} 
+                      onChange={(e) => setTeamForm({ ...teamForm, published: e.target.checked })}
+                      className="rounded accent-brand-gold w-4 h-4 cursor-pointer"
+                    />
+                    <span className="text-xs text-stone-200 font-bold">Show on Website</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3 border-t border-brand-light/30">
+                <button 
+                  type="button" 
+                  onClick={() => setShowTeamModal(false)} 
+                  className="px-4 py-2 bg-white/5 hover:bg-white/10 text-stone-300 rounded-lg text-xs font-bold transition"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="px-5 py-2 bg-brand-gold text-brand-dark rounded-lg font-heading font-black text-xs uppercase tracking-wider hover:brightness-110 shadow-lg"
+                >
+                  {editingTeamMember ? 'Save Changes' : 'Add Member'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* MODAL: ADD / EDIT WHAT'S YOUR PROJECT SHOWCASE */}
+      {/* ------------------------------------------------------------- */}
+      {showShowcaseModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0C1322] border border-brand-gold/50 rounded-2xl w-full max-w-xl p-6 space-y-4 shadow-2xl animate-fade-in max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-brand-light/40 pb-3">
+              <div>
+                <h3 className="font-heading font-black text-base uppercase text-brand-gold flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-brand-gold" />
+                  <span>{editingShowcase ? 'Edit Showcase Project' : 'Add Showcase Project'}</span>
+                </h3>
+                <p className="text-[10px] text-slate-400">Displayed on Homepage under &quot;What is Your Project?&quot;</p>
+              </div>
+              <button onClick={() => setShowShowcaseModal(false)} className="text-slate-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveShowcase} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Project Title *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={showcaseForm.title} 
+                  onChange={(e) => setShowcaseForm({ ...showcaseForm, title: e.target.value })}
+                  placeholder="e.g. 1 Kanal Luxury Residence - Faisalabad"
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2.5 text-stone-100 focus:outline-none focus:border-brand-gold font-bold"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Site Location *</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={showcaseForm.location} 
+                    onChange={(e) => setShowcaseForm({ ...showcaseForm, location: e.target.value })}
+                    placeholder="e.g. Canal Road, Faisalabad"
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Client / Project Type *</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={showcaseForm.clientType} 
+                    onChange={(e) => setShowcaseForm({ ...showcaseForm, clientType: e.target.value })}
+                    placeholder="e.g. Private Luxury Villa"
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                  />
+                </div>
+              </div>
+
+              {/* Direct Photo Upload & Preview */}
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">
+                  Site / Project Picture (Direct Upload)
+                </label>
+                {showcaseForm.image ? (
+                  <div className="relative h-44 w-full rounded-xl overflow-hidden border border-brand-gold/50 bg-[#070D18] flex items-center justify-center group">
+                    <img 
+                      src={showcaseForm.image} 
+                      alt="Showcase Preview" 
+                      onError={handleImageError}
+                      className="w-full h-full object-cover rounded-lg" 
+                    />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition z-20 flex items-center justify-center gap-2 p-2">
+                      <label className="px-3 py-1.5 bg-brand-gold text-brand-dark rounded text-[11px] font-bold cursor-pointer hover:brightness-110 flex items-center gap-1">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Change Photo</span>
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const reader = new FileReader();
+                            reader.onload = (loadEvt) => {
+                              const dataUrl = loadEvt.target?.result as string;
+                              if (dataUrl) setShowcaseForm(prev => ({ ...prev, image: dataUrl }));
+                            };
+                            reader.readAsDataURL(file);
+                          }} 
+                          className="hidden" 
+                        />
+                      </label>
+                      <button 
+                        type="button" 
+                        onClick={() => setShowcaseForm(prev => ({ ...prev, image: '' }))}
+                        className="px-3 py-1.5 bg-red-600 text-white rounded text-[11px] font-bold hover:bg-red-500"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label className="h-36 w-full rounded-xl border-2 border-dashed border-brand-gold/40 hover:border-brand-gold bg-brand-gold/5 hover:bg-brand-gold/10 transition flex flex-col items-center justify-center p-3 text-center cursor-pointer group">
+                    <Upload className="w-6 h-6 text-brand-gold group-hover:scale-110 transition mb-1" />
+                    <span className="text-xs font-bold text-stone-200 block">Upload Site Photo</span>
+                    <span className="text-[10px] text-stone-400 font-mono mt-0.5">Click to choose image file (PNG, JPG, WEBP)</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (loadEvt) => {
+                          const dataUrl = loadEvt.target?.result as string;
+                          if (dataUrl) setShowcaseForm(prev => ({ ...prev, image: dataUrl }));
+                        };
+                        reader.readAsDataURL(file);
+                      }} 
+                      className="hidden" 
+                    />
+                  </label>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Execution Status *</label>
+                  <select
+                    value={showcaseForm.status}
+                    onChange={(e) => {
+                      const st = e.target.value as 'completed' | 'ongoing';
+                      setShowcaseForm({
+                        ...showcaseForm,
+                        status: st,
+                        statusLabel: st === 'completed' ? 'Completed & Handed Over' : 'Active On-Site Erection (85%)'
+                      });
+                    }}
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold font-bold"
+                  >
+                    <option value="completed">Completed &amp; Handed Over</option>
+                    <option value="ongoing">Ongoing Site Execution</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Status Badge Text *</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={showcaseForm.statusLabel} 
+                    onChange={(e) => setShowcaseForm({ ...showcaseForm, statusLabel: e.target.value })}
+                    placeholder="e.g. Completed & Handed Over"
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Steel Gauge Specification</label>
+                <input 
+                  type="text" 
+                  value={showcaseForm.gaugeSpec} 
+                  onChange={(e) => setShowcaseForm({ ...showcaseForm, gaugeSpec: e.target.value })}
+                  placeholder="e.g. 14-Gauge MS & ±0.1mm CNC Fiber Laser"
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Finishing Specification</label>
+                <input 
+                  type="text" 
+                  value={showcaseForm.finishSpec} 
+                  onChange={(e) => setShowcaseForm({ ...showcaseForm, finishSpec: e.target.value })}
+                  placeholder="e.g. Matte Jet-Black Electrostatic Powder Coat (200°C)"
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Scope / Deliverables</label>
+                <input 
+                  type="text" 
+                  value={showcaseForm.deliverables} 
+                  onChange={(e) => setShowcaseForm({ ...showcaseForm, deliverables: e.target.value })}
+                  placeholder="e.g. Main Driveway Gate, Boundary Wall Grills, Balcony Railings"
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3 border-t border-brand-light/30">
+                <button 
+                  type="button" 
+                  onClick={() => setShowShowcaseModal(false)} 
+                  className="px-4 py-2 bg-white/5 hover:bg-white/10 text-stone-300 rounded-lg text-xs font-bold transition"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="px-5 py-2 bg-brand-gold text-brand-dark rounded-lg font-heading font-black text-xs uppercase tracking-wider hover:brightness-110 shadow-lg"
+                >
+                  {editingShowcase ? 'Save Changes' : 'Add Showcase Project'}
                 </button>
               </div>
             </form>

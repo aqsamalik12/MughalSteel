@@ -16,6 +16,7 @@ import { openDirectEmail } from '../utils/emailHelper';
 import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 import { CountUp } from '../components/common/CountUp';
 import { getGoogleMapsEmbedUrl, getGoogleMapsDirectionsUrl } from '../utils/mapsHelper';
+import { LeadershipSection } from '../components/common/LeadershipSection';
 
 
 export const HomePage: React.FC = () => {
@@ -27,7 +28,7 @@ export const HomePage: React.FC = () => {
   });
 
   const location = useLocation();
-  const { products, testimonials, addTestimonial, getWhatsAppUrl, categories, projects, settings } = useData();
+  const { products, testimonials, addTestimonial, getWhatsAppUrl, categories, projects, settings, projectShowcases } = useData();
   const { formatPrice } = useCurrency();
   const activeCategories = (categories && categories.length > 0) ? categories : PROJECT_CATEGORIES_DATA;
 
@@ -434,129 +435,6 @@ export const HomePage: React.FC = () => {
     { step: '05', title: 'Finishing & Coating', desc: 'Multi-stage sandblasting, active hot-zinc chemical anti-rust primer & powder coat.' },
     { step: '06', title: 'Delivery & Installation', desc: 'Turnkey on-site laser alignment, heavy structural anchoring & motor calibration.' },
     { step: '07', title: 'After-Sales Support', desc: 'Comprehensive 10-year structural warranty and lifetime support.' },
-  ];
-
-  const allPortfolioProjects = [
-    {
-      id: 'proj-comp-1',
-      category: 'modern',
-      categories: ['modern'],
-      status: 'completed' as const,
-      statusLabel: 'Completed & Handed Over',
-      title: '1 Kanal Luxury Residence - Faisalabad',
-      location: 'Canal Road, Faisalabad',
-      clientType: 'Private Luxury Villa',
-      gaugeSpec: '14-Gauge MS & ±0.1mm CNC Fiber Laser',
-      finishSpec: 'Matte Jet-Black Electrostatic Powder Coat (200°C)',
-      deliverables: 'Main Driveway Gate, Boundary Wall Grills, Balcony Railings, Spiral Stairs',
-      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
-      link: '/portfolio/1-kanal-house-steel-fabrication'
-    },
-    {
-      id: 'proj-comp-2',
-      category: 'farm',
-      categories: ['farm'],
-      status: 'completed' as const,
-      statusLabel: 'Completed & Handed Over',
-      title: 'Gulberg Greens Modern Farmhouse',
-      location: 'Gulberg Greens, Islamabad',
-      clientType: 'Country Estate & Farmhouse',
-      gaugeSpec: 'Schedule 40 Galvanized Heavy MS Pipes',
-      finishSpec: 'Triple Hot-Zinc Chemical Primer & Protective Powder Coat',
-      deliverables: 'Grand Entrance Gate, 1,200 RFT Security Fencing, Custom Porch Pergola',
-      image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
-      link: '/portfolio/gulberg-greens-farmhouse'
-    },
-    {
-      id: 'proj-comp-3',
-      category: 'commercial',
-      categories: ['commercial'],
-      status: 'completed' as const,
-      statusLabel: 'Completed & Handed Over',
-      title: 'National Defence University (NDU) Handover',
-      location: 'Sector E-9, Islamabad',
-      clientType: 'Institutional & High-Security',
-      gaugeSpec: '12-Gauge Heavy Mild Steel Structural Channels',
-      finishSpec: 'Anti-Rust Zinc-Rich Epoxy Coating',
-      deliverables: 'Heavy Guarded Security Gates, Pedestrian Turnstiles, Automated Barriers',
-      image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
-      link: '/portfolio/ndu-islamabad'
-    },
-    {
-      id: 'proj-comp-4',
-      category: 'modern',
-      categories: ['modern', 'aluminum-glass'],
-      status: 'completed' as const,
-      statusLabel: 'Completed & Handed Over',
-      title: 'Bahria Town Modern Villa Main Gate',
-      location: 'Bahria Town Phase 7, Rawalpindi',
-      clientType: 'Residential Bungalow',
-      gaugeSpec: '14-Gauge CNC Geometric Laser Cut MS',
-      finishSpec: 'Charcoal Grey Electrostatic Powder Coat',
-      deliverables: 'Automated Sliding Gate with Italian Motor, Frameless Glass Balconies',
-      image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80',
-      link: '/portfolio/bahria-town-villa'
-    },
-    {
-      id: 'proj-comp-5',
-      category: 'classical',
-      categories: ['classical'],
-      status: 'completed' as const,
-      statusLabel: 'Completed & Handed Over',
-      title: 'Classical Arch Spanish Kothi',
-      location: 'DHA Phase 2, Islamabad',
-      clientType: 'Classical Heritage Villa',
-      gaugeSpec: 'Solid Hand-Forged Carbon Steel (20mm solid bars)',
-      finishSpec: 'Hand-Rubbed Antique Roman Bronze & Gold Leaf Accents',
-      deliverables: 'Arched Double Wrought Iron Driveway Gate, Curved Balustrades',
-      image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
-      link: '/portfolio/classical-arch-residence'
-    },
-    {
-      id: 'proj-ong-1',
-      category: 'aluminum-glass',
-      categories: ['aluminum-glass', 'modern'],
-      status: 'ongoing' as const,
-      statusLabel: 'Active On-Site Erection (85%)',
-      title: 'Oversized Pivot Door Installation',
-      location: 'Sector F-7/2, Islamabad',
-      clientType: 'Contemporary Architect Villa',
-      gaugeSpec: '6063-T6 Thermal-Break Profile with 12mm Acoustic Glass',
-      finishSpec: 'Deep Matte Anodized Architectural Black',
-      deliverables: '5x10 ft Hydraulic Floor-Spring Pivot Entrance Door & Laser Leveling',
-      image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80',
-      link: '/portfolio/sector-f7-pivot-door'
-    },
-    {
-      id: 'proj-ong-2',
-      category: 'commercial',
-      categories: ['commercial'],
-      status: 'ongoing' as const,
-      statusLabel: 'Active On-Site Erection (60%)',
-      title: 'Commercial Plaza Glass & Steel Sub-Frame',
-      location: 'Sector G-13 Markaz, Islamabad',
-      clientType: 'Commercial Corporate Plaza',
-      gaugeSpec: 'Heavy I-Beam & Structural Channel Portal Trusses',
-      finishSpec: 'AkzoNobel High-Endurance Powder Coat',
-      deliverables: 'Multi-Storey Glass Curtain Sub-Frame, Fire Spiral Escape Stairs',
-      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
-      link: '/portfolio/commercial-plaza-g13'
-    },
-    {
-      id: 'proj-ong-3',
-      category: 'modern',
-      categories: ['modern', 'farm'],
-      status: 'ongoing' as const,
-      statusLabel: 'Fabrication Yard Stage (45%)',
-      title: 'High-Security Double Gate & Perimeter Spikes',
-      location: 'Naval Anchorage, Islamabad',
-      clientType: 'Private Residence Estate',
-      gaugeSpec: '12-Gauge Thick Cold-Rolled Mild Steel',
-      finishSpec: '7-Stage Chemical Pre-Treatment & Powder Oven Baked',
-      deliverables: 'Heavy Automated Swing Gate, 180 RFT Laser Precision Anti-Climb Spikes',
-      image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
-      link: '/portfolio/naval-anchorage-residence'
-    }
   ];
 
   const aboutStats = [
@@ -995,7 +873,7 @@ export const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* ======================================================== */}
-          {/* INTERACTIVE "WHAT IS YOUR PROJECT?" SELECTOR             */}
+          {/* INTERACTIVE "WHAT IS YOUR PROJECT?" SHOWCASE             */}
           {/* ======================================================== */}
           <div className="bg-gradient-to-b from-brand-navy/90 to-[#070D18] border border-brand-gold/40 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
             <div className="absolute -top-24 -right-24 w-72 h-72 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none" />
@@ -1004,7 +882,7 @@ export const HomePage: React.FC = () => {
               <div className="space-y-1">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-[10px] font-heading font-black uppercase tracking-widest rounded-full shadow-sm">
                   <Sparkles className="w-3 h-3 text-brand-gold animate-pulse" />
-                  <span>Interactive Project Finder</span>
+                  <span>Real Site Execution &amp; Live Projects</span>
                 </div>
                 <h3 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-stone-100 uppercase tracking-wider flex flex-wrap items-center gap-2">
                   <span>WHAT IS</span>
@@ -1013,300 +891,110 @@ export const HomePage: React.FC = () => {
                   </span>
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-2xl">
-                  Select what you are fabricating. We automatically match certified structural steel gauges, CNC laser patterns, and instant square footage rates.
+                  Explore certified structural steel fabrications, CNC laser cut gates, boundary grills, and live site execution across Pakistan.
                 </p>
               </div>
 
-              {selectedProjectType !== 'all' && (
-                <button
-                  onClick={() => setSelectedProjectType('all')}
-                  className="self-start md:self-auto text-xs font-mono font-bold text-brand-gold hover:text-white flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-lg border border-brand-gold/30 hover:border-brand-gold transition cursor-pointer"
-                >
-                  <span>Reset Filter ({products.length} Products)</span>
-                  <RefreshCw className="w-3 h-3" />
-                </button>
-              )}
+              <div className="flex items-center gap-3">
+                <Link to="/portfolio" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1">
+                  <span>View Portfolio</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
 
-            {/* Project Category Selection Pills / Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {[
-                {
-                  id: 'all',
-                  title: 'All Projects',
-                  badge: 'Full Catalog',
-                  icon: '✨',
-                  desc: 'All custom fabrication'
-                },
-                {
-                  id: 'modern',
-                  title: 'Modern Villa',
-                  badge: '14G CNC Laser',
-                  icon: '🏡',
-                  desc: 'Laser gates & glass rails'
-                },
-                {
-                  id: 'classical',
-                  title: 'Classical Kothi',
-                  badge: 'Solid Wrought Iron',
-                  icon: '🏛️',
-                  desc: 'Arched gates & scrolls'
-                },
-                {
-                  id: 'commercial',
-                  title: 'Commercial Plaza',
-                  badge: 'Heavy Structural',
-                  icon: '🏢',
-                  desc: 'Glass facades & pivot doors'
-                },
-                {
-                  id: 'farm',
-                  title: 'Farmhouse Estate',
-                  badge: 'Heavy MS Pipes',
-                  icon: '🌾',
-                  desc: 'Perimeter fence & pergolas'
-                },
-                {
-                  id: 'aluminum-glass',
-                  title: 'Aluminum & Glass',
-                  badge: 'Acoustic / Pivot',
-                  icon: '🪟',
-                  desc: '12mm tempered pivot doors'
-                }
-              ].map((proj) => {
-                const isSelected = selectedProjectType === proj.id;
+            {/* Showcase Projects Responsive Grid with Real Photos */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {projectShowcases.map((proj) => {
+                const isOngoing = proj.status === 'ongoing';
                 return (
-                  <button
-                    key={proj.id}
-                    onClick={() => setSelectedProjectType(proj.id)}
-                    className={`relative p-3.5 rounded-xl border text-left flex flex-col justify-between transition-all duration-300 cursor-pointer card-interactive ${
-                      isSelected
-                        ? 'bg-gradient-to-b from-brand-medium to-brand-navy border-brand-gold shadow-[0_0_25px_rgba(204,160,75,0.35)] scale-[1.02]'
-                        : 'bg-black/40 border-brand-light/50 hover:border-brand-gold/60 hover:bg-black/60'
-                    }`}
+                  <div 
+                    key={`finder-${proj.id}`}
+                    className="group bg-[#060A12] border border-brand-light/60 hover:border-brand-gold rounded-xl overflow-hidden transition-all duration-300 shadow-xl flex flex-col justify-between card-interactive"
                   >
-                    <div className="flex items-center justify-between w-full">
-                      <span className="text-xl">{proj.icon}</span>
-                      <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
-                        isSelected 
-                          ? 'bg-brand-gold text-brand-dark' 
-                          : 'bg-stone-800 text-stone-300'
-                      }`}>
-                        {proj.badge}
-                      </span>
+                    {/* Project Image Header with Status Tag */}
+                    <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
+                      <img 
+                        src={proj.image || FALLBACK_IMAGE_URL} 
+                        alt={proj.title} 
+                        loading="lazy"
+                        decoding="async"
+                        onError={handleImageError}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                      
+                      {/* Live Status Tag (Ongoing Sites Only) */}
+                      {isOngoing && (
+                        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md border bg-amber-950/85 border-amber-500/50 text-amber-300">
+                            <span className="inline-block w-1.5 h-1.5 rounded-full mr-1 bg-amber-400 animate-ping" />
+                            {proj.statusLabel || 'ONGOING SITE'}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Location Tag */}
+                      <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-stone-200">
+                        <span className="text-[11px] font-mono font-bold text-brand-gold flex items-center gap-1 drop-shadow">
+                          <MapPin className="w-3.5 h-3.5" />
+                          <span>{proj.location}</span>
+                        </span>
+                        <span className="text-[10px] font-mono bg-black/70 px-2 py-0.5 rounded text-stone-300 border border-white/10">
+                          {proj.clientType}
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="pt-2.5 space-y-0.5">
-                      <h4 className={`font-heading font-black text-xs uppercase tracking-wider line-clamp-1 ${
-                        isSelected ? 'text-brand-gold' : 'text-stone-100'
-                      }`}>
-                        {proj.title}
-                      </h4>
-                      <p className="text-[10px] text-slate-400 font-sans line-clamp-1">
-                        {proj.desc}
-                      </p>
-                    </div>
+                    {/* Content Body */}
+                    <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                      <div className="space-y-1.5">
+                        <h4 className="font-heading font-black text-sm text-stone-100 group-hover:text-brand-gold transition-colors uppercase leading-snug line-clamp-1">
+                          {proj.title}
+                        </h4>
+                        
+                        {/* Specs Box */}
+                        <div className="bg-black/60 border border-brand-light/40 p-2.5 rounded-lg space-y-1 text-[11px] font-sans">
+                          <div className="flex items-start gap-1 text-stone-200">
+                            <strong className="text-brand-gold shrink-0">Steel Gauge:</strong>
+                            <span className="text-slate-300 truncate">{proj.gaugeSpec}</span>
+                          </div>
+                          <div className="flex items-start gap-1 text-stone-200">
+                            <strong className="text-brand-gold shrink-0">Finishing:</strong>
+                            <span className="text-slate-300 truncate">{proj.finishSpec}</span>
+                          </div>
+                          <div className="flex items-start gap-1 text-stone-200">
+                            <strong className="text-brand-gold shrink-0">Scope:</strong>
+                            <span className="text-slate-300 truncate">{proj.deliverables}</span>
+                          </div>
+                        </div>
+                      </div>
 
-                    {isSelected && (
-                      <div className="absolute top-1 right-1 w-2 h-2 rounded-full bg-brand-gold animate-ping" />
-                    )}
-                  </button>
+                      {/* Action Buttons */}
+                      <div className="pt-2 border-t border-brand-light/40 flex items-center justify-between gap-2">
+                        <a
+                          href={getWhatsAppUrl(`*PROJECT INQUIRY*\nI am interested in project: ${proj.title} located at ${proj.location}.\nPlease share complete technical drawing, material specifications, and quotation.`)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-navy text-[10px] py-1.5 px-3 font-bold uppercase tracking-wider flex items-center gap-1 w-full justify-center"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Inquire Site</span>
+                        </a>
+
+                        <Link
+                          to="/quote"
+                          className="btn-gold text-[10px] py-1.5 px-3 font-bold uppercase tracking-wider flex items-center gap-1 shrink-0"
+                        >
+                          <span>Get Rate</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>
-
-            {/* Dynamic Project Match Alert Banner */}
-            {selectedProjectType !== 'all' && (() => {
-              const activeProjObj = [
-                { id: 'modern', name: 'Modern Villa & Luxury Home', gauge: '14-Gauge (2.0mm) Certified Mild Steel', finishing: 'Electrostatic Matte Charcoal / Jet Black Powder Coat (200°C Oven Bake)', highlight: '±0.1mm Fiber Laser CNC Cut Motifs, Concealed Heavy Ball-Bearing Hinges & Frameless 12mm Tempered Glass' },
-                { id: 'classical', name: 'Classical Villa & Spanish Kothi', gauge: 'Solid Hand-Forged Carbon Steel Bars (16mm-25mm)', finishing: 'Multi-Stage Hot-Zinc Anti-Rust Primer with Hand-Rubbed Antique Gold & Copper Patina', highlight: 'Master Blacksmith Acanthus Leaves, Majestic Arched Driveway Gates & Classical Balustrades' },
-                { id: 'commercial', name: 'Commercial Plaza & Offices', gauge: 'Heavy I-Beam & Structural Carbon Steel Channels', finishing: 'High-Durability Industrial Epoxy & Polyurethane Weather Coating', highlight: 'Acoustic Soundproof Facades, Concealed Hydraulic Floor-Spring Pivot Doors & Fire Spiral Stairs' },
-                { id: 'farm', name: 'Farmhouse & Agrarian Estate', gauge: 'Hot-Dip Galvanized Heavy MS Pipes (Schedule 40)', finishing: '85+ Micron Hot-Dip Molten Zinc Galvanization (ISO 1461)', highlight: 'Heavy Automated Sliding Ranch Gates, Anti-Rust Perimeter Fencing & Shaded Steel Pergolas' },
-                { id: 'aluminum-glass', name: 'Architectural Aluminum & Glass Systems', gauge: 'Commercial 6063-T6 Architectural Extrusions', finishing: 'AkzoNobel Architectural Powder Coating / Anodized Finish', highlight: 'German Hydraulic Floor Springs (350kg load), 12mm Toughened Safety Glass & Weatherproof EPDM' }
-              ].find(x => x.id === selectedProjectType);
-
-              if (!activeProjObj) return null;
-
-              return (
-                <div className="bg-black/60 border border-brand-gold/60 p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fade-in">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-heading font-black text-brand-gold uppercase tracking-wider">
-                        Tailored Fabrication Standard for: {activeProjObj.name}
-                      </span>
-                      <span className="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded font-mono font-bold">
-                        Recommended Standards
-                      </span>
-                    </div>
-                    <p className="text-xs text-stone-200 font-sans">
-                      <strong className="text-brand-gold">Steel Standard:</strong> {activeProjObj.gauge} • <strong className="text-brand-gold">Finish:</strong> {activeProjObj.finishing}
-                    </p>
-                    <p className="text-[11px] text-slate-400 font-sans">
-                      {activeProjObj.highlight}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <a
-                      href={getWhatsAppUrl(`Hello Mughal Steel, I am planning a project: ${activeProjObj.name}. Please send recommended designs, gauge specifications, and quotation.`)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-gold text-[11px] py-2 px-4 uppercase font-bold tracking-wider flex items-center gap-1.5"
-                    >
-                      <MessageCircle className="w-3.5 h-3.5 text-brand-dark" />
-                      <span>Inquire This Project</span>
-                    </a>
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* 8 Real Executed Project Showcase Cards with Pictures */}
-            {(() => {
-              const matchingProjects = selectedProjectType === 'all'
-                ? allPortfolioProjects
-                : allPortfolioProjects.filter(p => 
-                    p.category === selectedProjectType || 
-                    (p.categories && p.categories.includes(selectedProjectType))
-                  );
-
-              const activeCategoryName = [
-                { id: 'all', name: 'All Categories' },
-                { id: 'modern', name: 'Modern Villa' },
-                { id: 'classical', name: 'Classical Kothi' },
-                { id: 'commercial', name: 'Commercial Plaza' },
-                { id: 'farm', name: 'Farmhouse Estate' },
-                { id: 'aluminum-glass', name: 'Aluminum & Glass' }
-              ].find(c => c.id === selectedProjectType)?.name || 'Projects';
-
-              return (
-                <div className="space-y-4 pt-3 border-t border-brand-light/30">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-heading font-black text-brand-gold uppercase tracking-wider">
-                        {selectedProjectType === 'all' 
-                          ? `Real Executed Projects & Site Photos (${allPortfolioProjects.length} Sites)` 
-                          : `${activeCategoryName} Projects (${matchingProjects.length} Sites)`}
-                      </span>
-                      <span className="text-[10px] bg-brand-gold/15 text-brand-gold border border-brand-gold/30 px-2 py-0.5 rounded font-mono font-bold">
-                        Live Site Photos
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      {selectedProjectType !== 'all' && (
-                        <button
-                          onClick={() => setSelectedProjectType('all')}
-                          className="text-xs font-mono font-bold text-brand-gold hover:text-white flex items-center gap-1 cursor-pointer"
-                        >
-                          <span>Show All 8</span>
-                          <RefreshCw className="w-3 h-3" />
-                        </button>
-                      )}
-                      <Link to="/portfolio" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1">
-                        <span>View Portfolio</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* 8 Projects Responsive Grid with Real Photos */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                    {matchingProjects.map((proj) => {
-                      const isOngoing = proj.status === 'ongoing';
-                      return (
-                        <div 
-                          key={`finder-${proj.id}`}
-                          className="group bg-[#060A12] border border-brand-light/60 hover:border-brand-gold rounded-xl overflow-hidden transition-all duration-300 shadow-xl flex flex-col justify-between card-interactive"
-                        >
-                          {/* Project Image Header with Status Tag */}
-                          <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
-                            <img 
-                              src={proj.image || FALLBACK_IMAGE_URL} 
-                              alt={proj.title} 
-                              loading="lazy"
-                              decoding="async"
-                              onError={handleImageError}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                            
-                            {/* Live Status Tag */}
-                            <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-                              <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md border ${
-                                isOngoing
-                                  ? 'bg-amber-950/85 border-amber-500/50 text-amber-300'
-                                  : 'bg-emerald-950/85 border-emerald-500/50 text-emerald-300'
-                              }`}>
-                                <span className={`inline-block w-1.5 h-1.5 rounded-full mr-1 ${isOngoing ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'}`} />
-                                {proj.statusLabel}
-                              </span>
-                            </div>
-
-                            {/* Location Tag */}
-                            <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-stone-200">
-                              <span className="text-[11px] font-mono font-bold text-brand-gold flex items-center gap-1 drop-shadow">
-                                <MapPin className="w-3.5 h-3.5" />
-                                <span>{proj.location}</span>
-                              </span>
-                              <span className="text-[10px] font-mono bg-black/70 px-2 py-0.5 rounded text-stone-300 border border-white/10">
-                                {proj.clientType}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Content Body */}
-                          <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
-                            <div className="space-y-1.5">
-                              <h4 className="font-heading font-black text-sm text-stone-100 group-hover:text-brand-gold transition-colors uppercase leading-snug line-clamp-1">
-                                {proj.title}
-                              </h4>
-                              
-                              {/* Specs Box */}
-                              <div className="bg-black/60 border border-brand-light/40 p-2.5 rounded-lg space-y-1 text-[11px] font-sans">
-                                <div className="flex items-start gap-1 text-stone-200">
-                                  <strong className="text-brand-gold shrink-0">Steel Gauge:</strong>
-                                  <span className="text-slate-300 truncate">{proj.gaugeSpec}</span>
-                                </div>
-                                <div className="flex items-start gap-1 text-stone-200">
-                                  <strong className="text-brand-gold shrink-0">Finishing:</strong>
-                                  <span className="text-slate-300 truncate">{proj.finishSpec}</span>
-                                </div>
-                                <div className="flex items-start gap-1 text-stone-200">
-                                  <strong className="text-brand-gold shrink-0">Scope:</strong>
-                                  <span className="text-slate-300 truncate">{proj.deliverables}</span>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Action Buttons */}
-                            <div className="pt-2 border-t border-brand-light/40 flex items-center justify-between gap-2">
-                              <a
-                                href={getWhatsAppUrl(`*PROJECT INQUIRY*\nI am interested in project: ${proj.title} located at ${proj.location}.\nPlease share complete technical drawing, material specifications, and quotation.`)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn-navy text-[10px] py-1.5 px-3 font-bold uppercase tracking-wider flex items-center gap-1 w-full justify-center"
-                              >
-                                <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-                                <span>Inquire Site</span>
-                              </a>
-
-                              <Link
-                                to="/quote"
-                                className="btn-gold text-[10px] py-1.5 px-3 font-bold uppercase tracking-wider flex items-center gap-1 shrink-0"
-                              >
-                                <span>Get Rate</span>
-                                <ArrowRight className="w-3 h-3" />
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })()}
           </div>
 
           {/* Section Header with Slider Navigation Controls */}
@@ -1668,7 +1356,7 @@ export const HomePage: React.FC = () => {
 
             <div className="bg-gradient-to-br from-brand-navy to-[#060A12] border border-brand-light/60 p-5 rounded-xl space-y-1 shadow-lg hover:border-brand-gold transition-all card-interactive">
               <div className="flex items-center justify-between text-brand-gold">
-                <span className="text-xs font-mono font-bold uppercase">Completed</span>
+                <span className="text-xs font-mono font-bold uppercase">Executed</span>
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               </div>
               <p className="text-2xl sm:text-3xl font-heading font-black text-white">
@@ -1704,7 +1392,7 @@ export const HomePage: React.FC = () => {
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             {[
               { id: 'all', label: 'All Projects (8)', badge: 'Overview' },
-              { id: 'completed', label: 'Completed & Handed Over (5)', badge: '100% Verified', color: 'text-emerald-400' },
+              { id: 'completed', label: 'Executed Projects (5)', badge: '100% Verified', color: 'text-emerald-400' },
               { id: 'ongoing', label: 'Active On-Site Installations (3)', badge: 'Live Erection', color: 'text-amber-400' }
             ].map((tab) => {
               const isActive = portfolioStatusTab === tab.id;
@@ -1728,8 +1416,8 @@ export const HomePage: React.FC = () => {
           {/* Projects Showcase Cards Grid */}
           {(() => {
             const filteredProjects = portfolioStatusTab === 'all'
-              ? allPortfolioProjects
-              : allPortfolioProjects.filter(p => p.status === portfolioStatusTab);
+              ? projectShowcases
+              : projectShowcases.filter(p => p.status === portfolioStatusTab);
 
             return (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
@@ -1752,17 +1440,15 @@ export const HomePage: React.FC = () => {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                         
-                        {/* Live Status Tag */}
-                        <div className="absolute top-3 left-3 flex items-center gap-1.5">
-                          <span className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md border ${
-                            isOngoing
-                              ? 'bg-amber-950/80 border-amber-500/50 text-amber-300'
-                              : 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300'
-                          }`}>
-                            <span className={`inline-block w-1.5 h-1.5 rounded-full mr-1.5 ${isOngoing ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'}`} />
-                            {proj.statusLabel}
-                          </span>
-                        </div>
+                        {/* Live Status Tag (Ongoing Sites Only) */}
+                        {isOngoing && (
+                          <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                            <span className="px-2.5 py-1 rounded text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md border bg-amber-950/80 border-amber-500/50 text-amber-300">
+                              <span className="inline-block w-1.5 h-1.5 rounded-full mr-1.5 bg-amber-400 animate-ping" />
+                              {proj.statusLabel || 'ONGOING SITE'}
+                            </span>
+                          </div>
+                        )}
 
                         {/* Location Tag */}
                         <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-stone-200">
@@ -2681,6 +2367,11 @@ export const HomePage: React.FC = () => {
 
         </div>
       </section>
+
+      {/* ======================================================== */}
+      {/* 7. LEADERSHIP & EXECUTIVE TEAM                          */}
+      {/* ======================================================== */}
+      <LeadershipSection className="bg-[#05080E] border-b border-brand-light/40" />
 
       {/* ======================================================== */}
       {/* 8. CONTACT SECTION: WORKSHOP LIVE LOCATION & DIRECT INQUIRY */}

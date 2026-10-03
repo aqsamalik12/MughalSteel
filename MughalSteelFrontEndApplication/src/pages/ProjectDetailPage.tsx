@@ -202,14 +202,12 @@ export const ProjectDetailPage: React.FC = () => {
           <span className="bg-brand-gold text-brand-dark text-[10px] font-mono font-black px-2.5 py-0.5 rounded uppercase">
             {project.category}
           </span>
-          <span className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded flex items-center gap-1.5 ${
-            project.status?.toLowerCase() === 'in progress'
-              ? 'bg-amber-500 text-black font-black'
-              : 'bg-emerald-500 text-white'
-          }`}>
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            {project.status?.toUpperCase() || 'COMPLETED'}
-          </span>
+          {project.status?.toLowerCase() === 'in progress' && (
+            <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded flex items-center gap-1.5 bg-amber-500 text-black font-black">
+              <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
+              IN PROGRESS
+            </span>
+          )}
           {project.location && (
             <span className="text-xs text-brand-gold font-mono font-bold flex items-center gap-1">
               <MapPin className="w-3.5 h-3.5" />

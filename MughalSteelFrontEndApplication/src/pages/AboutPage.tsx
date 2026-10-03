@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
 import { handleImageError } from '../utils/imageFallback';
+import { LeadershipSection } from '../components/common/LeadershipSection';
 
 export const AboutPage: React.FC = () => {
   useSEO({
@@ -266,6 +267,9 @@ export const AboutPage: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* Leadership Team Section */}
+        <LeadershipSection />
 
         {/* SECTION 3: Digital Workflow & Client Consultation Process */}
         <section className="space-y-10">

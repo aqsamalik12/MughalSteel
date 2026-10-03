@@ -354,16 +354,14 @@ export const ProjectsPage: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="absolute top-3 right-3">
-                    <span className={`text-[9px] font-mono font-bold px-2.5 py-0.5 rounded shadow flex items-center gap-1.5 ${
-                      proj.status?.toLowerCase() === 'in progress'
-                        ? 'bg-amber-500 text-black font-black'
-                        : 'bg-emerald-500/90 text-white'
-                    }`}>
-                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      {proj.status?.toUpperCase() || 'COMPLETED'}
-                    </span>
-                  </div>
+                  {proj.status?.toLowerCase() === 'in progress' && (
+                    <div className="absolute top-3 right-3">
+                      <span className="text-[9px] font-mono font-bold px-2.5 py-0.5 rounded shadow flex items-center gap-1.5 bg-amber-500 text-black font-black">
+                        <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
+                        IN PROGRESS
+                      </span>
+                    </div>
+                  )}
 
                   <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-transparent to-transparent opacity-80" />
                   

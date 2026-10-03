@@ -2,9 +2,9 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import type { 
   Product, Quote, Order, CustomDesign, Review,
   Discount, ContactMessage, ActivityLog, Testimonial, WebsiteSettings, BlogPost,
-  ServiceItem, ProjectShowcase
+  ServiceItem, ProjectShowcase, TeamMember, ProjectShowcaseItem
 } from '../types';
-import { SEED_PRODUCTS, SEED_TESTIMONIALS, SEED_BLOGS, SEED_SERVICES, SEED_PROJECTS, PROJECT_CATEGORIES_DATA, type CategoryInfo } from '../data/seedData';
+import { SEED_PRODUCTS, SEED_TESTIMONIALS, SEED_BLOGS, SEED_SERVICES, SEED_PROJECTS, SEED_TEAM_MEMBERS, SEED_PROJECT_SHOWCASES, PROJECT_CATEGORIES_DATA, type CategoryInfo } from '../data/seedData';
 import { apiRequest } from '../utils/api';
 import { dbService, type DbStats } from '../services/indexedDb';
 
@@ -40,6 +40,14 @@ interface DataContextType {
   addCategory: (category: Omit<CategoryInfo, 'id'>) => Promise<CategoryInfo>;
   updateCategory: (category: CategoryInfo) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
+  teamMembers: TeamMember[];
+  addTeamMember: (member: Omit<TeamMember, 'id'>) => Promise<TeamMember>;
+  updateTeamMember: (member: TeamMember) => Promise<void>;
+  deleteTeamMember: (id: string) => Promise<void>;
+  projectShowcases: ProjectShowcaseItem[];
+  addProjectShowcase: (item: Omit<ProjectShowcaseItem, 'id'>) => Promise<ProjectShowcaseItem>;
+  updateProjectShowcase: (item: ProjectShowcaseItem) => Promise<void>;
+  deleteProjectShowcase: (id: string) => Promise<void>;
   contactMessages: ContactMessage[];
   addContactMessage: (msg: Omit<ContactMessage, 'id' | 'createdAt' | 'status'>) => Promise<ContactMessage>;
   updateContactMessageStatus: (id: string, status: ContactMessage['status']) => Promise<void>;
@@ -158,6 +166,37 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return saved ? JSON.parse(saved) : PROJECT_CATEGORIES_DATA;
     } catch {
       return PROJECT_CATEGORIES_DATA;
+    }
+  });
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(() => {
+    try {
+      const saved = localStorage.getItem('mfg_team_members');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length >= 6 && parsed.some((p: any) => p.image?.includes('team-'))) {
+          return parsed;
+        }
+      }
+      return SEED_TEAM_MEMBERS;
+    } catch {
+      return SEED_TEAM_MEMBERS;
+    }
+  });
+  const [projectShowcases, setProjectShowcases] = useState<ProjectShowcaseItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('mfg_project_showcases');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((p: any) => ({
+            ...p,
+            statusLabel: p.status === 'completed' ? '' : (p.statusLabel?.includes('Completed') ? '' : p.statusLabel)
+          }));
+        }
+      }
+      return SEED_PROJECT_SHOWCASES;
+    } catch {
+      return SEED_PROJECT_SHOWCASES;
     }
   });
   const [contactMessages, setContactMessages] = useState<ContactMessage[]>([]);
@@ -1076,6 +1115,52 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('mfg_categories', JSON.stringify(updated));
   };
 
+  const addTeamMember = async (member: Omit<TeamMember, 'id'>): Promise<TeamMember> => {
+    const newMember: TeamMember = {
+      ...member,
+      id: `team-${Date.now()}`
+    };
+    const updated = [...teamMembers, newMember];
+    setTeamMembers(updated);
+    localStorage.setItem('mfg_team_members', JSON.stringify(updated));
+    return newMember;
+  };
+
+  const updateTeamMember = async (member: TeamMember) => {
+    const updated = teamMembers.map(m => m.id === member.id ? member : m);
+    setTeamMembers(updated);
+    localStorage.setItem('mfg_team_members', JSON.stringify(updated));
+  };
+
+  const deleteTeamMember = async (id: string) => {
+    const updated = teamMembers.filter(m => m.id !== id);
+    setTeamMembers(updated);
+    localStorage.setItem('mfg_team_members', JSON.stringify(updated));
+  };
+
+  const addProjectShowcase = async (item: Omit<ProjectShowcaseItem, 'id'>): Promise<ProjectShowcaseItem> => {
+    const newItem: ProjectShowcaseItem = {
+      ...item,
+      id: `proj-showcase-${Date.now()}`
+    };
+    const updated = [...projectShowcases, newItem];
+    setProjectShowcases(updated);
+    localStorage.setItem('mfg_project_showcases', JSON.stringify(updated));
+    return newItem;
+  };
+
+  const updateProjectShowcase = async (item: ProjectShowcaseItem) => {
+    const updated = projectShowcases.map(p => p.id === item.id ? item : p);
+    setProjectShowcases(updated);
+    localStorage.setItem('mfg_project_showcases', JSON.stringify(updated));
+  };
+
+  const deleteProjectShowcase = async (id: string) => {
+    const updated = projectShowcases.filter(p => p.id !== id);
+    setProjectShowcases(updated);
+    localStorage.setItem('mfg_project_showcases', JSON.stringify(updated));
+  };
+
   const exportDatabase = async (): Promise<string> => {
     return dbService.exportDatabase();
   };
@@ -1113,6 +1198,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addCategory,
       updateCategory,
       deleteCategory,
+      teamMembers,
+      addTeamMember,
+      updateTeamMember,
+      deleteTeamMember,
+      projectShowcases,
+      addProjectShowcase,
+      updateProjectShowcase,
+      deleteProjectShowcase,
       contactMessages,
 
       addContactMessage,

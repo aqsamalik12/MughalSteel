@@ -356,6 +356,31 @@ export interface ServiceItem {
   features: string[];
 }
 
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  image: string;
+  bio?: string;
+  displayOrder?: number;
+  published?: boolean;
+}
+
+export interface ProjectShowcaseItem {
+  id: string;
+  title: string;
+  location: string;
+  clientType: string;
+  gaugeSpec: string;
+  finishSpec: string;
+  deliverables: string;
+  status: 'completed' | 'ongoing';
+  statusLabel: string;
+  image: string;
+  link?: string;
+  displayOrder?: number;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
