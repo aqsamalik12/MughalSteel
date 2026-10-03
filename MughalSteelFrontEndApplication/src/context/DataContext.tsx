@@ -190,7 +190,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (Array.isArray(parsed) && parsed.length > 0) {
           return parsed.map((p: any) => ({
             ...p,
-            statusLabel: p.status === 'completed' ? '' : (p.statusLabel?.includes('Completed') ? '' : p.statusLabel)
+            statusLabel: ''
           }));
         }
       }

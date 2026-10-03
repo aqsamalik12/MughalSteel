@@ -1260,7 +1260,7 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
     finishSpec: 'Deep Matte Anodized Architectural Black',
     deliverables: '5x10 ft Hydraulic Floor-Spring Pivot Entrance Door & Laser Leveling',
     status: 'ongoing',
-    statusLabel: 'Active On-Site Erection (85%)',
+    statusLabel: '',
     image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80',
     link: '/portfolio',
     displayOrder: 6
@@ -1274,7 +1274,7 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
     finishSpec: 'AkzoNobel High-Endurance Powder Coat',
     deliverables: 'Multi-Storey Glass Curtain Sub-Frame, Fire Spiral Escape Stairs',
     status: 'ongoing',
-    statusLabel: 'Active On-Site Erection (60%)',
+    statusLabel: '',
     image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
     link: '/portfolio',
     displayOrder: 7
@@ -1288,7 +1288,7 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
     finishSpec: '7-Stage Chemical Pre-Treatment & Powder Oven Baked',
     deliverables: 'Heavy Automated Swing Gate, 180 RFT Laser Precision Anti-Climb Spikes',
     status: 'ongoing',
-    statusLabel: 'Fabrication Yard Stage (45%)',
+    statusLabel: '',
     image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
     link: '/portfolio',
     displayOrder: 8

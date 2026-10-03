@@ -924,16 +924,6 @@ export const HomePage: React.FC = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                       
-                      {/* Live Status Tag (Ongoing Sites Only) */}
-                      {isOngoing && (
-                        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md border bg-amber-950/85 border-amber-500/50 text-amber-300">
-                            <span className="inline-block w-1.5 h-1.5 rounded-full mr-1 bg-amber-400 animate-ping" />
-                            {proj.statusLabel || 'ONGOING SITE'}
-                          </span>
-                        </div>
-                      )}
-
                       {/* Location Tag */}
                       <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-stone-200">
                         <span className="text-[11px] font-mono font-bold text-brand-gold flex items-center gap-1 drop-shadow">
@@ -1440,16 +1430,6 @@ export const HomePage: React.FC = () => {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                         
-                        {/* Live Status Tag (Ongoing Sites Only) */}
-                        {isOngoing && (
-                          <div className="absolute top-3 left-3 flex items-center gap-1.5">
-                            <span className="px-2.5 py-1 rounded text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md border bg-amber-950/80 border-amber-500/50 text-amber-300">
-                              <span className="inline-block w-1.5 h-1.5 rounded-full mr-1.5 bg-amber-400 animate-ping" />
-                              {proj.statusLabel || 'ONGOING SITE'}
-                            </span>
-                          </div>
-                        )}
-
                         {/* Location Tag */}
                         <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-stone-200">
                           <span className="text-[11px] font-mono font-bold text-brand-gold flex items-center gap-1 drop-shadow">
