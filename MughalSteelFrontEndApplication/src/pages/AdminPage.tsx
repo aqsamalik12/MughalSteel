@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import type { Product, Quote, Order, CustomDesign, Testimonial, ContactMessage, ActivityLog, ProjectShowcase, ServiceItem, TeamMember, ProjectShowcaseItem } from '../types';
-import { type CategoryInfo } from '../data/seedData';
+import type { Product, Quote, Order, CustomDesign, Testimonial, ContactMessage, ActivityLog, ProjectShowcase, ServiceItem, TeamMember, ProjectShowcaseItem, WhatIsYourProjectItem } from '../types';
+import { type CategoryInfo, STANDARD_PROJECT_CATEGORIES } from '../data/seedData';
 import { 
   BarChart3, Box, ClipboardList, ShoppingCart, Users, 
   Plus, Edit, Trash2, Check, X, ArrowLeft,
@@ -29,6 +29,7 @@ export const AdminPage: React.FC = () => {
     categories, addCategory, updateCategory, deleteCategory,
     teamMembers, addTeamMember, updateTeamMember, deleteTeamMember,
     projectShowcases, addProjectShowcase, updateProjectShowcase, deleteProjectShowcase,
+    whatIsYourProject, addWhatIsYourProjectItem, updateWhatIsYourProjectItem, deleteWhatIsYourProjectItem,
     contactMessages, updateContactMessageStatus,
     activityLogs, addActivityLog,
     fetchQuotes, fetchOrders, fetchContactMessages
@@ -233,7 +234,7 @@ export const AdminPage: React.FC = () => {
   const [projectForm, setProjectForm] = useState({
     title: '',
     slug: '',
-    category: 'Main Gates',
+    category: 'Housing Society',
     shortDescription: '',
     projectType: 'Residential Luxury Villa',
     clientType: 'Private Residence',
@@ -300,6 +301,7 @@ export const AdminPage: React.FC = () => {
   const [editingShowcase, setEditingShowcase] = useState<ProjectShowcaseItem | null>(null);
   const [showcaseForm, setShowcaseForm] = useState<{
     title: string;
+    category?: string;
     location: string;
     clientType: string;
     gaugeSpec: string;
@@ -312,6 +314,7 @@ export const AdminPage: React.FC = () => {
     displayOrder: number;
   }>({
     title: '',
+    category: 'Housing Society',
     location: '',
     clientType: '',
     gaugeSpec: '',
@@ -322,6 +325,26 @@ export const AdminPage: React.FC = () => {
     image: '',
     link: '/portfolio',
     displayOrder: 1
+  });
+
+  // What Is Your Project Category CMS modal state
+  const [showWipModal, setShowWipModal] = useState(false);
+  const [editingWipItem, setEditingWipItem] = useState<WhatIsYourProjectItem | null>(null);
+  const [wipForm, setWipForm] = useState<WhatIsYourProjectItem>({
+    id: '',
+    category: 'Housing Society',
+    title: '',
+    tagline: '',
+    description: '',
+    image: '',
+    itemsCount: 5,
+    primaryItem: 'Main Gates',
+    gaugeSpec: '',
+    finishSpec: '',
+    deliverables: '',
+    location: '',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over'
   });
 
   // Detail inspection modals
@@ -803,6 +826,7 @@ export const AdminPage: React.FC = () => {
     setEditingShowcase(null);
     setShowcaseForm({
       title: '',
+      category: 'Housing Society',
       location: 'Islamabad / Rawalpindi',
       clientType: 'Private Luxury Villa',
       gaugeSpec: '14-Gauge MS & ±0.1mm CNC Fiber Laser',
@@ -821,6 +845,7 @@ export const AdminPage: React.FC = () => {
     setEditingShowcase(item);
     setShowcaseForm({
       title: item.title,
+      category: item.category || 'Housing Society',
       location: item.location,
       clientType: item.clientType,
       gaugeSpec: item.gaugeSpec,
@@ -854,6 +879,109 @@ export const AdminPage: React.FC = () => {
     if (window.confirm("Are you sure you want to remove this project from What's Your Project?")) {
       deleteProjectShowcase(id);
       addActivityLog('SHOWCASE_DELETED', `Deleted showcase project ID: ${id}`);
+    }
+  };
+
+  // What Is Your Project Category CMS Handlers (Completely separate from Projects)
+  const handleOpenAddWip = () => {
+    setEditingWipItem(null);
+    setWipForm({
+      id: `wip-${Date.now()}`,
+      category: '',
+      title: '',
+      tagline: '',
+      description: '',
+      image: '',
+      itemsCount: 5,
+      primaryItem: 'Main Gates',
+      gaugeSpec: '14-Gauge (2.0mm) & 12-Gauge (2.5mm)',
+      finishSpec: 'Electrostatic Powder Coating',
+      deliverables: ['Main Entrance Gate', 'Boundary Grills'],
+      location: 'Rawalpindi / Islamabad',
+      status: 'Completed',
+      statusLabel: 'Fabricated & Installed'
+    } as any);
+    setShowWipModal(true);
+  };
+
+  const handleOpenEditWip = (item: WhatIsYourProjectItem) => {
+    setEditingWipItem(item);
+    setWipForm({ ...item });
+    setShowWipModal(true);
+  };
+
+  const handleSaveWip = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const deliverablesList = Array.isArray(wipForm.deliverables)
+      ? wipForm.deliverables
+      : (typeof wipForm.deliverables === 'string'
+          ? (wipForm.deliverables as string).split(',').map((s: string) => s.trim()).filter(Boolean)
+          : ['Main Entrance Gate']);
+
+    if (editingWipItem) {
+      await updateWhatIsYourProjectItem({
+        ...wipForm,
+        category: wipForm.category || editingWipItem.category,
+        title: wipForm.title || editingWipItem.title,
+        deliverables: deliverablesList,
+        updatedAt: new Date().toISOString()
+      });
+      addActivityLog('WIP_UPDATED', `Updated What Is Your Project: ${wipForm.category}`);
+    } else {
+      const newItem: WhatIsYourProjectItem = {
+        id: `wip-${Date.now()}`,
+        category: wipForm.category || 'New Project Category',
+        title: wipForm.title || 'Architectural Steel Project',
+        tagline: wipForm.tagline || 'Custom fabricated steel solution',
+        description: wipForm.description || '',
+        image: wipForm.image || FALLBACK_IMAGE_URL,
+        itemsCount: Number(wipForm.itemsCount) || 5,
+        primaryItem: wipForm.primaryItem || 'Main Gates',
+        gaugeSpec: wipForm.gaugeSpec || '14-Gauge (2.0mm)',
+        finishSpec: wipForm.finishSpec || 'Electrostatic Powder Coating',
+        deliverables: deliverablesList,
+        status: (wipForm.status as 'completed' | 'ongoing') || 'completed',
+        statusLabel: wipForm.statusLabel || 'Fabricated & Installed',
+        updatedAt: new Date().toISOString()
+      };
+      await addWhatIsYourProjectItem(newItem);
+      addActivityLog('WIP_CREATED', `Added new project to What Is Your Project: ${newItem.category}`);
+    }
+    setShowWipModal(false);
+    setEditingWipItem(null);
+  };
+
+  const handleDeleteWip = async (item: WhatIsYourProjectItem) => {
+    if (window.confirm(`Are you sure you want to remove "${item.category}" from What's Your Project?`)) {
+      await deleteWhatIsYourProjectItem(item.id);
+      addActivityLog('WIP_DELETED', `Deleted What Is Your Project category: ${item.category}`);
+    }
+  };
+
+  const handleWipImageUpload = (item: WhatIsYourProjectItem, file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      if (dataUrl) {
+        updateWhatIsYourProjectItem({
+          ...item,
+          image: dataUrl,
+          updatedAt: new Date().toISOString()
+        });
+        addActivityLog('WIP_IMAGE_UPDATED', `Uploaded image for What Is Your Project: ${item.category}`);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleWipImageRemove = (item: WhatIsYourProjectItem) => {
+    if (window.confirm(`Are you sure you want to remove the image for ${item.category}?`)) {
+      updateWhatIsYourProjectItem({
+        ...item,
+        image: '',
+        updatedAt: new Date().toISOString()
+      });
+      addActivityLog('WIP_IMAGE_REMOVED', `Removed image for What Is Your Project: ${item.category}`);
     }
   };
 
@@ -2102,7 +2230,7 @@ export const AdminPage: React.FC = () => {
                 className="px-4 py-2.5 bg-brand-gold text-brand-dark rounded-lg font-heading font-black text-xs uppercase tracking-wider flex items-center gap-2 cursor-pointer shadow-lg hover:brightness-110 shrink-0"
               >
                 <Plus className="w-4 h-4 text-brand-dark" />
-                <span>Add Project Case Study</span>
+                <span>Add New Project</span>
               </button>
             </div>
 
@@ -2292,6 +2420,9 @@ export const AdminPage: React.FC = () => {
         {/* ------------------------------------------------------------- */}
         {/* TAB: WHAT'S YOUR PROJECT SHOWCASE */}
         {/* ------------------------------------------------------------- */}
+        {/* ------------------------------------------------------------- */}
+        {/* TAB: WHAT'S YOUR PROJECT (INDEPENDENT CATEGORY CMS)           */}
+        {/* ------------------------------------------------------------- */}
         {activeTab === 'showcase' && (
           <div className="bg-[#0C1322] border border-brand-light/60 p-6 rounded-xl space-y-6 text-xs text-stone-300 animate-fade-in">
             {/* Header & Controls */}
@@ -2299,17 +2430,26 @@ export const AdminPage: React.FC = () => {
               <div>
                 <h3 className="font-heading font-black text-base uppercase text-stone-100 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-brand-gold" />
-                  <span>What&apos;s Your Project (Site Execution Showcase)</span>
+                  <span>What&apos;s Your Project — Category Images &amp; Content</span>
                   <span className="text-[10px] bg-brand-gold/15 text-brand-gold border border-brand-gold/40 px-2 py-0.5 rounded font-mono font-bold">
-                    Homepage Live Module
+                    Independent Module ({whatIsYourProject.length} Categories)
                   </span>
                 </h3>
                 <p className="text-slate-400 text-[11px]">
-                  Manage the real executed project showcase cards displayed on the homepage under &quot;What is Your Project?&quot;.
+                  Upload independent images and manage content for each of the 10 categories displayed in the &quot;What is Your Project?&quot; section. Changes here do NOT affect the Projects module.
                 </p>
               </div>
 
               <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleOpenAddWip}
+                  className="px-4 py-2 bg-brand-gold hover:brightness-110 text-brand-dark rounded-lg text-xs font-heading font-black uppercase tracking-wider flex items-center gap-1.5 transition shadow-lg cursor-pointer"
+                >
+                  <Plus className="w-4 h-4 text-brand-dark" />
+                  <span>Add New Project</span>
+                </button>
+
                 <Link
                   to="/#products"
                   target="_blank"
@@ -2318,87 +2458,126 @@ export const AdminPage: React.FC = () => {
                   <Eye className="w-3.5 h-3.5 text-brand-gold" />
                   <span>View On Homepage</span>
                 </Link>
-
-                <button 
-                  type="button"
-                  onClick={handleOpenAddShowcase}
-                  className="px-4 py-2 bg-brand-gold hover:brightness-110 text-brand-dark rounded-lg text-xs font-heading font-black uppercase tracking-wider flex items-center gap-1.5 transition shadow-lg cursor-pointer"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Add Showcase Project</span>
-                </button>
               </div>
             </div>
 
-            {/* Showcase Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-              {projectShowcases.map((proj) => {
-                const isOngoing = proj.status === 'ongoing';
-                return (
-                  <div key={proj.id} className="bg-[#070C15] border border-brand-light/60 rounded-xl overflow-hidden shadow-xl flex flex-col justify-between group hover:border-brand-gold/60 transition-all duration-300">
-                    <div>
-                      {/* Image Thumbnail with Status Badge */}
-                      <div className="h-44 relative overflow-hidden bg-black">
-                        <img 
-                          src={proj.image || FALLBACK_IMAGE_URL} 
-                          alt={proj.title} 
-                          onError={handleImageError}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#070C15] via-transparent to-black/30" />
-                        
-                        <div className="absolute top-2.5 left-2.5 flex items-center gap-1">
-                          <span className={`px-2 py-0.5 font-mono text-[9px] font-black uppercase rounded shadow ${
-                            isOngoing ? 'bg-amber-500 text-black' : 'bg-emerald-500 text-white'
-                          }`}>
-                            {proj.statusLabel}
-                          </span>
-                        </div>
+            {/* What Is Your Project Categories Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+              {whatIsYourProject.map((item) => (
+                <div key={item.id || item.category} className="bg-[#070C15] border border-brand-light/60 rounded-xl overflow-hidden shadow-xl flex flex-col justify-between group hover:border-brand-gold/60 transition-all duration-300">
+                  <div>
+                    {/* Category Image Box with Overlay Upload Button */}
+                    <div className="h-40 relative overflow-hidden bg-black group/img">
+                      <img 
+                        src={item.image || FALLBACK_IMAGE_URL} 
+                        alt={item.category} 
+                        onError={handleImageError}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#070C15] via-transparent to-black/40" />
+                      
+                      {/* Top Badges */}
+                      <div className="absolute top-2 left-2 right-2 flex items-center justify-between gap-1">
+                        <span className="px-2 py-0.5 font-mono text-[9px] font-black uppercase rounded shadow bg-brand-gold text-brand-dark truncate max-w-[65%]">
+                          {item.category}
+                        </span>
+                        <span className="px-1.5 py-0.5 font-mono text-[9px] font-bold rounded shadow bg-black/80 text-brand-gold border border-brand-gold/30 shrink-0">
+                          {item.itemsCount || 5} Items
+                        </span>
                       </div>
 
-                      <div className="p-4 space-y-2">
-                        <h4 className="font-heading font-black text-sm text-stone-100 group-hover:text-brand-gold transition-colors line-clamp-1">
-                          {proj.title}
-                        </h4>
-                        
-                        <p className="text-[10px] text-brand-gold font-mono flex items-center gap-1">
-                          <MapPin className="w-3 h-3 text-brand-gold" />
-                          <span>{proj.location}</span>
-                          <span className="text-slate-500">•</span>
-                          <span>{proj.clientType}</span>
-                        </p>
-
-                        <div className="bg-black/60 border border-brand-light/30 p-2 rounded text-[10px] space-y-0.5">
-                          <p><strong className="text-brand-gold">Gauge:</strong> {proj.gaugeSpec}</p>
-                          <p><strong className="text-brand-gold">Finish:</strong> {proj.finishSpec}</p>
-                          <p className="line-clamp-1"><strong className="text-brand-gold">Scope:</strong> {proj.deliverables}</p>
-                        </div>
+                      {/* Image Upload Overlay Button */}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                        <label className="px-3 py-1.5 bg-brand-gold text-brand-dark rounded text-[11px] font-bold cursor-pointer hover:brightness-110 flex items-center gap-1 shadow">
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>{item.image ? 'Replace Image' : 'Upload Image'}</span>
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleWipImageUpload(item, file);
+                            }} 
+                            className="hidden" 
+                          />
+                        </label>
+                        {item.image && (
+                          <button 
+                            type="button" 
+                            onClick={() => handleWipImageRemove(item)}
+                            className="px-2.5 py-1 bg-red-600/80 hover:bg-red-600 text-white rounded text-[10px] font-bold transition cursor-pointer"
+                          >
+                            Remove Image
+                          </button>
+                        )}
                       </div>
                     </div>
 
-                    {/* Actions Toolbar */}
-                    <div className="p-3 border-t border-brand-light/20 flex justify-end items-center gap-2">
+                    {/* Content Details */}
+                    <div className="p-3.5 space-y-2">
+                      <div>
+                        <h4 className="font-heading font-black text-xs uppercase text-stone-100 group-hover:text-brand-gold transition-colors line-clamp-1">
+                          {item.title}
+                        </h4>
+                        <p className="text-[10px] text-slate-400 font-sans line-clamp-2 mt-0.5 leading-snug">
+                          {item.tagline}
+                        </p>
+                      </div>
+
+                      <div className="bg-black/60 border border-brand-light/30 p-2 rounded text-[10px] space-y-0.5 font-mono">
+                        <div className="flex items-center justify-between text-stone-300">
+                          <span className="text-brand-gold">Primary:</span>
+                          <span className="text-slate-200 truncate">{item.primaryItem || 'Main Gates'}</span>
+                        </div>
+                        {item.gaugeSpec && (
+                          <div className="flex items-center justify-between text-stone-300">
+                            <span className="text-brand-gold">Gauge:</span>
+                            <span className="text-slate-300 truncate max-w-[65%]">{item.gaugeSpec}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions Toolbar */}
+                  <div className="p-3 pt-0 border-t border-brand-light/20 flex justify-between items-center gap-2 mt-2">
+                    <label className="text-[10px] font-bold text-brand-gold hover:underline flex items-center gap-1 cursor-pointer">
+                      <Upload className="w-3 h-3" />
+                      <span>Upload</span>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleWipImageUpload(item, file);
+                        }} 
+                        className="hidden" 
+                      />
+                    </label>
+
+                    <div className="flex items-center gap-1.5">
                       <button 
                         type="button"
-                        onClick={() => handleOpenEditShowcase(proj)}
+                        onClick={() => handleOpenEditWip(item)}
                         className="px-2.5 py-1 text-slate-300 hover:text-brand-gold bg-white/5 hover:bg-brand-gold/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs font-bold"
                       >
-                        <Edit className="w-3.5 h-3.5" />
+                        <Edit className="w-3 h-3" />
                         <span>Edit</span>
                       </button>
 
                       <button 
                         type="button"
-                        onClick={() => handleDeleteShowcase(proj.id)}
-                        className="px-2.5 py-1 text-slate-400 hover:text-red-400 bg-white/5 hover:bg-red-500/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs font-bold"
+                        onClick={() => handleDeleteWip(item)}
+                        className="px-2 py-1 text-slate-400 hover:text-red-400 bg-white/5 hover:bg-red-500/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs"
+                        title="Delete from What's Your Project"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-3 h-3" />
                         <span>Delete</span>
                       </button>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -3853,7 +4032,7 @@ export const AdminPage: React.FC = () => {
                       onChange={(e) => setProjectForm({ ...projectForm, category: e.target.value })}
                       className="w-full bg-[#0C1322] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold font-bold"
                     >
-                      {['Main Gates', 'Steel Doors', 'Grills', 'Railings', 'Staircases', 'Steel Windows', 'Custom Fabrication', 'Commercial', 'Modern Home', 'Classical Home'].map(cat => (
+                      {STANDARD_PROJECT_CATEGORIES.map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
                       ))}
                     </select>
@@ -4542,6 +4721,214 @@ export const AdminPage: React.FC = () => {
       )}
 
       {/* ------------------------------------------------------------- */}
+      {/* MODAL: ADD / EDIT WHAT'S YOUR PROJECT CATEGORY CONTENT & IMAGE */}
+      {/* ------------------------------------------------------------- */}
+      {showWipModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0C1322] border border-brand-gold/50 rounded-2xl w-full max-w-xl p-6 space-y-4 shadow-2xl animate-fade-in max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-brand-light/40 pb-3">
+              <div>
+                <h3 className="font-heading font-black text-base uppercase text-brand-gold flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-brand-gold" />
+                  <span>{editingWipItem ? `Edit Project: ${wipForm.category}` : 'Add New Project to "What\'s Your Project"'}</span>
+                </h3>
+                <p className="text-[10px] text-slate-400">Independent image &amp; content for the &quot;What Is Your Project?&quot; section.</p>
+              </div>
+              <button onClick={() => setShowWipModal(false)} className="text-slate-400 hover:text-white cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveWip} className="space-y-4 text-xs">
+              {!editingWipItem ? (
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Project / Category Name *</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={wipForm.category || ''} 
+                    onChange={(e) => setWipForm({ ...wipForm, category: e.target.value })}
+                    placeholder="e.g. Modern Home, Stainless Steel, Villa..."
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2.5 text-stone-100 focus:outline-none focus:border-brand-gold font-bold"
+                  />
+                </div>
+              ) : (
+                <div className="bg-[#070C15] p-2.5 rounded-lg border border-brand-light/30 flex items-center justify-between">
+                  <span className="text-[10px] uppercase font-bold text-slate-400">Category:</span>
+                  <span className="text-xs font-heading font-black text-brand-gold uppercase">{wipForm.category}</span>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Project Title / Headline *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={wipForm.title} 
+                  onChange={(e) => setWipForm({ ...wipForm, title: e.target.value })}
+                  placeholder="e.g. Modern Architecture & CNC Laser Gates"
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2.5 text-stone-100 focus:outline-none focus:border-brand-gold font-bold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Tagline</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={wipForm.tagline} 
+                  onChange={(e) => setWipForm({ ...wipForm, tagline: e.target.value })}
+                  placeholder="e.g. Clean lines, laser-cut geometry & minimalist architecture"
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Items Count</label>
+                  <input 
+                    type="number" 
+                    min={1} 
+                    value={wipForm.itemsCount || 5} 
+                    onChange={(e) => setWipForm({ ...wipForm, itemsCount: parseInt(e.target.value) || 5 })}
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Primary Item Label</label>
+                  <input 
+                    type="text" 
+                    value={wipForm.primaryItem || ''} 
+                    onChange={(e) => setWipForm({ ...wipForm, primaryItem: e.target.value })}
+                    placeholder="e.g. Front Gates / Main Gates / Doors"
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                  />
+                </div>
+              </div>
+
+              {/* Direct Photo Upload & Preview */}
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">
+                  Category Showcase Image (Direct Upload)
+                </label>
+                {wipForm.image ? (
+                  <div className="relative h-44 w-full rounded-xl overflow-hidden border border-brand-gold/50 bg-[#070D18] flex items-center justify-center group">
+                    <img 
+                      src={wipForm.image} 
+                      alt="Category Preview" 
+                      onError={handleImageError}
+                      className="w-full h-full object-cover rounded-lg" 
+                    />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition z-20 flex items-center justify-center gap-2 p-2">
+                      <label className="px-3 py-1.5 bg-brand-gold text-brand-dark rounded text-[11px] font-bold cursor-pointer hover:brightness-110 flex items-center gap-1 shadow">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Change Photo</span>
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const reader = new FileReader();
+                            reader.onload = (loadEvt) => {
+                              const dataUrl = loadEvt.target?.result as string;
+                              if (dataUrl) setWipForm(prev => ({ ...prev, image: dataUrl }));
+                            };
+                            reader.readAsDataURL(file);
+                          }} 
+                          className="hidden" 
+                        />
+                      </label>
+                      <button 
+                        type="button" 
+                        onClick={() => setWipForm(prev => ({ ...prev, image: '' }))}
+                        className="px-3 py-1.5 bg-red-600 text-white rounded text-[11px] font-bold hover:bg-red-500 cursor-pointer"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label className="h-36 w-full rounded-xl border-2 border-dashed border-brand-gold/40 hover:border-brand-gold bg-brand-gold/5 hover:bg-brand-gold/10 transition flex flex-col items-center justify-center p-3 text-center cursor-pointer group">
+                    <Upload className="w-6 h-6 text-brand-gold group-hover:scale-110 transition mb-1" />
+                    <span className="text-xs font-bold text-stone-200 block">Upload Category Photo</span>
+                    <span className="text-[10px] text-stone-400 font-mono mt-0.5">Click to choose image file (PNG, JPG, WEBP)</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (loadEvt) => {
+                          const dataUrl = loadEvt.target?.result as string;
+                          if (dataUrl) setWipForm(prev => ({ ...prev, image: dataUrl }));
+                        };
+                        reader.readAsDataURL(file);
+                      }} 
+                      className="hidden" 
+                    />
+                  </label>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Steel Gauge Specification</label>
+                  <input 
+                    type="text" 
+                    value={wipForm.gaugeSpec || ''} 
+                    onChange={(e) => setWipForm({ ...wipForm, gaugeSpec: e.target.value })}
+                    placeholder="e.g. 14-Gauge MS & ±0.1mm CNC Fiber Laser"
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Finishing Specification</label>
+                  <input 
+                    type="text" 
+                    value={wipForm.finishSpec || ''} 
+                    onChange={(e) => setWipForm({ ...wipForm, finishSpec: e.target.value })}
+                    placeholder="e.g. Matte Jet-Black Electrostatic Powder Coat"
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Scope / Deliverables</label>
+                <input 
+                  type="text" 
+                  value={wipForm.deliverables || ''} 
+                  onChange={(e) => setWipForm({ ...wipForm, deliverables: e.target.value })}
+                  placeholder="e.g. Main Driveway Gate, Boundary Wall Grills, Balcony Railings"
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3 border-t border-brand-light/30">
+                <button 
+                  type="button" 
+                  onClick={() => setShowWipModal(false)} 
+                  className="px-4 py-2 bg-white/5 hover:bg-white/10 text-stone-300 rounded-lg text-xs font-bold transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="px-5 py-2 bg-brand-gold text-brand-dark rounded-lg font-heading font-black text-xs uppercase tracking-wider hover:brightness-110 shadow-lg cursor-pointer"
+                >
+                  {editingWipItem ? 'Save Category Content' : 'Upload New Project'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
       {/* MODAL: ADD / EDIT WHAT'S YOUR PROJECT SHOWCASE */}
       {/* ------------------------------------------------------------- */}
       {showShowcaseModal && (
@@ -4573,7 +4960,20 @@ export const AdminPage: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Project Category *</label>
+                  <select
+                    value={showcaseForm.category || 'Housing Society'}
+                    onChange={(e) => setShowcaseForm({ ...showcaseForm, category: e.target.value })}
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold font-bold"
+                  >
+                    {STANDARD_PROJECT_CATEGORIES.map(cat => (
+                      <option key={`showcase-cat-${cat}`} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+
                 <div>
                   <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Site Location *</label>
                   <input 

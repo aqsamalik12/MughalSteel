@@ -1,4 +1,4 @@
-import type { Product, BlogPost, Testimonial, ProjectCategory, ProductItemType, TeamMember, ProjectShowcaseItem } from '../types';
+import type { Product, BlogPost, Testimonial, ProjectCategory, ProductItemType, TeamMember, ProjectShowcaseItem, WhatIsYourProjectItem } from '../types';
 
 export interface CategoryInfo {
   id: string;
@@ -10,6 +10,21 @@ export interface CategoryInfo {
   items: ProductItemType[];
   popularProducts: string[];
 }
+
+export const STANDARD_PROJECT_CATEGORIES = [
+  'Housing Society',
+  'Modern Home',
+  'Classical Home',
+  'Commercial',
+  'Modern Farmhouse',
+  'Classical Farmhouse',
+  'Village House',
+  'Farm',
+  'Small Villa',
+  'Aluminum & Glass'
+] as const;
+
+export type StandardProjectCategory = typeof STANDARD_PROJECT_CATEGORIES[number];
 
 export const PROJECT_CATEGORIES_DATA: CategoryInfo[] = [
   {
@@ -1184,6 +1199,7 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
   {
     id: 'proj-showcase-1',
     title: '1 Kanal Luxury Residence - Faisalabad',
+    category: 'Modern Home',
     location: 'Canal Road, Faisalabad',
     clientType: 'Private Luxury Villa',
     gaugeSpec: '14-Gauge MS & ±0.1mm CNC Fiber Laser',
@@ -1198,6 +1214,7 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
   {
     id: 'proj-showcase-2',
     title: 'Gulberg Greens Modern Farmhouse',
+    category: 'Modern Farmhouse',
     location: 'Gulberg Greens, Islamabad',
     clientType: 'Country Estate & Farmhouse',
     gaugeSpec: 'Schedule 40 Galvanized Heavy MS Pipes',
@@ -1212,6 +1229,7 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
   {
     id: 'proj-showcase-3',
     title: 'National Defence University (NDU) Handover',
+    category: 'Housing Society',
     location: 'Sector E-9, Islamabad',
     clientType: 'Institutional & High-Security',
     gaugeSpec: '12-Gauge Heavy Mild Steel Structural Channels',
@@ -1226,6 +1244,7 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
   {
     id: 'proj-showcase-4',
     title: 'Bahria Town Modern Villa Main Gate',
+    category: 'Small Villa',
     location: 'Bahria Town Phase 7, Rawalpindi',
     clientType: 'Residential Bungalow',
     gaugeSpec: '14-Gauge CNC Geometric Laser Cut MS',
@@ -1240,6 +1259,7 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
   {
     id: 'proj-showcase-5',
     title: 'Classical Arch Spanish Kothi',
+    category: 'Classical Home',
     location: 'DHA Phase 2, Islamabad',
     clientType: 'Classical Heritage Villa',
     gaugeSpec: 'Solid Hand-Forged Carbon Steel (20mm solid bars)',
@@ -1254,6 +1274,7 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
   {
     id: 'proj-showcase-6',
     title: 'Oversized Pivot Door Installation',
+    category: 'Aluminum & Glass',
     location: 'Sector F-7/2, Islamabad',
     clientType: 'Contemporary Architect Villa',
     gaugeSpec: '6063-T6 Thermal-Break Profile with 12mm Acoustic Glass',
@@ -1268,6 +1289,7 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
   {
     id: 'proj-showcase-7',
     title: 'Commercial Plaza Glass & Steel Sub-Frame',
+    category: 'Commercial',
     location: 'Sector G-13 Markaz, Islamabad',
     clientType: 'Commercial Corporate Plaza',
     gaugeSpec: 'Heavy I-Beam & Structural Channel Portal Trusses',
@@ -1282,6 +1304,7 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
   {
     id: 'proj-showcase-8',
     title: 'High-Security Double Gate & Perimeter Spikes',
+    category: 'Village House',
     location: 'Naval Anchorage, Islamabad',
     clientType: 'Private Residence Estate',
     gaugeSpec: '12-Gauge Thick Cold-Rolled Mild Steel',
@@ -1292,5 +1315,168 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
     image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
     link: '/portfolio',
     displayOrder: 8
+  }
+];
+
+export const SEED_WHAT_IS_YOUR_PROJECT: WhatIsYourProjectItem[] = [
+  {
+    id: 'wip-housing-society',
+    category: 'Housing Society',
+    title: 'Housing Society Infrastructure & Grand Gates',
+    tagline: 'Grand entrance gates, perimeter security & community infrastructure',
+    description: 'Monumental society entrances, automated boom barriers, boundary wall spike grills, and durable park steel fabrications.',
+    image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
+    itemsCount: 5,
+    primaryItem: 'Main Gates',
+    gaugeSpec: '12-Gauge Heavy Mild Steel Structural Channels',
+    finishSpec: 'Multi-Stage Zinc Primer & Epoxy Coating',
+    deliverables: 'Monumental Society Entrance, Security Spikes, Park Railings',
+    location: 'Islamabad / Rawalpindi',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over'
+  },
+  {
+    id: 'wip-modern-home',
+    category: 'Modern Home',
+    title: 'Modern Architecture & CNC Laser Gates',
+    tagline: 'Clean lines, laser-cut geometry & minimalist architecture',
+    description: 'Sleek architectural steelwork tailored for contemporary urban residences with fiber laser cutting.',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    itemsCount: 8,
+    primaryItem: 'Front Gates',
+    gaugeSpec: '14-Gauge MS & ±0.1mm CNC Fiber Laser',
+    finishSpec: 'Matte Jet-Black Electrostatic Powder Coat (200°C)',
+    deliverables: 'Main Driveway Gate, Boundary Wall Grills, Balcony Railings',
+    location: 'DHA Phase 2, Islamabad',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over'
+  },
+  {
+    id: 'wip-classical-home',
+    category: 'Classical Home',
+    title: 'Classical Heritage Wrought Iron Works',
+    tagline: 'Timeless wrought iron craftsmanship, scrollwork & royal crests',
+    description: 'Hand-forged ornamental wrought iron gates, classical balustrades, cast brass accents, and archway doors.',
+    image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
+    itemsCount: 8,
+    primaryItem: 'Front Gates',
+    gaugeSpec: 'Solid Hand-Forged Carbon Steel (20mm solid bars)',
+    finishSpec: 'Hand-Rubbed Antique Roman Bronze & Gold Leaf Accents',
+    deliverables: 'Arched Double Wrought Iron Driveway Gate, Curved Balustrades',
+    location: 'Sector F-7, Islamabad',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over'
+  },
+  {
+    id: 'wip-commercial',
+    category: 'Commercial',
+    title: 'Commercial Plaza & Industrial Entrances',
+    tagline: 'Industrial strength, motorized sliding systems & structural steel',
+    description: 'High-traffic commercial entrances, warehouse sliding doors, structural steel mezzanines, and emergency staircases.',
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
+    itemsCount: 6,
+    primaryItem: 'Main Gates',
+    gaugeSpec: 'Heavy I-Beam & Structural Channel Portal Trusses',
+    finishSpec: 'AkzoNobel High-Endurance Powder Coat',
+    deliverables: 'Multi-Storey Glass Curtain Sub-Frame, Fire Spiral Escape Stairs',
+    location: 'Sector G-13 Markaz, Islamabad',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over'
+  },
+  {
+    id: 'wip-modern-farmhouse',
+    category: 'Modern Farmhouse',
+    title: 'Modern Farmhouse Gates & Railings',
+    tagline: 'Rustic warmth meets industrial steel precision',
+    description: 'Modern ranch gates, cross-buck porch railings, oversized sliding barn doors, and black powder-coated perimeter fencing.',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+    itemsCount: 5,
+    primaryItem: 'Front Gates',
+    gaugeSpec: 'Schedule 40 Galvanized Heavy MS Pipes',
+    finishSpec: 'Triple Hot-Zinc Chemical Primer & Protective Powder Coat',
+    deliverables: 'Grand Entrance Gate, 1,200 RFT Security Fencing, Custom Porch Pergola',
+    location: 'Gulberg Greens, Islamabad',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over'
+  },
+  {
+    id: 'wip-classical-farmhouse',
+    category: 'Classical Farmhouse',
+    title: 'Classical Country Estate Entrances',
+    tagline: 'Stately country estate gates & heavy forged boundary elements',
+    description: 'Solid bar iron gates with spear finials, heavy duty stone-column mounting hardware, and estate driveway gates.',
+    image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80',
+    itemsCount: 5,
+    primaryItem: 'Main Gates',
+    gaugeSpec: 'Solid Forged Carbon Steel & Spear Finials',
+    finishSpec: 'Multi-Stage Marine Grade Primer & Matte Top Coat',
+    deliverables: 'Country Estate Double Swing Gates, Estate Perimeter Fencing',
+    location: 'Chak Shahzad, Islamabad',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over'
+  },
+  {
+    id: 'wip-village-house',
+    category: 'Village House',
+    title: 'Heavy Solid Security Gates',
+    tagline: 'Maximum security, solid steel plates & long-lasting durability',
+    description: 'Heavy gauge solid steel sheets, anti-theft window security grills, reinforced main entrance doors, and robust locking hardware.',
+    image: 'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1200&q=80',
+    itemsCount: 5,
+    primaryItem: 'Main Gates',
+    gaugeSpec: '12-Gauge Thick Cold-Rolled Mild Steel',
+    finishSpec: '7-Stage Chemical Pre-Treatment & Powder Oven Baked',
+    deliverables: 'Heavy Automated Swing Gate, 180 RFT Laser Precision Anti-Climb Spikes',
+    location: 'Naval Anchorage, Islamabad',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over'
+  },
+  {
+    id: 'wip-farm',
+    category: 'Farm',
+    title: 'Galvanized Farm & Livestock Barriers',
+    tagline: 'Galvanized cattle barriers, agricultural sheds & field gates',
+    description: 'Corrosion-proof hot-dip galvanized steel gates, cattle containment grids, heavy equipment shed trusses, and durable property protection.',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+    itemsCount: 4,
+    primaryItem: 'Main Gates',
+    gaugeSpec: 'Hot-Dip Galvanized Industrial Steel Pipes',
+    finishSpec: 'Hot-Dip Galvanized Anti-Corrosion (80 Microns)',
+    deliverables: 'Field Gates, Cattle Grids, Agricultural Machinery Sheds',
+    location: 'Rawat Industrial Estate, Rawalpindi',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over'
+  },
+  {
+    id: 'wip-small-villa',
+    category: 'Small Villa',
+    title: 'Compact Villa & Telescopic Sliding Gates',
+    tagline: 'Space-saving sliding, bi-fold & elegant compact steelwork',
+    description: 'Smart telescopic and bi-fold gates for limited driveway clearances, sleek terrace glass/steel railings, and slim-profile doors.',
+    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
+    itemsCount: 5,
+    primaryItem: 'Front Gates',
+    gaugeSpec: '14-Gauge CNC Geometric Laser Cut MS',
+    finishSpec: 'Charcoal Grey Electrostatic Powder Coat',
+    deliverables: 'Automated Sliding Gate with Italian Motor, Frameless Glass Balconies',
+    location: 'Bahria Town Phase 7, Rawalpindi',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over'
+  },
+  {
+    id: 'wip-aluminum-glass',
+    category: 'Aluminum & Glass',
+    title: 'Architectural Pivot Doors & Glass Facades',
+    tagline: 'Ultra-slim thermal profiles, architectural pivot doors & glass balustrades',
+    description: 'Thermally isolated aluminum window frames, double-glazed soundproof glass walls, frameless tempered glass railings, and pivot doors.',
+    image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+    itemsCount: 5,
+    primaryItem: 'Doors',
+    gaugeSpec: '6063-T6 Thermal-Break Profile with 12mm Acoustic Glass',
+    finishSpec: 'Deep Matte Anodized Architectural Black',
+    deliverables: '5x10 ft Hydraulic Floor-Spring Pivot Entrance Door & Laser Leveling',
+    location: 'Sector F-7/2, Islamabad',
+    status: 'ongoing',
+    statusLabel: 'Active Installation (90%)'
   }
 ];

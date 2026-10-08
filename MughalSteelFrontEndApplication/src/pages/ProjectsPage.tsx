@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
-import { SEED_PROJECTS, PROJECT_CATEGORIES_DATA } from '../data/seedData';
+import { SEED_PROJECTS, PROJECT_CATEGORIES_DATA, STANDARD_PROJECT_CATEGORIES } from '../data/seedData';
 import { useData } from '../context/DataContext';
 import { 
   MapPin, Calendar, ArrowRight, ArrowLeft, MessageCircle, Sparkles, 
@@ -28,6 +28,25 @@ export const ProjectsPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  // Standardized Fabrication Categories (Single Source of Truth)
+  const standardCategories = ['All', ...STANDARD_PROJECT_CATEGORIES];
+
+  // Auto-select category if passed in URL query param (e.g. /projects?category=Steel%20Doors or Doors)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const cat = params.get('category') || params.get('cat');
+    if (cat) {
+      const match = standardCategories.find(c => 
+        c.toLowerCase() === cat.toLowerCase() || 
+        (cat.toLowerCase() === 'doors' && c.toLowerCase().includes('door')) ||
+        (cat.toLowerCase().includes('gate') && c.toLowerCase().includes('gate'))
+      );
+      if (match) {
+        setSelectedCategory(match);
+      }
+    }
+  }, [location.search]);
+
   // Auto-scroll to #reviews when hash is present
   useEffect(() => {
     if (location.hash === '#reviews') {
@@ -54,21 +73,6 @@ export const ProjectsPage: React.FC = () => {
   });
 
   const rawProjects = projects && projects.length > 0 ? projects : SEED_PROJECTS;
-
-  // Standardized Fabrication Categories
-  const standardCategories = [
-    'All',
-    'Main Gates',
-    'Steel Doors',
-    'Grills',
-    'Railings',
-    'Staircases',
-    'Steel Windows',
-    'Custom Fabrication',
-    'Commercial',
-    'Modern Home',
-    'Classical Home'
-  ];
 
   // Enrich raw projects with multi-image gallery and engineering specifications
   const enrichedProjects: PortfolioProject[] = (rawProjects as any[]).map((p, idx) => {

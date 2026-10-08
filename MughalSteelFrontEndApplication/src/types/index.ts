@@ -377,8 +377,27 @@ export interface ProjectShowcaseItem {
   status: 'completed' | 'ongoing';
   statusLabel: string;
   image: string;
+  category?: string;
   link?: string;
   displayOrder?: number;
+}
+
+export interface WhatIsYourProjectItem {
+  id: string;
+  category: string;
+  title: string;
+  tagline: string;
+  description?: string;
+  image: string;
+  itemsCount: number;
+  primaryItem: string;
+  gaugeSpec?: string;
+  finishSpec?: string;
+  deliverables?: string | string[];
+  location?: string;
+  status?: 'completed' | 'ongoing';
+  statusLabel?: string;
+  updatedAt?: string;
 }
 
 export interface BlogPost {

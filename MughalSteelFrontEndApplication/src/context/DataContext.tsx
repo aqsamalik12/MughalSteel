@@ -2,9 +2,9 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import type { 
   Product, Quote, Order, CustomDesign, Review,
   Discount, ContactMessage, ActivityLog, Testimonial, WebsiteSettings, BlogPost,
-  ServiceItem, ProjectShowcase, TeamMember, ProjectShowcaseItem
+  ServiceItem, ProjectShowcase, TeamMember, ProjectShowcaseItem, WhatIsYourProjectItem
 } from '../types';
-import { SEED_PRODUCTS, SEED_TESTIMONIALS, SEED_BLOGS, SEED_SERVICES, SEED_PROJECTS, SEED_TEAM_MEMBERS, SEED_PROJECT_SHOWCASES, PROJECT_CATEGORIES_DATA, type CategoryInfo } from '../data/seedData';
+import { SEED_PRODUCTS, SEED_TESTIMONIALS, SEED_BLOGS, SEED_SERVICES, SEED_PROJECTS, SEED_TEAM_MEMBERS, SEED_PROJECT_SHOWCASES, SEED_WHAT_IS_YOUR_PROJECT, PROJECT_CATEGORIES_DATA, type CategoryInfo } from '../data/seedData';
 import { apiRequest } from '../utils/api';
 import { dbService, type DbStats } from '../services/indexedDb';
 
@@ -48,6 +48,10 @@ interface DataContextType {
   addProjectShowcase: (item: Omit<ProjectShowcaseItem, 'id'>) => Promise<ProjectShowcaseItem>;
   updateProjectShowcase: (item: ProjectShowcaseItem) => Promise<void>;
   deleteProjectShowcase: (id: string) => Promise<void>;
+  whatIsYourProject: WhatIsYourProjectItem[];
+  addWhatIsYourProjectItem: (item: Omit<WhatIsYourProjectItem, 'id'> | WhatIsYourProjectItem) => Promise<WhatIsYourProjectItem>;
+  updateWhatIsYourProjectItem: (item: WhatIsYourProjectItem) => Promise<void>;
+  deleteWhatIsYourProjectItem: (id: string) => Promise<void>;
   contactMessages: ContactMessage[];
   addContactMessage: (msg: Omit<ContactMessage, 'id' | 'createdAt' | 'status'>) => Promise<ContactMessage>;
   updateContactMessageStatus: (id: string, status: ContactMessage['status']) => Promise<void>;
@@ -78,7 +82,7 @@ interface DataContextType {
 const DEFAULT_SETTINGS: WebsiteSettings = {
   companyName: 'Mughal Steel Fabrication',
   tagline: 'Premium Architectural Steel Fabrication & CNC Laser Works',
-  phone: '03268575643',
+  phone: '03239898317',
   whatsappNumber: '03239898317',
   email: 'mughalsteelfabrication51@gmail.com',
   supportEmail: 'mughalsteelfabrication51@gmail.com',
@@ -127,6 +131,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           parsed.state = DEFAULT_SETTINGS.state;
           parsed.zipCode = DEFAULT_SETTINGS.zipCode;
           parsed.googleMapsUrl = DEFAULT_SETTINGS.googleMapsUrl;
+        }
+        if (!parsed.phone || parsed.phone.includes('0326') || parsed.phone.includes('5197825') || parsed.phone === '03268575643') {
+          parsed.phone = DEFAULT_SETTINGS.phone;
         }
         const merged = { ...DEFAULT_SETTINGS, ...parsed };
         localStorage.setItem('mfg_settings', JSON.stringify(merged));
@@ -197,6 +204,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return SEED_PROJECT_SHOWCASES;
     } catch {
       return SEED_PROJECT_SHOWCASES;
+    }
+  });
+
+  const [whatIsYourProject, setWhatIsYourProject] = useState<WhatIsYourProjectItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('mfg_what_is_your_project');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+      return SEED_WHAT_IS_YOUR_PROJECT;
+    } catch {
+      return SEED_WHAT_IS_YOUR_PROJECT;
     }
   });
   const [contactMessages, setContactMessages] = useState<ContactMessage[]>([]);
@@ -1161,6 +1183,31 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('mfg_project_showcases', JSON.stringify(updated));
   };
 
+  const addWhatIsYourProjectItem = async (item: Omit<WhatIsYourProjectItem, 'id'> | WhatIsYourProjectItem): Promise<WhatIsYourProjectItem> => {
+    const newItem: WhatIsYourProjectItem = {
+      ...item,
+      id: (item as any).id || `wip-${Date.now()}`
+    };
+    const updated = [newItem, ...whatIsYourProject];
+    setWhatIsYourProject(updated);
+    localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
+    return newItem;
+  };
+
+  const updateWhatIsYourProjectItem = async (item: WhatIsYourProjectItem) => {
+    const updated = whatIsYourProject.map(w => 
+      (w.id === item.id || w.category.toLowerCase() === item.category.toLowerCase()) ? item : w
+    );
+    setWhatIsYourProject(updated);
+    localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
+  };
+
+  const deleteWhatIsYourProjectItem = async (id: string) => {
+    const updated = whatIsYourProject.filter(w => w.id !== id && w.category !== id);
+    setWhatIsYourProject(updated);
+    localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
+  };
+
   const exportDatabase = async (): Promise<string> => {
     return dbService.exportDatabase();
   };
@@ -1206,6 +1253,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addProjectShowcase,
       updateProjectShowcase,
       deleteProjectShowcase,
+      whatIsYourProject,
+      addWhatIsYourProjectItem,
+      updateWhatIsYourProjectItem,
+      deleteWhatIsYourProjectItem,
       contactMessages,
 
       addContactMessage,

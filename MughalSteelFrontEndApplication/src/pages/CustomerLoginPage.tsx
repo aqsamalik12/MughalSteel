@@ -5,18 +5,18 @@ import { ArchitecturalAuthBackground } from '../components/auth/ArchitecturalAut
 import { 
   User, Lock, Mail, Eye, EyeOff, 
   ArrowRight, AlertTriangle, CheckCircle, RefreshCw,
-  ArrowLeft, ShieldCheck, Sparkles, ChevronDown, ChevronUp, KeyRound
+  ArrowLeft, ShieldCheck, Sparkles, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { handleImageError } from '../utils/imageFallback';
 
 export const CustomerLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, loginWithGoogle, register, resetPasswordDirectly, isAuthenticated, isAdmin, error: authError } = useAuth();
+  const { login, loginWithGoogle, register, isAuthenticated, isAdmin, error: authError } = useAuth();
 
-  // Mode: 'google' | 'email_login' | 'email_register' | 'forgot'
-  const [showEmailSection, setShowEmailSection] = useState(false);
-  const [emailMode, setEmailMode] = useState<'login' | 'register' | 'forgot'>('login');
+  // Mode: 'google' | 'email_login' | 'email_register'
+  const [showEmailSection, setShowEmailSection] = useState(true);
+  const [emailMode, setEmailMode] = useState<'login' | 'register'>('login');
 
   // Fields
   const [email, setEmail] = useState('');
@@ -25,8 +25,6 @@ export const CustomerLoginPage: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
-  const [forgotNewPassword, setForgotNewPassword] = useState('');
-  const [forgotConfirmPassword, setForgotConfirmPassword] = useState('');
 
   // UI state
   const [showPassword, setShowPassword] = useState(false);
@@ -178,48 +176,7 @@ export const CustomerLoginPage: React.FC = () => {
     }
   };
 
-  // Direct Password Reset
-  const handleForgotSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMessage(null);
-    setSuccessMessage(null);
-    setLoading(true);
 
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanPass = forgotNewPassword.trim();
-    const cleanConfirm = forgotConfirmPassword.trim();
-
-    if (!cleanEmail) {
-      setErrorMessage('Please enter your registered email address.');
-      setLoading(false);
-      return;
-    }
-
-    if (cleanPass.length < 6) {
-      setErrorMessage('New password must be at least 6 characters in length.');
-      setLoading(false);
-      return;
-    }
-
-    if (cleanPass !== cleanConfirm) {
-      setErrorMessage('Passwords do not match.');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      await resetPasswordDirectly(cleanEmail, cleanPass);
-      setPassword(cleanPass);
-      setForgotNewPassword('');
-      setForgotConfirmPassword('');
-      setSuccessMessage('Password updated successfully! You can now sign in with your new password.');
-      setEmailMode('login');
-    } catch {
-      setErrorMessage('Failed to update password. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-[#060911] text-stone-100 flex flex-col justify-between selection:bg-brand-gold selection:text-brand-dark relative font-sans overflow-hidden">
@@ -393,16 +350,7 @@ export const CustomerLoginPage: React.FC = () => {
                     </div>
 
                     <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <label className="block text-[11px] font-bold text-stone-300 uppercase tracking-wider">Password</label>
-                        <button
-                          type="button"
-                          onClick={() => setEmailMode('forgot')}
-                          className="text-[10.5px] text-brand-gold hover:underline cursor-pointer"
-                        >
-                          Forgot?
-                        </button>
-                      </div>
+                      <label className="block text-[11px] font-bold text-stone-300 uppercase tracking-wider">Password</label>
                       <div className="relative">
                         <input
                           type={showPassword ? 'text' : 'password'}
@@ -518,65 +466,7 @@ export const CustomerLoginPage: React.FC = () => {
                   </form>
                 )}
 
-                {/* Email Forgot Form */}
-                {emailMode === 'forgot' && (
-                  <form onSubmit={handleForgotSubmit} className="space-y-3">
-                    <div className="space-y-1">
-                      <label className="block text-[10px] font-bold text-stone-300 uppercase tracking-wider">Registered Email</label>
-                      <input
-                        type="email"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="name@domain.com"
-                        className="w-full px-2.5 py-1.5 bg-[#060911] border border-stone-700 rounded-lg text-xs text-stone-100 focus:outline-none focus:border-brand-gold"
-                      />
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="space-y-1">
-                        <label className="block text-[10px] font-bold text-stone-300 uppercase tracking-wider">New Password</label>
-                        <input
-                          type="password"
-                          required
-                          value={forgotNewPassword}
-                          onChange={(e) => setForgotNewPassword(e.target.value)}
-                          placeholder="Min 6 chars"
-                          className="w-full px-2.5 py-1.5 bg-[#060911] border border-stone-700 rounded-lg text-xs text-stone-100 focus:outline-none focus:border-brand-gold"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="block text-[10px] font-bold text-stone-300 uppercase tracking-wider">Confirm</label>
-                        <input
-                          type="password"
-                          required
-                          value={forgotConfirmPassword}
-                          onChange={(e) => setForgotConfirmPassword(e.target.value)}
-                          placeholder="Repeat"
-                          className="w-full px-2.5 py-1.5 bg-[#060911] border border-stone-700 rounded-lg text-xs text-stone-100 focus:outline-none focus:border-brand-gold"
-                        />
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full py-2.5 bg-brand-gold text-brand-dark font-heading font-bold text-xs uppercase tracking-wider rounded-lg hover:brightness-110 transition cursor-pointer disabled:opacity-50"
-                    >
-                      {loading ? 'Updating...' : 'Set New Password'}
-                    </button>
-
-                    <div className="text-center pt-1">
-                      <button
-                        type="button"
-                        onClick={() => setEmailMode('login')}
-                        className="text-[11px] text-stone-400 hover:text-brand-gold cursor-pointer"
-                      >
-                        Back to sign in
-                      </button>
-                    </div>
-                  </form>
-                )}
               </div>
             )}
           </div>

@@ -10,7 +10,7 @@ import {
   Layers, Package, Cog, User as UserIcon, Factory, Hammer,
   Send, Mail, Phone, ChevronLeft, ChevronRight, Quote, Volume2, VolumeX
 } from 'lucide-react';
-import { PROJECT_CATEGORIES_DATA, SEED_PROJECTS } from '../data/seedData';
+import { PROJECT_CATEGORIES_DATA, SEED_PROJECTS, STANDARD_PROJECT_CATEGORIES } from '../data/seedData';
 import { useSEO } from '../utils/useSEO';
 import { openDirectEmail } from '../utils/emailHelper';
 import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
@@ -28,7 +28,7 @@ export const HomePage: React.FC = () => {
   });
 
   const location = useLocation();
-  const { products, testimonials, addTestimonial, getWhatsAppUrl, categories, projects, settings, projectShowcases } = useData();
+  const { products, testimonials, addTestimonial, getWhatsAppUrl, categories, projects, settings, whatIsYourProject } = useData();
   const { formatPrice } = useCurrency();
   const activeCategories = (categories && categories.length > 0) ? categories : PROJECT_CATEGORIES_DATA;
 
@@ -44,8 +44,46 @@ export const HomePage: React.FC = () => {
   const [slideProgress, setSlideProgress] = useState(0);
   const [isHeroMuted, setIsHeroMuted] = useState(true);
 
-  // Interactive "What Is Your Project?" selector state
+  // Products type selector
   const [selectedProjectType, setSelectedProjectType] = useState<string>('all');
+
+  // =========================================================================
+  // MODULE 1: "WHAT IS YOUR PROJECT" (COMPLETELY SEPARATE & INDEPENDENT)
+  // =========================================================================
+  const [whatIsYourProjectCategory, setWhatIsYourProjectCategory] = useState<string>('All');
+
+  const handleSelectWhatIsYourProjectCategory = (categoryName: string) => {
+    // Only toggles category inside "What Is Your Project" - NO scroll, NO effect on Projects section
+    setWhatIsYourProjectCategory(prev => prev.toLowerCase() === categoryName.toLowerCase() ? 'All' : categoryName);
+  };
+
+  // =========================================================================
+  // MODULE 2: "PROJECTS" (COMPLETELY SEPARATE & INDEPENDENT)
+  // =========================================================================
+  const [selectedProjectCategory, setSelectedProjectCategory] = useState<string>('All');
+
+  const matchesProjectCategory = (proj: any, cat: string) => {
+    if (!cat || cat === 'All') return true;
+    const c = cat.toLowerCase();
+    
+    // Direct category match
+    if (proj.category && proj.category.toLowerCase() === c) return true;
+    
+    const text = `${proj.title || ''} ${proj.deliverables || ''} ${proj.scope || ''} ${proj.category || ''} ${proj.clientType || ''} ${proj.location || ''} ${proj.description || ''}`.toLowerCase();
+    
+    if (c === 'housing society') return text.includes('society') || text.includes('housing') || text.includes('ndu') || text.includes('community') || text.includes('institutional');
+    if (c === 'modern home') return text.includes('modern') || text.includes('residence') || text.includes('villa') || text.includes('laser');
+    if (c === 'classical home') return text.includes('classical') || text.includes('kothi') || text.includes('heritage') || text.includes('wrought');
+    if (c === 'commercial') return text.includes('commercial') || text.includes('plaza') || text.includes('corporate') || text.includes('cantilever');
+    if (c === 'modern farmhouse') return text.includes('modern farmhouse') || text.includes('gulberg greens') || text.includes('farmhouse') || text.includes('ranch');
+    if (c === 'classical farmhouse') return text.includes('classical farmhouse') || text.includes('estate') || text.includes('farmhouse');
+    if (c === 'village house') return text.includes('village') || text.includes('spikes') || text.includes('security') || text.includes('heavy');
+    if (c === 'farm') return text.includes('farm') || text.includes('galvanized') || text.includes('agricultural') || text.includes('cattle');
+    if (c === 'small villa') return text.includes('small villa') || text.includes('bahria') || text.includes('slimline') || text.includes('telescopic') || text.includes('villa');
+    if (c === 'aluminum & glass') return text.includes('aluminum') || text.includes('glass') || text.includes('pivot') || text.includes('curtain') || text.includes('balustrade');
+    
+    return text.includes(c);
+  };
 
   // Portfolio Completed vs Ongoing status filter state
   const [portfolioStatusTab, setPortfolioStatusTab] = useState<'all' | 'completed' | 'ongoing'>('all');
@@ -222,7 +260,7 @@ export const HomePage: React.FC = () => {
     },
     {
       title: 'Free Laser Survey & Estimation',
-      text: 'Twin Cities (Islamabad / Rawalpindi) & Nationwide Site Support • Call 0300-5197825'
+      text: 'Twin Cities (Islamabad / Rawalpindi) & Nationwide Site Support • Call 0323-9898317'
     }
   ];
 
@@ -603,13 +641,13 @@ export const HomePage: React.FC = () => {
                 {/* Direct Call Number Placed Directly UNDER the Explore Projects Buttons Section */}
                 <div className="pt-0.5">
                   <a 
-                    href="tel:03005197825"
+                    href="tel:03239898317"
                     className="inline-flex items-center gap-1.5 text-white hover:text-[#cca04b] font-heading font-bold text-xs tracking-wider py-0.5 transition-colors drop-shadow group"
                   >
                     <div className="w-5 h-5 rounded-full bg-[#cca04b]/20 flex items-center justify-center group-hover:bg-[#cca04b]/30 transition-colors">
                       <Phone className="w-3 h-3 text-[#cca04b]" />
                     </div>
-                    <span className="font-mono font-bold text-stone-100 text-xs">0300-5197825</span>
+                    <span className="font-mono font-bold text-stone-100 text-xs">0323-9898317</span>
                   </a>
                 </div>
 
@@ -714,13 +752,13 @@ export const HomePage: React.FC = () => {
                 {/* Direct Call Number Placed Directly UNDER the Explore Projects Buttons Section */}
                 <div className="pt-0.5">
                   <a 
-                    href="tel:03005197825"
+                    href="tel:03239898317"
                     className="inline-flex items-center gap-1.5 text-white hover:text-[#cca04b] font-heading font-bold text-xs tracking-wider py-0.5 transition-colors drop-shadow group"
                   >
                     <div className="w-5 h-5 rounded-full bg-[#cca04b]/20 flex items-center justify-center group-hover:bg-[#cca04b]/30 transition-colors">
                       <Phone className="w-3 h-3 text-[#cca04b]" />
                     </div>
-                    <span className="font-mono font-bold text-stone-100 text-xs">0300-5197825</span>
+                    <span className="font-mono font-bold text-stone-100 text-xs">0323-9898317</span>
                   </a>
                 </div>
               </div>
@@ -896,6 +934,15 @@ export const HomePage: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-3">
+                {whatIsYourProjectCategory !== 'All' && (
+                  <button
+                    type="button"
+                    onClick={() => setWhatIsYourProjectCategory('All')}
+                    className="text-xs font-heading font-bold text-slate-300 hover:text-brand-gold px-3 py-1.5 rounded-lg bg-black/60 border border-brand-light/50 transition cursor-pointer"
+                  >
+                    Show All
+                  </button>
+                )}
                 <Link to="/portfolio" className="text-xs font-heading font-bold text-brand-gold hover:underline flex items-center gap-1">
                   <span>View Portfolio</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -903,88 +950,154 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
 
-            {/* Showcase Projects Responsive Grid with Real Photos */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-              {projectShowcases.map((proj) => {
-                const isOngoing = proj.status === 'ongoing';
-                return (
-                  <div 
-                    key={`finder-${proj.id}`}
-                    className="group bg-[#060A12] border border-brand-light/60 hover:border-brand-gold rounded-xl overflow-hidden transition-all duration-300 shadow-xl flex flex-col justify-between card-interactive"
-                  >
-                    {/* Project Image Header with Status Tag */}
-                    <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
-                      <img 
-                        src={proj.image || FALLBACK_IMAGE_URL} 
-                        alt={proj.title} 
-                        loading="lazy"
-                        decoding="async"
-                        onError={handleImageError}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      
-                      {/* Location Tag */}
-                      <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-stone-200">
-                        <span className="text-[11px] font-mono font-bold text-brand-gold flex items-center gap-1 drop-shadow">
-                          <MapPin className="w-3.5 h-3.5" />
-                          <span>{proj.location}</span>
+            {/* 10 Standard Fabrication Categories Selector Grid (Independent to What Is Your Project) */}
+            <div className="space-y-3 pt-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-heading font-black uppercase tracking-wider text-brand-gold flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse" />
+                  <span>Choose Your Project Category ({whatIsYourProject.length} Categories):</span>
+                </span>
+                {whatIsYourProjectCategory !== 'All' && (
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 rounded">
+                    Selected: {whatIsYourProjectCategory}
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+                {whatIsYourProject.map((item) => {
+                  const isActive = whatIsYourProjectCategory.toLowerCase() === item.category.toLowerCase();
+                  return (
+                    <button
+                      key={`wip-cat-${item.id || item.category}`}
+                      type="button"
+                      onClick={() => handleSelectWhatIsYourProjectCategory(item.category)}
+                      className={`group p-3 rounded-xl border text-left transition-all duration-300 cursor-pointer flex flex-col justify-between relative overflow-hidden card-interactive ${
+                        isActive
+                          ? 'bg-gradient-to-b from-[#14233D] to-[#0A1322] border-brand-gold shadow-[0_0_20px_rgba(204,160,75,0.35)] ring-1 ring-brand-gold scale-[1.02]'
+                          : 'bg-[#0B1322]/90 hover:bg-[#101B30] border-slate-700/60 text-stone-200 hover:border-brand-gold/80'
+                      }`}
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-1">
+                          <h4 className="font-heading font-black text-xs sm:text-[13px] uppercase tracking-wide text-stone-100 group-hover:text-brand-gold truncate">
+                            {item.category}
+                          </h4>
+                          <ArrowRight className="w-3.5 h-3.5 text-brand-gold shrink-0 transition-transform group-hover:translate-x-0.5" />
+                        </div>
+                        <p className="text-[10px] text-slate-400 line-clamp-1 font-sans">
+                          {item.tagline}
+                        </p>
+                      </div>
+                      <div className="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center justify-between text-[10px]">
+                        <span className="font-mono font-bold text-brand-gold">
+                          {item.itemsCount || 5} Items
                         </span>
-                        <span className="text-[10px] font-mono bg-black/70 px-2 py-0.5 rounded text-stone-300 border border-white/10">
-                          {proj.clientType}
+                        <span className="text-slate-400 font-sans truncate max-w-[55%] text-right">
+                          {item.primaryItem || 'Main Gates'}
                         </span>
                       </div>
-                    </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-                    {/* Content Body */}
-                    <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
-                      <div className="space-y-1.5">
-                        <h4 className="font-heading font-black text-sm text-stone-100 group-hover:text-brand-gold transition-colors uppercase leading-snug line-clamp-1">
-                          {proj.title}
-                        </h4>
-                        
-                        {/* Specs Box */}
-                        <div className="bg-black/60 border border-brand-light/40 p-2.5 rounded-lg space-y-1 text-[11px] font-sans">
-                          <div className="flex items-start gap-1 text-stone-200">
-                            <strong className="text-brand-gold shrink-0">Steel Gauge:</strong>
-                            <span className="text-slate-300 truncate">{proj.gaugeSpec}</span>
+            {/* Showcase Projects Responsive Grid (Independent Images for What Is Your Project) */}
+            {(() => {
+              const displayWipCards = whatIsYourProjectCategory === 'All'
+                ? whatIsYourProject
+                : whatIsYourProject.filter(w => w.category.toLowerCase() === whatIsYourProjectCategory.toLowerCase());
+
+              return (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                  {displayWipCards.map((proj) => {
+                    const isOngoing = proj.status === 'ongoing';
+                    return (
+                      <div 
+                        key={`wip-card-${proj.id}`}
+                        className="group bg-[#060A12] border border-brand-light/60 hover:border-brand-gold rounded-xl overflow-hidden transition-all duration-300 shadow-xl flex flex-col justify-between card-interactive"
+                      >
+                        {/* Project Image Header with Category Tag */}
+                        <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
+                          <img 
+                            src={proj.image || FALLBACK_IMAGE_URL} 
+                            alt={proj.title} 
+                            loading="lazy"
+                            decoding="async"
+                            onError={handleImageError}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                          
+                          {/* Location & Category Tag */}
+                          <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-stone-200">
+                            <span className="text-[11px] font-mono font-bold text-brand-gold flex items-center gap-1 drop-shadow">
+                              <MapPin className="w-3.5 h-3.5" />
+                              <span>{proj.location || 'Twin Cities'}</span>
+                            </span>
+                            <span className="text-[10px] font-mono bg-black/70 px-2 py-0.5 rounded text-stone-300 border border-white/10">
+                              {proj.category}
+                            </span>
                           </div>
-                          <div className="flex items-start gap-1 text-stone-200">
-                            <strong className="text-brand-gold shrink-0">Finishing:</strong>
-                            <span className="text-slate-300 truncate">{proj.finishSpec}</span>
+                        </div>
+
+                        {/* Content Body */}
+                        <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                          <div className="space-y-1.5">
+                            <h4 className="font-heading font-black text-sm text-stone-100 group-hover:text-brand-gold transition-colors uppercase leading-snug line-clamp-1">
+                              {proj.title}
+                            </h4>
+                            
+                            {/* Specs Box */}
+                            <div className="bg-black/60 border border-brand-light/40 p-2.5 rounded-lg space-y-1 text-[11px] font-sans">
+                              {proj.gaugeSpec && (
+                                <div className="flex items-start gap-1 text-stone-200">
+                                  <strong className="text-brand-gold shrink-0">Steel Gauge:</strong>
+                                  <span className="text-slate-300 truncate">{proj.gaugeSpec}</span>
+                                </div>
+                              )}
+                              {proj.finishSpec && (
+                                <div className="flex items-start gap-1 text-stone-200">
+                                  <strong className="text-brand-gold shrink-0">Finishing:</strong>
+                                  <span className="text-slate-300 truncate">{proj.finishSpec}</span>
+                                </div>
+                              )}
+                              {proj.deliverables && (
+                                <div className="flex items-start gap-1 text-stone-200">
+                                  <strong className="text-brand-gold shrink-0">Scope:</strong>
+                                  <span className="text-slate-300 truncate">{proj.deliverables}</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          <div className="flex items-start gap-1 text-stone-200">
-                            <strong className="text-brand-gold shrink-0">Scope:</strong>
-                            <span className="text-slate-300 truncate">{proj.deliverables}</span>
+
+                          {/* Action Buttons */}
+                          <div className="pt-2 border-t border-brand-light/40 flex items-center justify-between gap-2">
+                            <a
+                              href={getWhatsAppUrl(`*WHAT IS YOUR PROJECT INQUIRY*\nI am interested in category: ${proj.category} (${proj.title}).\nPlease share technical catalog and price quotation.`)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn-navy text-[10px] py-1.5 px-3 font-bold uppercase tracking-wider flex items-center gap-1 w-full justify-center"
+                            >
+                              <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+                              <span>Inquire Category</span>
+                            </a>
+
+                            <Link
+                              to="/quote"
+                              className="btn-gold text-[10px] py-1.5 px-3 font-bold uppercase tracking-wider flex items-center gap-1 shrink-0"
+                            >
+                              <span>Get Rate</span>
+                              <ArrowRight className="w-3 h-3" />
+                            </Link>
                           </div>
                         </div>
                       </div>
-
-                      {/* Action Buttons */}
-                      <div className="pt-2 border-t border-brand-light/40 flex items-center justify-between gap-2">
-                        <a
-                          href={getWhatsAppUrl(`*PROJECT INQUIRY*\nI am interested in project: ${proj.title} located at ${proj.location}.\nPlease share complete technical drawing, material specifications, and quotation.`)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-navy text-[10px] py-1.5 px-3 font-bold uppercase tracking-wider flex items-center gap-1 w-full justify-center"
-                        >
-                          <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>Inquire Site</span>
-                        </a>
-
-                        <Link
-                          to="/quote"
-                          className="btn-gold text-[10px] py-1.5 px-3 font-bold uppercase tracking-wider flex items-center gap-1 shrink-0"
-                        >
-                          <span>Get Rate</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Section Header with Slider Navigation Controls */}
@@ -1403,25 +1516,77 @@ export const HomePage: React.FC = () => {
             })}
           </div>
 
+          {/* Project Categories Navbar (10 Categories + All) - Single Source of Truth */}
+          <div className="space-y-2 pt-1">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-heading font-black uppercase tracking-wider text-brand-gold flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-brand-gold" />
+                <span>Fabrication Categories ({STANDARD_PROJECT_CATEGORIES.length} Categories):</span>
+              </span>
+              {selectedProjectCategory !== 'All' && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedProjectCategory('All')}
+                  className="text-[11px] font-heading font-bold text-brand-gold hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <span>Show All Categories</span>
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+            
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2.5 px-3 bg-[#05080E] rounded-xl border border-brand-light/50 shadow-inner">
+              {['All', ...STANDARD_PROJECT_CATEGORIES].map((catName) => {
+                const isSelected = selectedProjectCategory.toLowerCase() === catName.toLowerCase();
+                return (
+                  <button
+                    key={`proj-nav-${catName}`}
+                    type="button"
+                    onClick={() => setSelectedProjectCategory(catName)}
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-heading font-bold uppercase transition-all whitespace-nowrap cursor-pointer shrink-0 card-interactive ${
+                      isSelected
+                        ? 'bg-brand-gold text-brand-dark shadow-[0_0_15px_rgba(204,160,75,0.4)] font-black scale-105'
+                        : 'bg-[#080D18] text-slate-300 hover:text-white border border-brand-light/60 hover:border-brand-gold/60'
+                    }`}
+                  >
+                    {catName}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Projects Showcase Cards Grid */}
           {(() => {
-            const filteredProjects = portfolioStatusTab === 'all'
-              ? projectShowcases
-              : projectShowcases.filter(p => p.status === portfolioStatusTab);
+            let filteredProjects = portfolioStatusTab === 'all'
+              ? projects
+              : projects.filter(p => (p.status || 'Completed').toLowerCase() === portfolioStatusTab.toLowerCase());
+
+            if (selectedProjectCategory !== 'All') {
+              const categoryFiltered = filteredProjects.filter(p => matchesProjectCategory(p, selectedProjectCategory));
+              if (categoryFiltered.length > 0) {
+                filteredProjects = categoryFiltered;
+              } else {
+                const anyMatching = projects.filter(p => matchesProjectCategory(p, selectedProjectCategory));
+                if (anyMatching.length > 0) {
+                  filteredProjects = anyMatching;
+                }
+              }
+            }
 
             return (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
                 {filteredProjects.map((proj) => {
-                  const isOngoing = proj.status === 'ongoing';
+                  const isOngoing = (proj.status || '').toLowerCase() === 'ongoing';
                   return (
                     <div 
-                      key={proj.id}
+                      key={`proj-card-${proj.id}`}
                       className="group bg-brand-navy border border-brand-light/60 rounded-xl overflow-hidden hover:border-brand-gold transition-all duration-300 shadow-2xl flex flex-col justify-between card-interactive"
                     >
                       {/* Image Header with Status Tag */}
                       <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
                         <img 
-                          src={proj.image || FALLBACK_IMAGE_URL} 
+                          src={proj.image || (proj as any).coverImage || FALLBACK_IMAGE_URL} 
                           alt={proj.title}
                           loading="lazy"
                           decoding="async"
@@ -1437,7 +1602,7 @@ export const HomePage: React.FC = () => {
                             <span>{proj.location}</span>
                           </span>
                           <span className="text-[10px] font-mono bg-black/60 px-2 py-0.5 rounded text-stone-300 border border-white/10">
-                            {proj.clientType}
+                            {proj.clientType || proj.projectType || 'Project'}
                           </span>
                         </div>
                       </div>
@@ -1453,15 +1618,15 @@ export const HomePage: React.FC = () => {
                           <div className="bg-black/50 border border-brand-light/40 p-2.5 rounded-lg space-y-1 text-[11px] font-sans">
                             <div className="flex items-start gap-1.5 text-stone-200">
                               <strong className="text-brand-gold shrink-0">Steel Gauge:</strong>
-                              <span className="text-slate-300 truncate">{proj.gaugeSpec}</span>
+                              <span className="text-slate-300 truncate">{proj.specs?.gauge || '14-Gauge (2.0mm) & 12-Gauge (2.5mm)'}</span>
                             </div>
                             <div className="flex items-start gap-1.5 text-stone-200">
                               <strong className="text-brand-gold shrink-0">Finishing:</strong>
-                              <span className="text-slate-300 truncate">{proj.finishSpec}</span>
+                              <span className="text-slate-300 truncate">{proj.specs?.finish || 'Multi-Stage Zinc Primer & Powder Coat'}</span>
                             </div>
                             <div className="flex items-start gap-1.5 text-stone-200">
                               <strong className="text-brand-gold shrink-0">Scope:</strong>
-                              <span className="text-slate-300 truncate">{proj.deliverables}</span>
+                              <span className="text-slate-300 truncate">{Array.isArray(proj.deliverables) ? proj.deliverables.join(', ') : (proj.deliverables || proj.description || 'Complete On-Site Execution')}</span>
                             </div>
                           </div>
                         </div>
@@ -1497,7 +1662,7 @@ export const HomePage: React.FC = () => {
           {/* Bottom Action Strip */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-brand-light/30">
             <Link 
-              to="/portfolio"
+              to={selectedProjectCategory !== 'All' ? `/portfolio?category=${encodeURIComponent(selectedProjectCategory)}` : '/portfolio'}
               className="btn-gold text-xs py-3 px-8 uppercase font-bold tracking-wider shadow-lg"
             >
               <span>View All 10 Architectural Categories</span>
