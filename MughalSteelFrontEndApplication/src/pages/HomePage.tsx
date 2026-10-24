@@ -950,51 +950,86 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
 
-            {/* 10 Standard Fabrication Categories Selector Grid (Independent to What Is Your Project) */}
+            {/* 10 Standard Fabrication Categories Selector Grid with Admin-Uploaded Images */}
             <div className="space-y-3 pt-1">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-heading font-black uppercase tracking-wider text-brand-gold flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse" />
-                  <span>Choose Your Project Category ({whatIsYourProject.length} Categories):</span>
+                  <span>Choose Your Project Category ({whatIsYourProject.length} Categories Available):</span>
                 </span>
                 {whatIsYourProjectCategory !== 'All' && (
-                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 rounded">
-                    Selected: {whatIsYourProjectCategory}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setWhatIsYourProjectCategory('All')}
+                    className="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/40 px-2.5 py-0.5 rounded hover:bg-emerald-900/40 transition cursor-pointer flex items-center gap-1"
+                  >
+                    <span>Selected: <strong>{whatIsYourProjectCategory}</strong></span>
+                    <span className="text-stone-400 hover:text-white ml-1">✕ Reset</span>
+                  </button>
                 )}
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+
+              {/* Category Grid with Admin Images */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
                 {whatIsYourProject.map((item) => {
                   const isActive = whatIsYourProjectCategory.toLowerCase() === item.category.toLowerCase();
+                  const designsCount = item.designs?.length || item.itemsCount || 0;
                   return (
                     <button
                       key={`wip-cat-${item.id || item.category}`}
                       type="button"
                       onClick={() => handleSelectWhatIsYourProjectCategory(item.category)}
-                      className={`group p-3 rounded-xl border text-left transition-all duration-300 cursor-pointer flex flex-col justify-between relative overflow-hidden card-interactive ${
+                      className={`group rounded-xl border text-left transition-all duration-300 cursor-pointer flex flex-col justify-between relative overflow-hidden card-interactive ${
                         isActive
-                          ? 'bg-gradient-to-b from-[#14233D] to-[#0A1322] border-brand-gold shadow-[0_0_20px_rgba(204,160,75,0.35)] ring-1 ring-brand-gold scale-[1.02]'
+                          ? 'bg-gradient-to-b from-[#14233D] to-[#0A1322] border-brand-gold shadow-[0_0_20px_rgba(204,160,75,0.4)] ring-2 ring-brand-gold scale-[1.02]'
                           : 'bg-[#0B1322]/90 hover:bg-[#101B30] border-slate-700/60 text-stone-200 hover:border-brand-gold/80'
                       }`}
                     >
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between gap-1">
-                          <h4 className="font-heading font-black text-xs sm:text-[13px] uppercase tracking-wide text-stone-100 group-hover:text-brand-gold truncate">
-                            {item.category}
-                          </h4>
-                          <ArrowRight className="w-3.5 h-3.5 text-brand-gold shrink-0 transition-transform group-hover:translate-x-0.5" />
+                      {/* Category Image Box */}
+                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/80">
+                        <img 
+                          src={item.image || FALLBACK_IMAGE_URL} 
+                          alt={item.category} 
+                          loading="lazy"
+                          onError={handleImageError}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0B1322] via-[#0B1322]/30 to-transparent" />
+                        <div className="absolute top-1.5 right-1.5">
+                          <span className="font-mono text-[9px] font-black px-1.5 py-0.5 rounded bg-black/80 text-brand-gold border border-brand-gold/40 shadow">
+                            {designsCount} Designs
+                          </span>
                         </div>
-                        <p className="text-[10px] text-slate-400 line-clamp-1 font-sans">
-                          {item.tagline}
-                        </p>
+                        {isActive && (
+                          <div className="absolute top-1.5 left-1.5">
+                            <span className="text-[9px] font-mono font-bold bg-brand-gold text-brand-dark px-1.5 py-0.2 rounded shadow">
+                              ACTIVE
+                            </span>
+                          </div>
+                        )}
                       </div>
-                      <div className="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center justify-between text-[10px]">
-                        <span className="font-mono font-bold text-brand-gold">
-                          {item.itemsCount || 5} Items
-                        </span>
-                        <span className="text-slate-400 font-sans truncate max-w-[55%] text-right">
-                          {item.primaryItem || 'Main Gates'}
-                        </span>
+
+                      {/* Title & Info */}
+                      <div className="p-3 space-y-1 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between gap-1">
+                            <h4 className="font-heading font-black text-xs sm:text-[13px] uppercase tracking-wide text-stone-100 group-hover:text-brand-gold truncate">
+                              {item.category}
+                            </h4>
+                            <ArrowRight className="w-3.5 h-3.5 text-brand-gold shrink-0 transition-transform group-hover:translate-x-0.5" />
+                          </div>
+                          <p className="text-[10px] text-slate-400 line-clamp-1 font-sans mt-0.5">
+                            {item.tagline}
+                          </p>
+                        </div>
+                        <div className="mt-2 pt-1.5 border-t border-slate-700/60 flex items-center justify-between text-[10px]">
+                          <span className="font-mono font-bold text-brand-gold">
+                            {item.primaryItem || 'Main Gates'}
+                          </span>
+                          <span className="text-slate-400 font-sans truncate text-right text-[9px]">
+                            Click to View
+                          </span>
+                        </div>
                       </div>
                     </button>
                   );
@@ -1002,16 +1037,215 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
 
-            {/* Showcase Projects Responsive Grid (Independent Images for What Is Your Project) */}
+            {/* Designs Showcase for Selected Category */}
             {(() => {
-              const displayWipCards = whatIsYourProjectCategory === 'All'
-                ? whatIsYourProject
-                : whatIsYourProject.filter(w => w.category.toLowerCase() === whatIsYourProjectCategory.toLowerCase());
+              const selectedCatObj = whatIsYourProjectCategory !== 'All'
+                ? whatIsYourProject.find(w => w.category.toLowerCase() === whatIsYourProjectCategory.toLowerCase())
+                : null;
 
+              // Helper to resolve associated product
+              const getMatchedProduct = (design: any, categoryName: string) => {
+                if (design.associatedProductId) {
+                  const match = products.find(p => 
+                    p.id === design.associatedProductId || 
+                    p.slug === design.associatedProductId ||
+                    p.productCode === design.associatedProductId
+                  );
+                  if (match) return match;
+                }
+                if (design.associatedProductCode) {
+                  const match = products.find(p => 
+                    p.productCode.toLowerCase() === design.associatedProductCode.toLowerCase()
+                  );
+                  if (match) return match;
+                }
+                const matchCat = products.find(p => 
+                  p.category.toLowerCase().includes(categoryName.toLowerCase()) &&
+                  (design.itemType ? p.item.toLowerCase() === design.itemType.toLowerCase() : true)
+                );
+                return matchCat || products.find(p => p.category.toLowerCase().includes(categoryName.toLowerCase())) || products[0];
+              };
+
+              // If a category is selected, show its designs
+              if (selectedCatObj) {
+                const designs = selectedCatObj.designs || [];
+                return (
+                  <div className="space-y-5 pt-2">
+                    {/* Category Selected Header Banner */}
+                    <div className="bg-[#09101E] border border-brand-gold/40 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-heading font-black uppercase text-brand-gold">
+                            Category: {selectedCatObj.category}
+                          </span>
+                          <span className="text-[10px] font-mono bg-brand-gold/20 text-brand-gold px-2 py-0.2 rounded border border-brand-gold/40">
+                            {designs.length} Designs Available
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-300">
+                          {selectedCatObj.description || selectedCatObj.tagline}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => setWhatIsYourProjectCategory('All')}
+                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-white/5 hover:bg-white/10 text-stone-200 border border-slate-700/60 transition cursor-pointer flex items-center gap-1"
+                        >
+                          <span>← Back to Categories</span>
+                        </button>
+                        <Link
+                          to={`/what-is-your-project/${encodeURIComponent(selectedCatObj.category)}`}
+                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-gold text-brand-dark hover:brightness-110 transition flex items-center gap-1"
+                        >
+                          <span>Full Collection View</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Designs Grid */}
+                    {designs.length === 0 ? (
+                      <div className="p-8 bg-[#070D18] border border-brand-light/40 rounded-xl text-center space-y-3">
+                        <p className="text-xs text-slate-400">
+                          No designs uploaded yet for {selectedCatObj.category}. Please check our full catalog or contact us for custom fabrication.
+                        </p>
+                        <Link to="/products" className="btn-gold text-xs py-2 px-4 font-bold inline-block">
+                          Browse All Products
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                        {designs.map((design) => {
+                          const matchedProduct = getMatchedProduct(design, selectedCatObj.category);
+                          const rate = design.pricePerSqFt || matchedProduct?.pricePerSqFt || 2500;
+                          const productSlug = matchedProduct?.slug || matchedProduct?.id || 'prod-mfg-g001';
+                          const productCode = design.associatedProductCode || matchedProduct?.productCode || 'MFG-001';
+
+                          return (
+                            <div
+                              key={`wip-des-${design.id}`}
+                              className="group bg-[#060A12] border border-brand-light/60 hover:border-brand-gold rounded-xl overflow-hidden transition-all duration-300 shadow-xl flex flex-col justify-between card-interactive"
+                            >
+                              {/* Image Box */}
+                              <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
+                                <img
+                                  src={design.image || matchedProduct?.images?.[0] || FALLBACK_IMAGE_URL}
+                                  alt={design.title}
+                                  loading="lazy"
+                                  onError={handleImageError}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+
+                                <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1">
+                                  <span className="text-[10px] font-mono font-bold bg-black/80 text-brand-gold border border-brand-gold/40 px-2 py-0.5 rounded shadow">
+                                    {design.itemType || selectedCatObj.primaryItem || 'Fabrication'}
+                                  </span>
+                                  <span className="text-[10px] font-mono bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded shadow">
+                                    Code: {productCode}
+                                  </span>
+                                </div>
+
+                                <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-stone-200">
+                                  <span className="text-xs font-mono font-black text-brand-gold bg-black/70 px-2 py-0.5 rounded border border-brand-gold/30">
+                                    {formatPrice(rate)} / sq.ft
+                                  </span>
+                                  <Link
+                                    to={`/try-at-home?product=${productCode}`}
+                                    className="text-[10px] font-bold text-stone-300 hover:text-brand-gold bg-black/70 px-2 py-0.5 rounded border border-white/20 flex items-center gap-1"
+                                    title="Try on house photo"
+                                  >
+                                    <Eye className="w-3 h-3 text-brand-gold" />
+                                    <span>Try at Home</span>
+                                  </Link>
+                                </div>
+                              </div>
+
+                              {/* Body */}
+                              <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                                <div className="space-y-1.5">
+                                  <h4 className="font-heading font-black text-sm text-stone-100 group-hover:text-brand-gold transition-colors uppercase leading-snug line-clamp-1">
+                                    {design.title}
+                                  </h4>
+                                  <p className="text-[11px] text-slate-400 font-sans line-clamp-2 leading-relaxed">
+                                    {design.description || `${selectedCatObj.category} architectural design with certified steel framing.`}
+                                  </p>
+
+                                  {/* Specs */}
+                                  <div className="bg-black/60 border border-brand-light/40 p-2.5 rounded-lg space-y-1 text-[11px] font-mono">
+                                    {(design.gaugeSpec || selectedCatObj.gaugeSpec) && (
+                                      <div className="flex items-start justify-between text-stone-300 text-[10px]">
+                                        <span className="text-brand-gold">Steel Gauge:</span>
+                                        <span className="text-slate-300 truncate max-w-[65%]">
+                                          {design.gaugeSpec || selectedCatObj.gaugeSpec}
+                                        </span>
+                                      </div>
+                                    )}
+                                    {(design.finishSpec || selectedCatObj.finishSpec) && (
+                                      <div className="flex items-start justify-between text-stone-300 text-[10px]">
+                                        <span className="text-brand-gold">Finishing:</span>
+                                        <span className="text-slate-300 truncate max-w-[65%]">
+                                          {design.finishSpec || selectedCatObj.finishSpec}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Order & Collection Action Buttons */}
+                                <div className="pt-2 border-t border-brand-light/40 space-y-2">
+                                  <Link
+                                    to={`/product/${productSlug}`}
+                                    className="btn-gold text-xs py-2 px-3 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 w-full shadow-lg"
+                                  >
+                                    <Calculator className="w-3.5 h-3.5" />
+                                    <span>Size &amp; Price Calculator</span>
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                  </Link>
+
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <Link
+                                      to={`/items?item=${encodeURIComponent(design.itemType || 'Front Gates')}&category=${encodeURIComponent(selectedCatObj.category)}`}
+                                      className="btn-navy text-[10px] py-1.5 px-2 font-bold uppercase text-center flex items-center justify-center gap-1"
+                                      title="View design collection"
+                                    >
+                                      <Layers className="w-3 h-3 text-brand-gold" />
+                                      <span>Collection</span>
+                                    </Link>
+
+                                    <a
+                                      href={getWhatsAppUrl(`*WHAT IS YOUR PROJECT ORDER INQUIRY*\nCategory: ${selectedCatObj.category}\nDesign: ${design.title}\nProduct Code: ${productCode}\nEstimated Rate: Rs. ${rate.toLocaleString()} / sq.ft\nImage: ${design.image}\n\nHello Mughal Steel, I want to order this project design. Please share details.`)}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="btn-whatsapp text-[10px] py-1.5 px-2 font-bold uppercase text-center flex items-center justify-center gap-1"
+                                    >
+                                      <MessageCircle className="w-3 h-3" />
+                                      <span>WhatsApp</span>
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              // When "All" is active, display category showcase cards with direct access to designs
               return (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                  {displayWipCards.map((proj) => {
-                    const isOngoing = proj.status === 'ongoing';
+                  {whatIsYourProject.map((proj) => {
+                    const firstDesign = proj.designs?.[0];
+                    const matchedProduct = getMatchedProduct(firstDesign || {}, proj.category);
+                    const rate = firstDesign?.pricePerSqFt || matchedProduct?.pricePerSqFt || 2500;
+                    const productSlug = matchedProduct?.slug || matchedProduct?.id || 'prod-mfg-g001';
+                    const designsCount = proj.designs?.length || proj.itemsCount || 0;
+
                     return (
                       <div 
                         key={`wip-card-${proj.id}`}
@@ -1023,7 +1257,6 @@ export const HomePage: React.FC = () => {
                             src={proj.image || FALLBACK_IMAGE_URL} 
                             alt={proj.title} 
                             loading="lazy"
-                            decoding="async"
                             onError={handleImageError}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                           />
@@ -1035,8 +1268,8 @@ export const HomePage: React.FC = () => {
                               <MapPin className="w-3.5 h-3.5" />
                               <span>{proj.location || 'Twin Cities'}</span>
                             </span>
-                            <span className="text-[10px] font-mono bg-black/70 px-2 py-0.5 rounded text-stone-300 border border-white/10">
-                              {proj.category}
+                            <span className="text-[10px] font-mono bg-black/80 text-brand-gold px-2 py-0.5 rounded border border-brand-gold/30">
+                              {designsCount} Designs
                             </span>
                           </div>
                         </div>
@@ -1044,6 +1277,15 @@ export const HomePage: React.FC = () => {
                         {/* Content Body */}
                         <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
                           <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-mono text-emerald-400 uppercase font-bold">
+                                {proj.category}
+                              </span>
+                              <span className="text-[10px] font-mono text-brand-gold">
+                                Rate: {formatPrice(rate)}/sq.ft
+                              </span>
+                            </div>
+
                             <h4 className="font-heading font-black text-sm text-stone-100 group-hover:text-brand-gold transition-colors uppercase leading-snug line-clamp-1">
                               {proj.title}
                             </h4>
@@ -1062,34 +1304,45 @@ export const HomePage: React.FC = () => {
                                   <span className="text-slate-300 truncate">{proj.finishSpec}</span>
                                 </div>
                               )}
-                              {proj.deliverables && (
+                              {firstDesign && (
                                 <div className="flex items-start gap-1 text-stone-200">
-                                  <strong className="text-brand-gold shrink-0">Scope:</strong>
-                                  <span className="text-slate-300 truncate">{proj.deliverables}</span>
+                                  <strong className="text-brand-gold shrink-0">Featured:</strong>
+                                  <span className="text-slate-300 truncate">{firstDesign.title}</span>
                                 </div>
                               )}
                             </div>
                           </div>
 
-                          {/* Action Buttons */}
-                          <div className="pt-2 border-t border-brand-light/40 flex items-center justify-between gap-2">
-                            <a
-                              href={getWhatsAppUrl(`*WHAT IS YOUR PROJECT INQUIRY*\nI am interested in category: ${proj.category} (${proj.title}).\nPlease share technical catalog and price quotation.`)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="btn-navy text-[10px] py-1.5 px-3 font-bold uppercase tracking-wider flex items-center gap-1 w-full justify-center"
+                          {/* Action Buttons: Direct Category Drill-down & Ordering */}
+                          <div className="pt-2 border-t border-brand-light/40 space-y-2">
+                            <button
+                              type="button"
+                              onClick={() => handleSelectWhatIsYourProjectCategory(proj.category)}
+                              className="btn-gold text-xs py-2 px-3 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 w-full shadow-lg cursor-pointer"
                             >
-                              <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-                              <span>Inquire Category</span>
-                            </a>
+                              <span>View All {designsCount} Designs</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </button>
 
-                            <Link
-                              to="/quote"
-                              className="btn-gold text-[10px] py-1.5 px-3 font-bold uppercase tracking-wider flex items-center gap-1 shrink-0"
-                            >
-                              <span>Get Rate</span>
-                              <ArrowRight className="w-3 h-3" />
-                            </Link>
+                            <div className="grid grid-cols-2 gap-2">
+                              <Link
+                                to={`/product/${productSlug}`}
+                                className="btn-navy text-[10px] py-1.5 px-2 font-bold uppercase text-center flex items-center justify-center gap-1"
+                              >
+                                <Calculator className="w-3 h-3 text-brand-gold" />
+                                <span>Calculator</span>
+                              </Link>
+
+                              <a
+                                href={getWhatsAppUrl(`*WHAT IS YOUR PROJECT INQUIRY*\nI am interested in category: ${proj.category} (${proj.title}).\nPlease share technical catalog and price quotation.`)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn-whatsapp text-[10px] py-1.5 px-2 font-bold uppercase text-center flex items-center justify-center gap-1"
+                              >
+                                <MessageCircle className="w-3 h-3" />
+                                <span>Inquire</span>
+                              </a>
+                            </div>
                           </div>
                         </div>
                       </div>

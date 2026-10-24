@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import type { 
   Product, Quote, Order, CustomDesign, Review,
   Discount, ContactMessage, ActivityLog, Testimonial, WebsiteSettings, BlogPost,
-  ServiceItem, ProjectShowcase, TeamMember, ProjectShowcaseItem, WhatIsYourProjectItem
+  ServiceItem, ProjectShowcase, TeamMember, ProjectShowcaseItem, WhatIsYourProjectItem, ProjectDesignItem
 } from '../types';
 import { SEED_PRODUCTS, SEED_TESTIMONIALS, SEED_BLOGS, SEED_SERVICES, SEED_PROJECTS, SEED_TEAM_MEMBERS, SEED_PROJECT_SHOWCASES, SEED_WHAT_IS_YOUR_PROJECT, PROJECT_CATEGORIES_DATA, type CategoryInfo } from '../data/seedData';
 import { apiRequest } from '../utils/api';
@@ -52,6 +52,9 @@ interface DataContextType {
   addWhatIsYourProjectItem: (item: Omit<WhatIsYourProjectItem, 'id'> | WhatIsYourProjectItem) => Promise<WhatIsYourProjectItem>;
   updateWhatIsYourProjectItem: (item: WhatIsYourProjectItem) => Promise<void>;
   deleteWhatIsYourProjectItem: (id: string) => Promise<void>;
+  addProjectDesign: (categoryIdOrName: string, design: Omit<ProjectDesignItem, 'id'> | ProjectDesignItem) => Promise<ProjectDesignItem>;
+  updateProjectDesign: (categoryIdOrName: string, design: ProjectDesignItem) => Promise<void>;
+  deleteProjectDesign: (categoryIdOrName: string, designId: string) => Promise<void>;
   contactMessages: ContactMessage[];
   addContactMessage: (msg: Omit<ContactMessage, 'id' | 'createdAt' | 'status'>) => Promise<ContactMessage>;
   updateContactMessageStatus: (id: string, status: ContactMessage['status']) => Promise<void>;
@@ -213,7 +216,18 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          // Ensure designs exist on each item, migrating from SEED_WHAT_IS_YOUR_PROJECT if missing
+          return parsed.map((item: WhatIsYourProjectItem) => {
+            if (!item.designs || item.designs.length === 0) {
+              const seedMatch = SEED_WHAT_IS_YOUR_PROJECT.find(
+                s => s.id === item.id || s.category.toLowerCase() === item.category.toLowerCase()
+              );
+              if (seedMatch && seedMatch.designs) {
+                return { ...item, designs: seedMatch.designs, itemsCount: seedMatch.designs.length };
+              }
+            }
+            return item;
+          });
         }
       }
       return SEED_WHAT_IS_YOUR_PROJECT;
@@ -1208,6 +1222,62 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
   };
 
+  const addProjectDesign = async (categoryIdOrName: string, design: Omit<ProjectDesignItem, 'id'> | ProjectDesignItem): Promise<ProjectDesignItem> => {
+    const newDesign: ProjectDesignItem = {
+      ...design,
+      id: (design as any).id || `des-${Date.now()}`
+    };
+    const updated = whatIsYourProject.map(cat => {
+      if (cat.id === categoryIdOrName || cat.category.toLowerCase() === categoryIdOrName.toLowerCase()) {
+        const currentDesigns = cat.designs || [];
+        const nextDesigns = [newDesign, ...currentDesigns];
+        return {
+          ...cat,
+          designs: nextDesigns,
+          itemsCount: nextDesigns.length,
+          updatedAt: new Date().toISOString()
+        };
+      }
+      return cat;
+    });
+    setWhatIsYourProject(updated);
+    localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
+    return newDesign;
+  };
+
+  const updateProjectDesign = async (categoryIdOrName: string, design: ProjectDesignItem) => {
+    const updated = whatIsYourProject.map(cat => {
+      if (cat.id === categoryIdOrName || cat.category.toLowerCase() === categoryIdOrName.toLowerCase()) {
+        const nextDesigns = (cat.designs || []).map(d => d.id === design.id ? design : d);
+        return {
+          ...cat,
+          designs: nextDesigns,
+          updatedAt: new Date().toISOString()
+        };
+      }
+      return cat;
+    });
+    setWhatIsYourProject(updated);
+    localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
+  };
+
+  const deleteProjectDesign = async (categoryIdOrName: string, designId: string) => {
+    const updated = whatIsYourProject.map(cat => {
+      if (cat.id === categoryIdOrName || cat.category.toLowerCase() === categoryIdOrName.toLowerCase()) {
+        const nextDesigns = (cat.designs || []).filter(d => d.id !== designId);
+        return {
+          ...cat,
+          designs: nextDesigns,
+          itemsCount: nextDesigns.length,
+          updatedAt: new Date().toISOString()
+        };
+      }
+      return cat;
+    });
+    setWhatIsYourProject(updated);
+    localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
+  };
+
   const exportDatabase = async (): Promise<string> => {
     return dbService.exportDatabase();
   };
@@ -1257,6 +1327,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addWhatIsYourProjectItem,
       updateWhatIsYourProjectItem,
       deleteWhatIsYourProjectItem,
+      addProjectDesign,
+      updateProjectDesign,
+      deleteProjectDesign,
       contactMessages,
 
       addContactMessage,

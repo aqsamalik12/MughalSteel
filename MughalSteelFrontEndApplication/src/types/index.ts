@@ -123,6 +123,9 @@ export interface CartItem {
   material?: string;
   finish?: string;
   glass?: string;
+  gauge?: string;
+  color?: string;
+  squareFeet?: number;
   customNotes?: string;
   sku?: string;
   couponCode?: string;
@@ -382,6 +385,25 @@ export interface ProjectShowcaseItem {
   displayOrder?: number;
 }
 
+export interface ProjectDesignItem {
+  id: string;
+  title: string;
+  description?: string;
+  image: string;
+  images?: string[];
+  itemType?: string;
+  associatedProductId?: string;
+  associatedProductCode?: string;
+  pricePerSqFt?: number;
+  basePrice?: number;
+  gaugeSpec?: string;
+  finishSpec?: string;
+  materials?: string[];
+  finishes?: string[];
+  features?: string[];
+  displayOrder?: number;
+}
+
 export interface WhatIsYourProjectItem {
   id: string;
   category: string;
@@ -398,6 +420,7 @@ export interface WhatIsYourProjectItem {
   status?: 'completed' | 'ongoing';
   statusLabel?: string;
   updatedAt?: string;
+  designs?: ProjectDesignItem[];
 }
 
 export interface BlogPost {

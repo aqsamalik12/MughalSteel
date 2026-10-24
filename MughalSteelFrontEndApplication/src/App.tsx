@@ -46,6 +46,7 @@ const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage').then(m => ({ 
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage').then(m => ({ default: m.CheckoutPage })));
 const CustomDesignPage = lazy(() => import('./pages/CustomDesignPage').then(m => ({ default: m.CustomDesignPage })));
 const AccountPage = lazy(() => import('./pages/AccountPage').then(m => ({ default: m.AccountPage })));
+const WhatIsYourProjectPage = lazy(() => import('./pages/WhatIsYourProjectPage').then(m => ({ default: m.WhatIsYourProjectPage })));
 import { useAuth } from './context/AuthContext';
 
 // 1. Loading Screen Component during session verification
@@ -215,6 +216,9 @@ const AppContent: React.FC = () => {
             <Route path="/portfolio/:slug" element={<ProjectDetailPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:slug" element={<ProjectDetailPage />} />
+            <Route path="/what-is-your-project" element={<WhatIsYourProjectPage />} />
+            <Route path="/what-is-your-project/:category" element={<WhatIsYourProjectPage />} />
+            <Route path="/project-category/:category" element={<WhatIsYourProjectPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/reviews" element={<ReviewsPage />} />
 
