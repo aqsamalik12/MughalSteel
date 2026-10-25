@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import type { Product, Quote, Order, CustomDesign, Testimonial, ContactMessage, ActivityLog, ProjectShowcase, ServiceItem, TeamMember, ProjectShowcaseItem, WhatIsYourProjectItem, ProjectDesignItem } from '../types';
+import type { Product, Quote, Order, CustomDesign, Testimonial, ContactMessage, ActivityLog, ProjectShowcase, ServiceItem, TeamMember, ProjectShowcaseItem, WhatIsYourProjectItem, ProjectDesignItem, ProjectSubcategoryItem } from '../types';
 import { type CategoryInfo, STANDARD_PROJECT_CATEGORIES } from '../data/seedData';
 import { 
   BarChart3, Box, ClipboardList, ShoppingCart, Users, 
@@ -31,6 +31,7 @@ export const AdminPage: React.FC = () => {
     projectShowcases, addProjectShowcase, updateProjectShowcase, deleteProjectShowcase,
     whatIsYourProject, addWhatIsYourProjectItem, updateWhatIsYourProjectItem, deleteWhatIsYourProjectItem,
     addProjectDesign, updateProjectDesign, deleteProjectDesign,
+    addSubcategory, updateSubcategory, deleteSubcategory,
     contactMessages, updateContactMessageStatus,
     activityLogs, addActivityLog,
     fetchQuotes, fetchOrders, fetchContactMessages
@@ -348,8 +349,25 @@ export const AdminPage: React.FC = () => {
     statusLabel: 'Completed & Handed Over'
   });
 
-  // What Is Your Project - Category Designs Management State
+  // What Is Your Project - Category Designs & Subcategory Management State
   const [managingDesignsCategory, setManagingDesignsCategory] = useState<WhatIsYourProjectItem | null>(null);
+  const [managingSubcategory, setManagingSubcategory] = useState<ProjectSubcategoryItem | null>(null);
+  const [showSubcategoryModal, setShowSubcategoryModal] = useState(false);
+  const [editingSubcategoryItem, setEditingSubcategoryItem] = useState<ProjectSubcategoryItem | null>(null);
+  const [subcategoryForm, setSubcategoryForm] = useState<{
+    id?: string;
+    title: string;
+    description: string;
+    image: string;
+    displayOrder: number;
+    active: boolean;
+  }>({
+    title: '',
+    description: '',
+    image: '',
+    displayOrder: 1,
+    active: true
+  });
   const [showDesignModal, setShowDesignModal] = useState(false);
   const [editingDesignItem, setEditingDesignItem] = useState<ProjectDesignItem | null>(null);
   const [designForm, setDesignForm] = useState<ProjectDesignItem>({
@@ -360,9 +378,11 @@ export const AdminPage: React.FC = () => {
     itemType: 'Front Gates',
     associatedProductId: '',
     associatedProductCode: '',
+    productCode: '',
     pricePerSqFt: 2500,
     gaugeSpec: '',
-    finishSpec: ''
+    finishSpec: '',
+    customizationOptions: []
   });
 
   // Detail inspection modals
@@ -1003,33 +1023,141 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // What Is Your Project - Designs Management Handlers
-  const handleOpenManageDesigns = (category: WhatIsYourProjectItem) => {
+  // What Is Your Project - Subcategory & Designs Management Handlers
+  const handleOpenManageCategory = (category: WhatIsYourProjectItem) => {
     const current = whatIsYourProject.find(w => w.id === category.id || w.category.toLowerCase() === category.category.toLowerCase()) || category;
     setManagingDesignsCategory(current);
+    setManagingSubcategory(null);
+  };
+
+  const handleOpenManageSubcategoryDesigns = (subcat: ProjectSubcategoryItem) => {
+    setManagingSubcategory(subcat);
+  };
+
+  const handleOpenAddSubcategory = () => {
+    setEditingSubcategoryItem(null);
+    setSubcategoryForm({
+      title: '',
+      description: '',
+      image: '',
+      displayOrder: (managingDesignsCategory?.subcategories?.length || 0) + 1,
+      active: true
+    });
+    setShowSubcategoryModal(true);
+  };
+
+  const handleOpenEditSubcategory = (subcat: ProjectSubcategoryItem) => {
+    setEditingSubcategoryItem(subcat);
+    setSubcategoryForm({
+      id: subcat.id,
+      title: subcat.title,
+      description: subcat.description || '',
+      image: subcat.image || '',
+      displayOrder: subcat.displayOrder || 1,
+      active: subcat.active !== false
+    });
+    setShowSubcategoryModal(true);
+  };
+
+  const handleSaveSubcategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!managingDesignsCategory) return;
+
+    if (editingSubcategoryItem) {
+      await updateSubcategory(managingDesignsCategory.id, {
+        ...editingSubcategoryItem,
+        title: subcategoryForm.title,
+        slug: subcategoryForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        description: subcategoryForm.description,
+        image: subcategoryForm.image || editingSubcategoryItem.image || FALLBACK_IMAGE_URL,
+        displayOrder: subcategoryForm.displayOrder,
+        active: subcategoryForm.active
+      });
+      addActivityLog('WIP_SUBCATEGORY_UPDATED', `Updated subcategory: ${subcategoryForm.title}`);
+    } else {
+      const newSubcat: ProjectSubcategoryItem = {
+        id: `subcat-${Date.now()}`,
+        title: subcategoryForm.title,
+        slug: subcategoryForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        description: subcategoryForm.description,
+        image: subcategoryForm.image || FALLBACK_IMAGE_URL,
+        displayOrder: subcategoryForm.displayOrder || 1,
+        active: subcategoryForm.active,
+        designs: []
+      };
+      await addSubcategory(managingDesignsCategory.id, newSubcat);
+      addActivityLog('WIP_SUBCATEGORY_ADDED', `Added subcategory: ${newSubcat.title} to ${managingDesignsCategory.category}`);
+    }
+
+    const refreshed = whatIsYourProject.find(w => w.id === managingDesignsCategory.id || w.category.toLowerCase() === managingDesignsCategory.category.toLowerCase());
+    if (refreshed) {
+      setManagingDesignsCategory(refreshed);
+    }
+    setShowSubcategoryModal(false);
+    setEditingSubcategoryItem(null);
+  };
+
+  const handleDeleteSubcategory = async (subcatId: string, subcatTitle: string) => {
+    if (!managingDesignsCategory) return;
+    if (window.confirm(`Are you sure you want to remove subcategory "${subcatTitle}" and all its designs from ${managingDesignsCategory.category}?`)) {
+      await deleteSubcategory(managingDesignsCategory.id, subcatId);
+      addActivityLog('WIP_SUBCATEGORY_DELETED', `Deleted subcategory "${subcatTitle}"`);
+      const refreshed = whatIsYourProject.find(w => w.id === managingDesignsCategory.id || w.category.toLowerCase() === managingDesignsCategory.category.toLowerCase());
+      if (refreshed) {
+        setManagingDesignsCategory(refreshed);
+      }
+    }
+  };
+
+  const handleSubcategoryImageUpload = (subcat: ProjectSubcategoryItem, file: File) => {
+    if (!managingDesignsCategory) return;
+    const reader = new FileReader();
+    reader.onload = (loadEvt) => {
+      const dataUrl = loadEvt.target?.result as string;
+      if (dataUrl) {
+        updateSubcategory(managingDesignsCategory.id, {
+          ...subcat,
+          image: dataUrl
+        });
+        addActivityLog('WIP_SUBCAT_IMAGE_UPDATED', `Updated image for ${subcat.title}`);
+        const refreshed = whatIsYourProject.find(w => w.id === managingDesignsCategory.id || w.category.toLowerCase() === managingDesignsCategory.category.toLowerCase());
+        if (refreshed) {
+          setManagingDesignsCategory(refreshed);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleOpenAddDesign = () => {
     setEditingDesignItem(null);
     const defaultProduct = products[0];
+    const subcatTitle = managingSubcategory?.title || 'Front Gate';
     setDesignForm({
       id: `wip-des-${Date.now()}`,
+      subcategoryId: managingSubcategory?.id,
+      subcategory: subcatTitle,
       title: '',
       description: '',
       image: '',
-      itemType: defaultProduct?.item || 'Front Gates',
+      itemType: subcatTitle,
       associatedProductId: defaultProduct?.id || '',
       associatedProductCode: defaultProduct?.productCode || '',
+      productCode: `MSF-${Math.floor(100 + Math.random() * 900)}`,
       pricePerSqFt: defaultProduct?.pricePerSqFt || 2500,
       gaugeSpec: '14-Gauge (2.0mm) Cold-Rolled MS',
-      finishSpec: 'Matte Electrostatic Powder Coat'
+      finishSpec: 'Matte Electrostatic Powder Coat',
+      customizationOptions: ['Custom Dimensions', 'Color Options', 'Motor Automation Ready', 'Heavy-Duty Hardware']
     });
     setShowDesignModal(true);
   };
 
   const handleOpenEditDesign = (design: ProjectDesignItem) => {
     setEditingDesignItem(design);
-    setDesignForm({ ...design });
+    setDesignForm({
+      ...design,
+      productCode: design.productCode || design.associatedProductCode || ''
+    });
     setShowDesignModal(true);
   };
 
@@ -1040,6 +1168,7 @@ export const AdminPage: React.FC = () => {
         ...prev,
         associatedProductId: prod.id,
         associatedProductCode: prod.productCode,
+        productCode: prod.productCode || prev.productCode,
         itemType: prod.item || prev.itemType,
         pricePerSqFt: prod.pricePerSqFt || prev.pricePerSqFt,
         title: prev.title || prod.name,
@@ -1051,34 +1180,46 @@ export const AdminPage: React.FC = () => {
   const handleSaveDesign = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!managingDesignsCategory) return;
+    const targetSubcatId = managingSubcategory ? managingSubcategory.id : undefined;
 
     if (editingDesignItem) {
       await updateProjectDesign(managingDesignsCategory.id, {
         ...designForm,
         title: designForm.title || editingDesignItem.title,
+        productCode: designForm.productCode || designForm.associatedProductCode || 'MSF-001',
         image: designForm.image || editingDesignItem.image || FALLBACK_IMAGE_URL
-      });
-      addActivityLog('WIP_DESIGN_UPDATED', `Updated design "${designForm.title}" in category: ${managingDesignsCategory.category}`);
+      }, targetSubcatId);
+      addActivityLog('WIP_DESIGN_UPDATED', `Updated design "${designForm.title}" in ${managingDesignsCategory.category}`);
     } else {
       const newDesign: ProjectDesignItem = {
         id: `wip-des-${Date.now()}`,
+        subcategoryId: targetSubcatId,
+        subcategory: managingSubcategory?.title,
         title: designForm.title || 'Custom Fabrication Design',
         description: designForm.description || '',
         image: designForm.image || FALLBACK_IMAGE_URL,
-        itemType: designForm.itemType || 'Front Gates',
+        itemType: designForm.itemType || managingSubcategory?.title || 'Front Gates',
         associatedProductId: designForm.associatedProductId || '',
-        associatedProductCode: designForm.associatedProductCode || '',
+        associatedProductCode: designForm.productCode || designForm.associatedProductCode || '',
+        productCode: designForm.productCode || designForm.associatedProductCode || `MSF-${Math.floor(100 + Math.random() * 900)}`,
         pricePerSqFt: Number(designForm.pricePerSqFt) || 2500,
-        gaugeSpec: designForm.gaugeSpec || '',
-        finishSpec: designForm.finishSpec || ''
+        gaugeSpec: designForm.gaugeSpec || '14-Gauge (2.0mm)',
+        finishSpec: designForm.finishSpec || 'Electrostatic Powder Coat',
+        customizationOptions: designForm.customizationOptions || ['Custom Size', 'Color Options', 'Motor Automation Ready']
       };
-      await addProjectDesign(managingDesignsCategory.id, newDesign);
-      addActivityLog('WIP_DESIGN_ADDED', `Added new design "${newDesign.title}" to category: ${managingDesignsCategory.category}`);
+      await addProjectDesign(managingDesignsCategory.id, newDesign, targetSubcatId);
+      addActivityLog('WIP_DESIGN_ADDED', `Added design "${newDesign.title}" to ${managingDesignsCategory.category}`);
     }
 
     const refreshed = whatIsYourProject.find(w => w.id === managingDesignsCategory.id || w.category.toLowerCase() === managingDesignsCategory.category.toLowerCase());
     if (refreshed) {
       setManagingDesignsCategory(refreshed);
+      if (managingSubcategory) {
+        const refreshedSubcat = refreshed.subcategories?.find(s => s.id === managingSubcategory.id || s.title.toLowerCase() === managingSubcategory.title.toLowerCase());
+        if (refreshedSubcat) {
+          setManagingSubcategory(refreshedSubcat);
+        }
+      }
     }
     setShowDesignModal(false);
     setEditingDesignItem(null);
@@ -1086,12 +1227,19 @@ export const AdminPage: React.FC = () => {
 
   const handleDeleteDesign = async (designId: string, designTitle: string) => {
     if (!managingDesignsCategory) return;
+    const targetSubcatId = managingSubcategory ? managingSubcategory.id : undefined;
     if (window.confirm(`Are you sure you want to remove design "${designTitle}" from ${managingDesignsCategory.category}?`)) {
-      await deleteProjectDesign(managingDesignsCategory.id, designId);
-      addActivityLog('WIP_DESIGN_DELETED', `Deleted design "${designTitle}" from category: ${managingDesignsCategory.category}`);
+      await deleteProjectDesign(managingDesignsCategory.id, designId, targetSubcatId);
+      addActivityLog('WIP_DESIGN_DELETED', `Deleted design "${designTitle}" from ${managingDesignsCategory.category}`);
       const refreshed = whatIsYourProject.find(w => w.id === managingDesignsCategory.id || w.category.toLowerCase() === managingDesignsCategory.category.toLowerCase());
       if (refreshed) {
         setManagingDesignsCategory(refreshed);
+        if (managingSubcategory) {
+          const refreshedSubcat = refreshed.subcategories?.find(s => s.id === managingSubcategory.id || s.title.toLowerCase() === managingSubcategory.title.toLowerCase());
+          if (refreshedSubcat) {
+            setManagingSubcategory(refreshedSubcat);
+          }
+        }
       }
     }
   };
@@ -2547,9 +2695,267 @@ export const AdminPage: React.FC = () => {
         {/* ------------------------------------------------------------- */}
         {activeTab === 'showcase' && (
           <div className="bg-[#0C1322] border border-brand-light/60 p-6 rounded-xl space-y-6 text-xs text-stone-300 animate-fade-in">
-            {managingDesignsCategory ? (
-              /* CATEGORY DESIGNS DRILL-DOWN MANAGER */
+            {/* TIER 3: DESIGNS UNDER SELECTED SUBCATEGORY */}
+            {managingDesignsCategory && managingSubcategory ? (
               <div className="space-y-6">
+                {/* Breadcrumb Navigation */}
+                <div className="flex items-center gap-2 text-xs font-mono">
+                  <button
+                    type="button"
+                    onClick={() => { setManagingDesignsCategory(null); setManagingSubcategory(null); }}
+                    className="text-slate-400 hover:text-brand-gold cursor-pointer"
+                  >
+                    Categories
+                  </button>
+                  <span className="text-slate-600">/</span>
+                  <button
+                    type="button"
+                    onClick={() => setManagingSubcategory(null)}
+                    className="text-slate-400 hover:text-brand-gold cursor-pointer"
+                  >
+                    {managingDesignsCategory.category}
+                  </button>
+                  <span className="text-slate-600">/</span>
+                  <span className="text-brand-gold font-bold">{managingSubcategory.title} (Designs)</span>
+                </div>
+
+                {/* Header & Controls */}
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center border-b border-brand-light/40 pb-4 gap-4">
+                  <div className="space-y-1">
+                    <button
+                      type="button"
+                      onClick={() => setManagingSubcategory(null)}
+                      className="text-xs text-brand-gold hover:underline font-bold flex items-center gap-1 cursor-pointer mb-1"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Back to Subcategories</span>
+                    </button>
+                    <h3 className="font-heading font-black text-base uppercase text-stone-100 flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-brand-gold" />
+                      <span>Subcategory: {managingSubcategory.title} — Uploaded Designs</span>
+                      <span className="text-[10px] bg-brand-gold/15 text-brand-gold border border-brand-gold/40 px-2 py-0.5 rounded font-mono font-bold">
+                        {managingSubcategory.designs?.length || 0} Designs
+                      </span>
+                    </h3>
+                    <p className="text-slate-400 text-[11px]">
+                      Manage designs under {managingDesignsCategory.category} &gt; {managingSubcategory.title}. Each design supports custom dimensions, rate per sq.ft, specifications, and direct WhatsApp ordering without a Cart Page.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleOpenAddDesign}
+                      className="px-4 py-2 bg-brand-gold hover:brightness-110 text-brand-dark rounded-lg text-xs font-heading font-black uppercase tracking-wider flex items-center gap-1.5 transition shadow-lg cursor-pointer"
+                    >
+                      <Plus className="w-4 h-4 text-brand-dark" />
+                      <span>Add New Design</span>
+                    </button>
+
+                    <Link
+                      to={`/what-is-your-project/${encodeURIComponent(managingDesignsCategory.category)}/${encodeURIComponent(managingSubcategory.title)}`}
+                      target="_blank"
+                      className="px-3.5 py-2 bg-white/5 hover:bg-white/10 text-stone-200 border border-brand-light/60 rounded-lg text-xs font-bold flex items-center gap-1.5 transition"
+                    >
+                      <Eye className="w-3.5 h-3.5 text-brand-gold" />
+                      <span>Preview On Website</span>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Subcategory Summary Banner */}
+                <div className="bg-[#070C15] border border-brand-light/40 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={managingSubcategory.image || FALLBACK_IMAGE_URL}
+                      alt={managingSubcategory.title}
+                      className="w-14 h-14 object-cover rounded-lg border border-brand-gold/40 shrink-0"
+                    />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono uppercase bg-brand-gold/20 text-brand-gold px-2 py-0.5 rounded border border-brand-gold/40">
+                          {managingDesignsCategory.category}
+                        </span>
+                        <h4 className="font-heading font-bold text-sm text-stone-100 uppercase">
+                          {managingSubcategory.title}
+                        </h4>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        {managingSubcategory.description || `Collection of high tensile ${managingSubcategory.title} fabrications.`}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleOpenEditSubcategory(managingSubcategory)}
+                    className="px-3 py-1.5 bg-white/5 hover:bg-brand-gold/10 text-slate-300 hover:text-brand-gold border border-brand-light/40 rounded text-xs font-bold transition flex items-center gap-1 self-start sm:self-center cursor-pointer"
+                  >
+                    <Edit className="w-3 h-3" />
+                    <span>Edit Subcategory</span>
+                  </button>
+                </div>
+
+                {/* Designs Grid */}
+                {(!managingSubcategory.designs || managingSubcategory.designs.length === 0) ? (
+                  <div className="bg-[#070C15] border border-brand-light/40 rounded-xl p-10 text-center space-y-3">
+                    <Layers className="w-10 h-10 mx-auto text-slate-500" />
+                    <h4 className="font-heading font-bold text-stone-200 uppercase text-sm">
+                      No Designs Added Under {managingSubcategory.title}
+                    </h4>
+                    <p className="text-xs text-slate-400 max-w-md mx-auto">
+                      Click the &quot;Add New Design&quot; button above to upload designs with specific photos, rates, product codes, and specifications.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleOpenAddDesign}
+                      className="btn-gold text-xs py-2 px-4 font-bold cursor-pointer"
+                    >
+                      + Add First Design
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {managingSubcategory.designs.map((design) => (
+                      <div 
+                        key={design.id}
+                        className="bg-[#070C15] border border-brand-light/60 rounded-xl overflow-hidden shadow-xl flex flex-col justify-between group hover:border-brand-gold/60 transition-all duration-300"
+                      >
+                        <div>
+                          {/* Design Image Box */}
+                          <div className="h-40 relative overflow-hidden bg-black group/img">
+                            <img
+                              src={design.image || FALLBACK_IMAGE_URL}
+                              alt={design.title}
+                              onError={handleImageError}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#070C15] via-transparent to-black/40" />
+
+                            <div className="absolute top-2 left-2 right-2 flex items-center justify-between gap-1">
+                              <span className="px-2 py-0.5 font-mono text-[9px] font-bold rounded shadow bg-black/80 text-brand-gold border border-brand-gold/30">
+                                {design.itemType || managingSubcategory.title}
+                              </span>
+                              <span className="px-2 py-0.5 font-mono text-[9px] font-bold rounded shadow bg-emerald-950/80 text-emerald-400 border border-emerald-500/30">
+                                Rs. {Number(design.pricePerSqFt || 2500).toLocaleString()}/sq.ft
+                              </span>
+                            </div>
+
+                            {/* Image Replacement Overlay */}
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                              <label className="px-3 py-1.5 bg-brand-gold text-brand-dark rounded text-[11px] font-bold cursor-pointer hover:brightness-110 flex items-center gap-1 shadow">
+                                <Upload className="w-3.5 h-3.5" />
+                                <span>Replace Image</span>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file && managingDesignsCategory) {
+                                      const reader = new FileReader();
+                                      reader.onload = (loadEvt) => {
+                                        const dataUrl = loadEvt.target?.result as string;
+                                        if (dataUrl) {
+                                          updateProjectDesign(managingDesignsCategory.id, {
+                                            ...design,
+                                            image: dataUrl
+                                          }, managingSubcategory.id);
+                                          const refreshed = whatIsYourProject.find(w => w.id === managingDesignsCategory.id || w.category.toLowerCase() === managingDesignsCategory.category.toLowerCase());
+                                          if (refreshed) {
+                                            setManagingDesignsCategory(refreshed);
+                                            const sub = refreshed.subcategories?.find(s => s.id === managingSubcategory.id);
+                                            if (sub) setManagingSubcategory(sub);
+                                          }
+                                        }
+                                      };
+                                      reader.readAsDataURL(file);
+                                    }
+                                  }}
+                                  className="hidden"
+                                />
+                              </label>
+                            </div>
+                          </div>
+
+                          {/* Design Details */}
+                          <div className="p-3.5 space-y-2">
+                            <div>
+                              <h4 className="font-heading font-black text-xs uppercase text-stone-100 group-hover:text-brand-gold transition-colors line-clamp-1">
+                                {design.title}
+                              </h4>
+                              <p className="text-[10px] text-slate-400 font-sans line-clamp-2 mt-0.5 leading-snug">
+                                {design.description || 'Custom steel fabrication design.'}
+                              </p>
+                            </div>
+
+                            <div className="bg-black/60 border border-brand-light/30 p-2 rounded text-[10px] space-y-0.5 font-mono">
+                              <div className="flex items-center justify-between text-stone-300">
+                                <span className="text-brand-gold">Product Code:</span>
+                                <span className="text-slate-200">{design.productCode || design.associatedProductCode || 'MSF-001'}</span>
+                              </div>
+                              {design.gaugeSpec && (
+                                <div className="flex items-center justify-between text-stone-300">
+                                  <span className="text-brand-gold">Gauge:</span>
+                                  <span className="text-slate-300 truncate max-w-[65%]">{design.gaugeSpec}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Actions Toolbar */}
+                        <div className="p-3 pt-0 border-t border-brand-light/20 flex justify-between items-center gap-2 mt-2">
+                          <Link
+                            to={`/what-is-your-project/${encodeURIComponent(managingDesignsCategory.category)}/${encodeURIComponent(managingSubcategory.title)}/${encodeURIComponent(design.id)}`}
+                            target="_blank"
+                            className="text-[10px] font-bold text-brand-gold hover:underline flex items-center gap-1"
+                          >
+                            <Eye className="w-3 h-3" />
+                            <span>Preview</span>
+                          </Link>
+
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEditDesign(design)}
+                              className="px-2.5 py-1 text-slate-300 hover:text-brand-gold bg-white/5 hover:bg-brand-gold/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs font-bold"
+                            >
+                              <Edit className="w-3 h-3" />
+                              <span>Edit</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteDesign(design.id, design.title)}
+                              className="px-2 py-1 text-slate-400 hover:text-red-400 bg-white/5 hover:bg-red-500/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs"
+                              title="Delete design"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              <span>Delete</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : managingDesignsCategory ? (
+              /* TIER 2: SUBCATEGORIES UNDER SELECTED MAIN CATEGORY */
+              <div className="space-y-6">
+                {/* Breadcrumb Navigation */}
+                <div className="flex items-center gap-2 text-xs font-mono">
+                  <button
+                    type="button"
+                    onClick={() => setManagingDesignsCategory(null)}
+                    className="text-slate-400 hover:text-brand-gold cursor-pointer"
+                  >
+                    Categories
+                  </button>
+                  <span className="text-slate-600">/</span>
+                  <span className="text-brand-gold font-bold">{managingDesignsCategory.category} (Subcategories)</span>
+                </div>
+
                 {/* Header & Controls */}
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center border-b border-brand-light/40 pb-4 gap-4">
                   <div className="space-y-1">
@@ -2563,24 +2969,24 @@ export const AdminPage: React.FC = () => {
                     </button>
                     <h3 className="font-heading font-black text-base uppercase text-stone-100 flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-brand-gold" />
-                      <span>Category: {managingDesignsCategory.category} — Uploaded Designs</span>
+                      <span>Category: {managingDesignsCategory.category} — Subcategories</span>
                       <span className="text-[10px] bg-brand-gold/15 text-brand-gold border border-brand-gold/40 px-2 py-0.5 rounded font-mono font-bold">
-                        {managingDesignsCategory.designs?.length || 0} Designs
+                        {managingDesignsCategory.subcategories?.length || 0} Subcategories
                       </span>
                     </h3>
                     <p className="text-slate-400 text-[11px]">
-                      Manage all designs under {managingDesignsCategory.category}. Each design connects to the Size &amp; Price Calculator, Shared Cart, and WhatsApp ordering flow.
+                      Manage subcategories under {managingDesignsCategory.category} (e.g. Front Gate, Balcony, Spiral Stairs). Each subcategory has its own uploaded image and designs.
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={handleOpenAddDesign}
+                      onClick={handleOpenAddSubcategory}
                       className="px-4 py-2 bg-brand-gold hover:brightness-110 text-brand-dark rounded-lg text-xs font-heading font-black uppercase tracking-wider flex items-center gap-1.5 transition shadow-lg cursor-pointer"
                     >
                       <Plus className="w-4 h-4 text-brand-dark" />
-                      <span>Add New Design</span>
+                      <span>Add Subcategory</span>
                     </button>
 
                     <Link
@@ -2627,161 +3033,148 @@ export const AdminPage: React.FC = () => {
                   </button>
                 </div>
 
-                {/* Designs List / Grid */}
-                {(!managingDesignsCategory.designs || managingDesignsCategory.designs.length === 0) ? (
+                {/* Subcategories Grid */}
+                {(!managingDesignsCategory.subcategories || managingDesignsCategory.subcategories.length === 0) ? (
                   <div className="bg-[#070C15] border border-brand-light/40 rounded-xl p-10 text-center space-y-3">
                     <Layers className="w-10 h-10 mx-auto text-slate-500" />
                     <h4 className="font-heading font-bold text-stone-200 uppercase text-sm">
-                      No Designs Added Under {managingDesignsCategory.category}
+                      No Subcategories Added Under {managingDesignsCategory.category}
                     </h4>
                     <p className="text-xs text-slate-400 max-w-md mx-auto">
-                      Click the &quot;Add New Design&quot; button above to upload your first design with its photo, rate, and product association.
+                      Click the &quot;Add Subcategory&quot; button above to create subcategories such as Front Gate, Spiral Stairs, Balcony Railings, etc.
                     </p>
                     <button
                       type="button"
-                      onClick={handleOpenAddDesign}
+                      onClick={handleOpenAddSubcategory}
                       className="btn-gold text-xs py-2 px-4 font-bold cursor-pointer"
                     >
-                      + Add First Design
+                      + Add First Subcategory
                     </button>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {managingDesignsCategory.designs.map((design) => (
-                      <div 
-                        key={design.id}
-                        className="bg-[#070C15] border border-brand-light/60 rounded-xl overflow-hidden shadow-xl flex flex-col justify-between group hover:border-brand-gold/60 transition-all duration-300"
-                      >
-                        <div>
-                          {/* Design Image Box */}
-                          <div className="h-40 relative overflow-hidden bg-black group/img">
-                            <img
-                              src={design.image || FALLBACK_IMAGE_URL}
-                              alt={design.title}
-                              onError={handleImageError}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#070C15] via-transparent to-black/40" />
+                    {managingDesignsCategory.subcategories.map((subcat) => {
+                      const designsCount = subcat.designs?.length || 0;
+                      return (
+                        <div
+                          key={subcat.id}
+                          className="bg-[#070C15] border border-brand-light/60 rounded-xl overflow-hidden shadow-xl flex flex-col justify-between group hover:border-brand-gold/60 transition-all duration-300"
+                        >
+                          <div>
+                            {/* Subcategory Image Box */}
+                            <div className="h-40 relative overflow-hidden bg-black group/img">
+                              <img
+                                src={subcat.image || FALLBACK_IMAGE_URL}
+                                alt={subcat.title}
+                                onError={handleImageError}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-[#070C15] via-transparent to-black/40" />
 
-                            <div className="absolute top-2 left-2 right-2 flex items-center justify-between gap-1">
-                              <span className="px-2 py-0.5 font-mono text-[9px] font-bold rounded shadow bg-black/80 text-brand-gold border border-brand-gold/30">
-                                {design.itemType || 'Design Item'}
-                              </span>
-                              <span className="px-2 py-0.5 font-mono text-[9px] font-bold rounded shadow bg-emerald-950/80 text-emerald-400 border border-emerald-500/30">
-                                Rs. {Number(design.pricePerSqFt || 2500).toLocaleString()}/sq.ft
-                              </span>
-                            </div>
-
-                            {/* Image Replacement Overlay */}
-                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
-                              <label className="px-3 py-1.5 bg-brand-gold text-brand-dark rounded text-[11px] font-bold cursor-pointer hover:brightness-110 flex items-center gap-1 shadow">
-                                <Upload className="w-3.5 h-3.5" />
-                                <span>Replace Image</span>
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file && managingDesignsCategory) {
-                                      const reader = new FileReader();
-                                      reader.onload = (loadEvt) => {
-                                        const dataUrl = loadEvt.target?.result as string;
-                                        if (dataUrl) {
-                                          updateProjectDesign(managingDesignsCategory.id, {
-                                            ...design,
-                                            image: dataUrl
-                                          });
-                                          const refreshed = whatIsYourProject.find(w => w.id === managingDesignsCategory.id || w.category.toLowerCase() === managingDesignsCategory.category.toLowerCase());
-                                          if (refreshed) setManagingDesignsCategory(refreshed);
-                                        }
-                                      };
-                                      reader.readAsDataURL(file);
-                                    }
-                                  }}
-                                  className="hidden"
-                                />
-                              </label>
-                            </div>
-                          </div>
-
-                          {/* Design Details */}
-                          <div className="p-3.5 space-y-2">
-                            <div>
-                              <h4 className="font-heading font-black text-xs uppercase text-stone-100 group-hover:text-brand-gold transition-colors line-clamp-1">
-                                {design.title}
-                              </h4>
-                              <p className="text-[10px] text-slate-400 font-sans line-clamp-2 mt-0.5 leading-snug">
-                                {design.description || 'Custom steel fabrication design.'}
-                              </p>
-                            </div>
-
-                            <div className="bg-black/60 border border-brand-light/30 p-2 rounded text-[10px] space-y-0.5 font-mono">
-                              <div className="flex items-center justify-between text-stone-300">
-                                <span className="text-brand-gold">Product Code:</span>
-                                <span className="text-slate-200">{design.associatedProductCode || 'MSF-001'}</span>
+                              <div className="absolute top-2 left-2 right-2 flex items-center justify-between gap-1">
+                                <span className="px-2 py-0.5 font-mono text-[9px] font-bold rounded shadow bg-brand-gold text-brand-dark">
+                                  Subcategory #{subcat.displayOrder || 1}
+                                </span>
+                                <span className="px-1.5 py-0.5 font-mono text-[9px] font-bold rounded shadow bg-black/80 text-brand-gold border border-brand-gold/30">
+                                  {designsCount} Designs
+                                </span>
                               </div>
-                              {design.gaugeSpec && (
-                                <div className="flex items-center justify-between text-stone-300">
-                                  <span className="text-brand-gold">Gauge:</span>
-                                  <span className="text-slate-300 truncate max-w-[65%]">{design.gaugeSpec}</span>
-                                </div>
-                              )}
+
+                              {/* Image Upload Overlay */}
+                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                                <label className="px-3 py-1.5 bg-brand-gold text-brand-dark rounded text-[11px] font-bold cursor-pointer hover:brightness-110 flex items-center gap-1 shadow">
+                                  <Upload className="w-3.5 h-3.5" />
+                                  <span>{subcat.image ? 'Replace Image' : 'Upload Image'}</span>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) handleSubcategoryImageUpload(subcat, file);
+                                    }}
+                                    className="hidden"
+                                  />
+                                </label>
+                              </div>
+                            </div>
+
+                            {/* Subcategory Content */}
+                            <div className="p-3.5 space-y-2">
+                              <div>
+                                <h4 className="font-heading font-black text-xs uppercase text-stone-100 group-hover:text-brand-gold transition-colors line-clamp-1">
+                                  {subcat.title}
+                                </h4>
+                                <p className="text-[10px] text-slate-400 font-sans line-clamp-2 mt-0.5 leading-snug">
+                                  {subcat.description || `Fabricated ${subcat.title} solutions for ${managingDesignsCategory.category}.`}
+                                </p>
+                              </div>
+
+                              {/* Drill down to Designs */}
+                              <button
+                                type="button"
+                                onClick={() => handleOpenManageSubcategoryDesigns(subcat)}
+                                className="w-full mt-2 py-1.5 px-3 bg-brand-gold/15 hover:bg-brand-gold text-brand-gold hover:text-brand-dark border border-brand-gold/40 rounded-lg text-xs font-heading font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition shadow cursor-pointer"
+                              >
+                                <Layers className="w-3.5 h-3.5" />
+                                <span>Manage Designs ({designsCount})</span>
+                                <ArrowRight className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Toolbar */}
+                          <div className="p-3 pt-0 border-t border-brand-light/20 flex justify-between items-center gap-2 mt-2">
+                            <Link
+                              to={`/what-is-your-project/${encodeURIComponent(managingDesignsCategory.category)}/${encodeURIComponent(subcat.title)}`}
+                              target="_blank"
+                              className="text-[10px] font-bold text-brand-gold hover:underline flex items-center gap-1"
+                            >
+                              <Eye className="w-3 h-3" />
+                              <span>Preview</span>
+                            </Link>
+
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => handleOpenEditSubcategory(subcat)}
+                                className="px-2.5 py-1 text-slate-300 hover:text-brand-gold bg-white/5 hover:bg-brand-gold/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs font-bold"
+                              >
+                                <Edit className="w-3 h-3" />
+                                <span>Edit</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteSubcategory(subcat.id, subcat.title)}
+                                className="px-2 py-1 text-slate-400 hover:text-red-400 bg-white/5 hover:bg-red-500/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs"
+                                title="Delete subcategory"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                                <span>Delete</span>
+                              </button>
                             </div>
                           </div>
                         </div>
-
-                        {/* Actions Toolbar */}
-                        <div className="p-3 pt-0 border-t border-brand-light/20 flex justify-between items-center gap-2 mt-2">
-                          <Link
-                            to={`/what-is-your-project/${encodeURIComponent(managingDesignsCategory.category)}`}
-                            target="_blank"
-                            className="text-[10px] font-bold text-brand-gold hover:underline flex items-center gap-1"
-                          >
-                            <Eye className="w-3 h-3" />
-                            <span>Preview</span>
-                          </Link>
-
-                          <div className="flex items-center gap-1.5">
-                            <button
-                              type="button"
-                              onClick={() => handleOpenEditDesign(design)}
-                              className="px-2.5 py-1 text-slate-300 hover:text-brand-gold bg-white/5 hover:bg-brand-gold/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs font-bold"
-                            >
-                              <Edit className="w-3 h-3" />
-                              <span>Edit</span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteDesign(design.id, design.title)}
-                              className="px-2 py-1 text-slate-400 hover:text-red-400 bg-white/5 hover:bg-red-500/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs"
-                              title="Delete design"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                              <span>Delete</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
             ) : (
-              /* ALL CATEGORIES OVERVIEW GRID */
+              /* TIER 1: MAIN PROJECT CATEGORIES */
               <>
                 {/* Header & Controls */}
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center border-b border-brand-light/40 pb-4 gap-4">
                   <div>
                     <h3 className="font-heading font-black text-base uppercase text-stone-100 flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-brand-gold" />
-                      <span>What&apos;s Your Project — Category Images &amp; Content</span>
+                      <span>What&apos;s Your Project — Main Categories</span>
                       <span className="text-[10px] bg-brand-gold/15 text-brand-gold border border-brand-gold/40 px-2 py-0.5 rounded font-mono font-bold">
-                        Independent Module ({whatIsYourProject.length} Categories)
+                        3-Tier Hierarchy ({whatIsYourProject.length} Categories)
                       </span>
                     </h3>
                     <p className="text-slate-400 text-[11px]">
-                      Upload independent images and manage content for each category displayed in &quot;What Is Your Project?&quot;. Open any category to manage all designs underneath it.
+                      Manage Main Categories, Subcategories, and Designs for &quot;What Is Your Project?&quot;. Upload separate images and manage content at each level.
                     </p>
                   </div>
 
@@ -2806,14 +3199,18 @@ export const AdminPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* What Is Your Project Categories Grid */}
+                {/* Categories Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                   {whatIsYourProject.map((item) => {
-                    const designsCount = item.designs?.length || 0;
+                    const subcatCount = item.subcategories?.length || 0;
+                    const totalDesignsCount = item.subcategories
+                      ? item.subcategories.reduce((acc, sub) => acc + (sub.designs?.length || 0), 0)
+                      : (item.designs?.length || 0);
+
                     return (
                       <div key={item.id || item.category} className="bg-[#070C15] border border-brand-light/60 rounded-xl overflow-hidden shadow-xl flex flex-col justify-between group hover:border-brand-gold/60 transition-all duration-300">
                         <div>
-                          {/* Category Image Box with Overlay Upload Button */}
+                          {/* Category Image Box */}
                           <div className="h-40 relative overflow-hidden bg-black group/img">
                             <img 
                               src={item.image || FALLBACK_IMAGE_URL} 
@@ -2829,7 +3226,7 @@ export const AdminPage: React.FC = () => {
                                 {item.category}
                               </span>
                               <span className="px-1.5 py-0.5 font-mono text-[9px] font-bold rounded shadow bg-black/80 text-brand-gold border border-brand-gold/30 shrink-0">
-                                {designsCount} Designs
+                                {subcatCount} Subcats
                               </span>
                             </div>
 
@@ -2873,25 +3270,23 @@ export const AdminPage: React.FC = () => {
 
                             <div className="bg-black/60 border border-brand-light/30 p-2 rounded text-[10px] space-y-0.5 font-mono">
                               <div className="flex items-center justify-between text-stone-300">
-                                <span className="text-brand-gold">Primary:</span>
-                                <span className="text-slate-200 truncate">{item.primaryItem || 'Main Gates'}</span>
+                                <span className="text-brand-gold">Subcategories:</span>
+                                <span className="text-slate-200">{subcatCount} subcategories</span>
                               </div>
-                              {item.gaugeSpec && (
-                                <div className="flex items-center justify-between text-stone-300">
-                                  <span className="text-brand-gold">Gauge:</span>
-                                  <span className="text-slate-300 truncate max-w-[65%]">{item.gaugeSpec}</span>
-                                </div>
-                              )}
+                              <div className="flex items-center justify-between text-stone-300">
+                                <span className="text-brand-gold">Total Designs:</span>
+                                <span className="text-slate-200">{totalDesignsCount} designs</span>
+                              </div>
                             </div>
 
-                            {/* Manage Designs Button */}
+                            {/* Drill down to Subcategories Button */}
                             <button
                               type="button"
-                              onClick={() => handleOpenManageDesigns(item)}
+                              onClick={() => handleOpenManageCategory(item)}
                               className="w-full mt-2 py-1.5 px-3 bg-brand-gold/15 hover:bg-brand-gold text-brand-gold hover:text-brand-dark border border-brand-gold/40 rounded-lg text-xs font-heading font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition shadow cursor-pointer"
                             >
                               <Layers className="w-3.5 h-3.5" />
-                              <span>Manage Designs ({designsCount})</span>
+                              <span>Manage Subcategories ({subcatCount})</span>
                               <ArrowRight className="w-3.5 h-3.5" />
                             </button>
                           </div>
@@ -2899,22 +3294,17 @@ export const AdminPage: React.FC = () => {
 
                         {/* Actions Toolbar */}
                         <div className="p-3 pt-0 border-t border-brand-light/20 flex justify-between items-center gap-2 mt-2">
-                          <label className="text-[10px] font-bold text-brand-gold hover:underline flex items-center gap-1 cursor-pointer">
-                            <Upload className="w-3 h-3" />
-                            <span>Upload</span>
-                            <input 
-                              type="file" 
-                              accept="image/*" 
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) handleWipImageUpload(item, file);
-                              }} 
-                              className="hidden" 
-                            />
-                          </label>
+                          <Link
+                            to={`/what-is-your-project/${encodeURIComponent(item.category)}`}
+                            target="_blank"
+                            className="text-[10px] font-bold text-brand-gold hover:underline flex items-center gap-1"
+                          >
+                            <Eye className="w-3 h-3" />
+                            <span>Preview</span>
+                          </Link>
 
                           <div className="flex items-center gap-1.5">
-                            <button 
+                            <button
                               type="button"
                               onClick={() => handleOpenEditWip(item)}
                               className="px-2.5 py-1 text-slate-300 hover:text-brand-gold bg-white/5 hover:bg-brand-gold/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs font-bold"
@@ -2923,11 +3313,11 @@ export const AdminPage: React.FC = () => {
                               <span>Edit</span>
                             </button>
 
-                            <button 
+                            <button
                               type="button"
                               onClick={() => handleDeleteWip(item)}
                               className="px-2 py-1 text-slate-400 hover:text-red-400 bg-white/5 hover:bg-red-500/10 border border-brand-light/40 rounded flex items-center gap-1 cursor-pointer transition text-xs"
-                              title="Delete from What's Your Project"
+                              title="Delete category"
                             >
                               <Trash2 className="w-3 h-3" />
                               <span>Delete</span>
@@ -5290,6 +5680,135 @@ export const AdminPage: React.FC = () => {
       )}
 
       {/* ------------------------------------------------------------- */}
+            {/* ------------------------------------------------------------- */}
+      {/* MODAL: ADD / EDIT SUBCATEGORY (WHAT IS YOUR PROJECT)           */}
+      {/* ------------------------------------------------------------- */}
+      {showSubcategoryModal && managingDesignsCategory && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0C1322] border border-brand-gold/50 rounded-2xl w-full max-w-xl p-6 space-y-4 shadow-2xl animate-fade-in max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-brand-light/40 pb-3">
+              <div>
+                <h3 className="font-heading font-black text-base uppercase text-brand-gold flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-brand-gold" />
+                  <span>{editingSubcategoryItem ? `Edit Subcategory: ${subcategoryForm.title}` : 'Add New Subcategory'}</span>
+                </h3>
+                <p className="text-[10px] text-slate-400">
+                  Category: <span className="text-brand-gold font-bold">{managingDesignsCategory.category}</span> — Subcategories represent item types like Front Gates, Balcony Railings, etc.
+                </p>
+              </div>
+              <button onClick={() => setShowSubcategoryModal(false)} className="text-slate-400 hover:text-white cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveSubcategory} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Subcategory Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={subcategoryForm.title}
+                  onChange={(e) => setSubcategoryForm(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="e.g. Front Gate, Spiral Stairs, Balcony Railings..."
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2.5 text-stone-100 focus:outline-none focus:border-brand-gold font-bold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Description</label>
+                <textarea
+                  rows={2}
+                  value={subcategoryForm.description}
+                  onChange={(e) => setSubcategoryForm(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="e.g. Architectural front driveway gates with automated sliding and swing options..."
+                  className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Display Order</label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={subcategoryForm.displayOrder}
+                    onChange={(e) => setSubcategoryForm(prev => ({ ...prev, displayOrder: parseInt(e.target.value) || 1 }))}
+                    className="w-full bg-[#070C15] border border-stone-700 rounded-lg p-2 text-stone-100 focus:outline-none focus:border-brand-gold font-mono"
+                  />
+                </div>
+
+                <div className="flex items-center pt-5">
+                  <label className="flex items-center gap-2 cursor-pointer text-stone-300">
+                    <input
+                      type="checkbox"
+                      checked={subcategoryForm.active}
+                      onChange={(e) => setSubcategoryForm(prev => ({ ...prev, active: e.target.checked }))}
+                      className="accent-brand-gold w-4 h-4"
+                    />
+                    <span className="text-xs font-bold">Active Subcategory</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Subcategory Image Upload */}
+              <div>
+                <label className="block text-[10px] text-slate-300 uppercase font-bold mb-1">Subcategory Image</label>
+                <div className="flex items-center gap-3">
+                  <div className="w-24 h-16 rounded-lg bg-black border border-brand-light/40 overflow-hidden shrink-0 flex items-center justify-center">
+                    {subcategoryForm.image ? (
+                      <img src={subcategoryForm.image} alt="Preview" className="w-full h-full object-cover" onError={handleImageError} />
+                    ) : (
+                      <span className="text-[9px] text-slate-500 font-mono">No Image</span>
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-gold/15 text-brand-gold hover:bg-brand-gold hover:text-brand-dark border border-brand-gold/40 rounded-lg text-xs font-bold cursor-pointer transition">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>Upload Subcategory Photo</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = (loadEvt) => {
+                            const dataUrl = loadEvt.target?.result as string;
+                            if (dataUrl) setSubcategoryForm(prev => ({ ...prev, image: dataUrl }));
+                          };
+                          reader.readAsDataURL(file);
+                        }}
+                        className="hidden"
+                      />
+                    </label>
+                    <p className="text-[10px] text-slate-400">
+                      Upload a photo representing this subcategory (e.g. sample front gate or railings).
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-brand-light/30">
+                <button
+                  type="button"
+                  onClick={() => setShowSubcategoryModal(false)}
+                  className="px-4 py-2 bg-white/5 hover:bg-white/10 text-stone-300 rounded-lg text-xs font-bold transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-brand-gold hover:brightness-110 text-brand-dark rounded-lg text-xs font-heading font-black uppercase tracking-wider flex items-center gap-1.5 transition shadow cursor-pointer"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>{editingSubcategoryItem ? 'Save Changes' : 'Create Subcategory'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* MODAL: ADD / EDIT WHAT'S YOUR PROJECT DESIGN ITEM */}
       {/* ------------------------------------------------------------- */}
       {showDesignModal && managingDesignsCategory && (
@@ -5470,7 +5989,7 @@ export const AdminPage: React.FC = () => {
                   className="px-5 py-2 bg-brand-gold text-brand-dark rounded-lg font-heading font-black text-xs uppercase tracking-wider hover:brightness-110 shadow-lg cursor-pointer flex items-center gap-1.5"
                 >
                   <Save className="w-3.5 h-3.5" />
-                  <span>{editingDesignItem ? 'Update Design' : 'Add Design to Category'}</span>
+                  <span>{editingDesignItem ? 'Update Design' : 'Add Design to Subcategory'}</span>
                 </button>
               </div>
             </form>

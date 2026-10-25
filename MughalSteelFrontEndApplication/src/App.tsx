@@ -218,7 +218,11 @@ const AppContent: React.FC = () => {
             <Route path="/projects/:slug" element={<ProjectDetailPage />} />
             <Route path="/what-is-your-project" element={<WhatIsYourProjectPage />} />
             <Route path="/what-is-your-project/:category" element={<WhatIsYourProjectPage />} />
+            <Route path="/what-is-your-project/:category/:subcategory" element={<WhatIsYourProjectPage />} />
+            <Route path="/what-is-your-project/:category/:subcategory/:designId" element={<WhatIsYourProjectPage />} />
             <Route path="/project-category/:category" element={<WhatIsYourProjectPage />} />
+            <Route path="/project-category/:category/:subcategory" element={<WhatIsYourProjectPage />} />
+            <Route path="/project-category/:category/:subcategory/:designId" element={<WhatIsYourProjectPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/reviews" element={<ReviewsPage />} />
 

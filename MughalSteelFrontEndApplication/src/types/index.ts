@@ -388,10 +388,13 @@ export interface ProjectShowcaseItem {
 export interface ProjectDesignItem {
   id: string;
   title: string;
+  subcategoryId?: string;
+  subcategory?: string;
   description?: string;
   image: string;
   images?: string[];
   itemType?: string;
+  productCode?: string;
   associatedProductId?: string;
   associatedProductCode?: string;
   pricePerSqFt?: number;
@@ -401,12 +404,26 @@ export interface ProjectDesignItem {
   materials?: string[];
   finishes?: string[];
   features?: string[];
+  customizationOptions?: string[];
   displayOrder?: number;
+  active?: boolean;
+}
+
+export interface ProjectSubcategoryItem {
+  id: string;
+  title: string;
+  slug?: string;
+  description?: string;
+  image: string;
+  displayOrder?: number;
+  active?: boolean;
+  designs?: ProjectDesignItem[];
 }
 
 export interface WhatIsYourProjectItem {
   id: string;
   category: string;
+  slug?: string;
   title: string;
   tagline: string;
   description?: string;
@@ -420,6 +437,9 @@ export interface WhatIsYourProjectItem {
   status?: 'completed' | 'ongoing';
   statusLabel?: string;
   updatedAt?: string;
+  displayOrder?: number;
+  active?: boolean;
+  subcategories?: ProjectSubcategoryItem[];
   designs?: ProjectDesignItem[];
 }
 

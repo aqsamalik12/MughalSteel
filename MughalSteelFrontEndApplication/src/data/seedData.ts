@@ -1,4 +1,4 @@
-import type { Product, BlogPost, Testimonial, ProjectCategory, ProductItemType, TeamMember, ProjectShowcaseItem, WhatIsYourProjectItem, ProjectDesignItem } from '../types';
+import type { Product, BlogPost, Testimonial, ProjectCategory, ProductItemType, TeamMember, ProjectShowcaseItem, WhatIsYourProjectItem, ProjectDesignItem, ProjectSubcategoryItem } from '../types';
 
 export interface CategoryInfo {
   id: string;
@@ -1320,146 +1320,428 @@ export const SEED_PROJECT_SHOWCASES: ProjectShowcaseItem[] = [
 
 export const SEED_WHAT_IS_YOUR_PROJECT: WhatIsYourProjectItem[] = [
   {
+    id: 'wip-modern-home',
+    category: 'Modern Home',
+    title: 'Modern Architecture & CNC Laser Works',
+    tagline: 'Clean lines, laser-cut geometry & minimalist architecture',
+    description: 'Sleek architectural steelwork tailored for contemporary urban residences with fiber laser cutting.',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    itemsCount: 12,
+    primaryItem: 'Front Gate',
+    gaugeSpec: '14-Gauge MS & ±0.1mm CNC Fiber Laser',
+    finishSpec: 'Matte Jet-Black Electrostatic Powder Coat (200°C)',
+    deliverables: 'Main Driveway Gate, Boundary Wall Grills, Balcony Railings, Spiral Stairs',
+    location: 'DHA Phase 2, Islamabad',
+    status: 'completed',
+    statusLabel: 'Completed & Handed Over',
+    subcategories: [
+      {
+        id: 'wip-sub-mh-front-gate',
+        title: 'Front Gate',
+        slug: 'front-gate',
+        description: 'Modern driveway and pedestrian main gates with CNC laser cutting, concealed hinges, and automation prep.',
+        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: 1,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-mh-g01',
+            title: 'Metropolis CNC Laser-Cut Geometric Main Gate',
+            subcategoryId: 'wip-sub-mh-front-gate',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-MH-G01',
+            associatedProductCode: 'MFG-G001',
+            description: 'Heavy 14-gauge cold-rolled mild steel main entrance gate featuring parametric laser-cut geometry and an integrated wicket pass door.',
+            image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+            images: [
+              'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+              'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80'
+            ],
+            pricePerSqFt: 2500,
+            basePrice: 130000,
+            gaugeSpec: '14-Gauge (2.0mm) Cold-Rolled Sheet & 2x4 Tube',
+            finishSpec: 'Jet-Black Matte Electrostatic Powder Coat (200°C)',
+            materials: ['Mild Steel Structural Box Pipe', 'CNC Fiber Laser Plate'],
+            finishes: ['Matte Black Powder Coat', 'Charcoal Metallic', 'Rust-Inhibitive Primer'],
+            customizationOptions: ['Custom Driveway Size', 'Custom Laser Cut Motif', 'Custom Powder Color', 'German Motor Automation']
+          },
+          {
+            id: 'wip-des-mh-g02',
+            title: 'Minimalist Horizontal Steel Louver Driveway Gate',
+            subcategoryId: 'wip-sub-mh-front-gate',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-MH-G02',
+            associatedProductCode: 'MFG-G002',
+            description: 'Aerodynamic horizontal steel louver gate providing 100% privacy with wind-relief ventilation for wide suburban driveways.',
+            image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+            images: [
+              'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+              'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
+            ],
+            pricePerSqFt: 2650,
+            basePrice: 145000,
+            gaugeSpec: '14-Gauge Aerodynamic Hollow Sections',
+            finishSpec: 'Dual-Stage Zinc Phosphate & Anthracite Grey Powder Coat',
+            materials: ['Cold-Rolled Louver Profiles', 'Heavy Duty Ball Bearing Hinges'],
+            finishes: ['Anthracite Grey', 'Matte Black', 'Dark Bronze'],
+            customizationOptions: ['Custom Driveway Size', 'Custom Powder Color', 'Italian Automation Kit']
+          },
+          {
+            id: 'wip-des-mh-g03',
+            title: 'Modernist Cantilever Double Swing Steel Gate',
+            subcategoryId: 'wip-sub-mh-front-gate',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-MH-G03',
+            associatedProductCode: 'MFG-G001',
+            description: 'Contemporary double-leaf architectural gate with asymmetric vertical steel blades and flush handle integration.',
+            image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2800,
+            basePrice: 160000,
+            gaugeSpec: '12-Gauge Structural Frame & 14-Gauge Blades',
+            finishSpec: 'High-Durability Textured Black Powder Coat'
+          }
+        ]
+      },
+      {
+        id: 'wip-sub-mh-front-balcony',
+        title: 'Front Balcony',
+        slug: 'front-balcony',
+        description: 'Modern front facade balcony railings with glass, stainless steel spigots, and laser-cut safety panels.',
+        image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: 2,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-mh-b01',
+            title: 'Horizon Frameless Tempered Glass Front Balcony',
+            subcategoryId: 'wip-sub-mh-front-balcony',
+            subcategory: 'Front Balcony',
+            productCode: 'MSF-MH-B01',
+            associatedProductCode: 'MFG-R001',
+            description: '12mm clear toughened safety glass with SS-304 heavy solid spigot clamps and minimalist stainless steel top channel.',
+            image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2200,
+            basePrice: 65000,
+            gaugeSpec: '12mm Toughened Glass & SS-304 Hardware',
+            finishSpec: 'Satin Brushed Stainless Steel & Clear Safety Glass'
+          },
+          {
+            id: 'wip-des-mh-b02',
+            title: 'Modernist CNC Laser Privacy Balcony Railing',
+            subcategoryId: 'wip-sub-mh-front-balcony',
+            subcategory: 'Front Balcony',
+            productCode: 'MSF-MH-B02',
+            associatedProductCode: 'MFG-R001',
+            description: 'Architectural laser-cut steel fretwork panel railing offering private terrace protection with seamless curb mounting.',
+            image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2400,
+            basePrice: 75000,
+            gaugeSpec: '3mm Solid CNC Laser Sheet & 2-inch Box Pipe',
+            finishSpec: 'Matte Black Polyester Powder Coat'
+          }
+        ]
+      },
+      {
+        id: 'wip-sub-mh-spiral-stairs',
+        title: 'Spiral Stairs',
+        slug: 'spiral-stairs',
+        description: 'Architectural steel spiral staircases engineered for compact exterior or interior multi-floor transitions.',
+        image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: 3,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-mh-s01',
+            title: 'Helix Floating Center-Pole Spiral Staircase',
+            subcategoryId: 'wip-sub-mh-spiral-stairs',
+            subcategory: 'Spiral Stairs',
+            productCode: 'MSF-MH-SS01',
+            associatedProductCode: 'MFG-R002',
+            description: 'Precision engineered central structural column with laser-cut cantilevered treads, curved steel stringers, and smooth handrail.',
+            image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 3200,
+            basePrice: 190000,
+            gaugeSpec: '8-inch Central Structural Pipe & 5mm Checkered Plate',
+            finishSpec: 'Textured Charcoal Metallic Powder Coat'
+          },
+          {
+            id: 'wip-des-mh-s02',
+            title: 'Contemporary Curved Helical Steel Staircase',
+            subcategoryId: 'wip-sub-mh-spiral-stairs',
+            subcategory: 'Spiral Stairs',
+            productCode: 'MSF-MH-SS02',
+            associatedProductCode: 'MFG-R002',
+            description: 'Double-stringer helical curved steel stairs with open riser profiles for modern rooftop or mezzanine access.',
+            image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 3500,
+            basePrice: 220000,
+            gaugeSpec: 'Heavy 10mm Laser Cut Stringers',
+            finishSpec: 'Epoxy Enamel & Anti-Slip Tread Texture'
+          }
+        ]
+      },
+      {
+        id: 'wip-sub-mh-back-stairs',
+        title: 'Back Side Stairs',
+        slug: 'back-side-stairs',
+        description: 'Durable, weather-resistant service and utility staircases for secondary access and rooftop maintenance.',
+        image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: 4,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-mh-bs01',
+            title: 'Heavy Duty Straight Run Service Staircase',
+            subcategoryId: 'wip-sub-mh-back-stairs',
+            subcategory: 'Back Side Stairs',
+            productCode: 'MSF-MH-BSS01',
+            associatedProductCode: 'MFG-R002',
+            description: 'Heavy C-channel stringers with diamond-plate anti-slip treads and continuous safety handrails designed for exterior longevity.',
+            image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 1950,
+            basePrice: 115000,
+            gaugeSpec: '6x2-inch Heavy C-Channel & 4mm Diamond Plate',
+            finishSpec: 'Zinc-Rich Anti-Rust Primer & Industrial Top Coat'
+          },
+          {
+            id: 'wip-des-mh-bs02',
+            title: 'Galvanized Weatherproof Outdoor Fire Escape',
+            subcategoryId: 'wip-sub-mh-back-stairs',
+            subcategory: 'Back Side Stairs',
+            productCode: 'MSF-MH-BSS02',
+            associatedProductCode: 'MFG-R002',
+            description: 'Hot-dip galvanized structural stairs with grating treads to prevent water accumulation and rust during monsoon seasons.',
+            image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2150,
+            basePrice: 135000,
+            gaugeSpec: 'Hot-Dip Galvanized Structural Steel',
+            finishSpec: 'Industrial HDG 85-Micron Protective Zinc'
+          }
+        ]
+      },
+      {
+        id: 'wip-sub-mh-balcony-railings',
+        title: 'Balcony Railings',
+        slug: 'balcony-railings',
+        description: 'Architectural safety railings for perimeter terraces, verandas, and exterior balconies.',
+        image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: 5,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-mh-br01',
+            title: 'Slimline Vertical Picket Balcony Railing',
+            subcategoryId: 'wip-sub-mh-balcony-railings',
+            subcategory: 'Balcony Railings',
+            productCode: 'MSF-MH-BR01',
+            associatedProductCode: 'MFG-R001',
+            description: 'Minimalist vertical steel balusters spaced at child-safe 4-inch centers with sleek rectangular top rail.',
+            image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 1750,
+            basePrice: 48000,
+            gaugeSpec: '1-inch Solid Hollow Section Spindles & 2x1 Rail',
+            finishSpec: 'Matte Jet Black Electrostatic Powder Coating'
+          },
+          {
+            id: 'wip-des-mh-br02',
+            title: 'Geometric Box Frame Architectural Railing',
+            subcategoryId: 'wip-sub-mh-balcony-railings',
+            subcategory: 'Balcony Railings',
+            productCode: 'MSF-MH-BR02',
+            associatedProductCode: 'MFG-R001',
+            description: 'Alternating geometric box section railing creating modern depth and shadow lines across residential facades.',
+            image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 1900,
+            basePrice: 55000,
+            gaugeSpec: '14-Gauge Cold-Rolled Square Steel Tubing',
+            finishSpec: 'Charcoal Grey Textured Finish'
+          }
+        ]
+      },
+      {
+        id: 'wip-sub-mh-indoor-railings',
+        title: 'Indoor Railings',
+        slug: 'indoor-railings',
+        description: 'Interior staircases and mezzanine railings with fine architectural finishing and wooden top-cap integration.',
+        image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: 6,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-mh-ir01',
+            title: 'Monolithic Interior Glass Clamped Stair Railing',
+            subcategoryId: 'wip-sub-mh-indoor-railings',
+            subcategory: 'Indoor Railings',
+            productCode: 'MSF-MH-IR01',
+            associatedProductCode: 'MFG-R001',
+            description: 'Side-mounted stainless steel standoff pins with 12mm extra-clear tempered glass and solid oak wooden handrail.',
+            image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2300,
+            basePrice: 72000,
+            gaugeSpec: '12mm Clear Glass & SS-304 Standoff Pins',
+            finishSpec: 'Brushed Satin Nickel & Hardwood Top Cap'
+          },
+          {
+            id: 'wip-des-mh-ir02',
+            title: 'Minimalist Continuous Flat-Bar Handrail',
+            subcategoryId: 'wip-sub-mh-indoor-railings',
+            subcategory: 'Indoor Railings',
+            productCode: 'MSF-MH-IR02',
+            associatedProductCode: 'MFG-R002',
+            description: 'Ultra-thin continuous flat steel balusters welded flush into step brackets for minimalist loft aesthetics.',
+            image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2100,
+            basePrice: 62000,
+            gaugeSpec: '40x8mm Solid Cold-Rolled Flat Steel Bar',
+            finishSpec: 'Smooth Velvet Black Epoxy Coating'
+          }
+        ]
+      }
+    ]
+  },
+  {
     id: 'wip-housing-society',
     category: 'Housing Society',
     title: 'Housing Society Infrastructure & Grand Gates',
     tagline: 'Grand entrance gates, perimeter security & community infrastructure',
     description: 'Monumental society entrances, automated boom barriers, boundary wall spike grills, and durable park steel fabrications.',
     image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
-    itemsCount: 4,
-    primaryItem: 'Main Gates',
+    itemsCount: 8,
+    primaryItem: 'Front Gate',
     gaugeSpec: '12-Gauge Heavy Mild Steel Structural Channels',
     finishSpec: 'Multi-Stage Zinc Primer & Epoxy Coating',
     deliverables: 'Monumental Society Entrance, Security Spikes, Park Railings',
     location: 'Islamabad / Rawalpindi',
     status: 'completed',
     statusLabel: 'Completed & Handed Over',
-    designs: [
+    subcategories: [
       {
-        id: 'wip-des-hs-1',
-        title: 'Monumental Society Entrance Gate',
-        description: 'Monumental automated double swing entrance with heavy steel portal frame and integrated security cabin framing.',
-        image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Main Gates',
-        associatedProductId: 'prod-mfg-g001',
-        associatedProductCode: 'MFG-G001',
-        pricePerSqFt: 3200,
-        gaugeSpec: '12-Gauge Heavy Structural Channels',
-        finishSpec: 'Zinc-Rich Anti-Rust Primer & Epoxy Enamel'
-      },
-      {
-        id: 'wip-des-hs-2',
-        title: 'Boundary Wall Spike Grills',
-        description: 'Laser-cut continuous anti-climb security spikes for perimeter society boundary walls.',
-        image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Boundary Wall Grills',
-        associatedProductId: 'prod-mfg-w001',
-        associatedProductCode: 'MFG-W001',
-        pricePerSqFt: 1500,
-        gaugeSpec: '3mm Solid Laser Cut Steel Teeth',
-        finishSpec: 'Hot-Dip Galvanized & Black Powder Coat'
-      },
-      {
-        id: 'wip-des-hs-3',
-        title: 'Community Park Guardrails & Railing',
-        description: 'Heavy duty all-weather public park railings with smooth child-safe edge profiles.',
-        image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Railing',
-        associatedProductId: 'prod-mfg-r001',
-        associatedProductCode: 'MFG-R001',
-        pricePerSqFt: 1850,
-        gaugeSpec: 'Schedule 40 Heavy MS Pipes',
-        finishSpec: 'Electrostatic Polyester Powder Coating'
-      },
-      {
-        id: 'wip-des-hs-4',
-        title: 'Security Gate House Canopy & Shed',
-        description: 'Engineered steel truss canopy and cantilevered vehicular check-post shelter.',
-        image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Sheds & Canopies',
-        associatedProductId: 'prod-mfg-g002',
-        associatedProductCode: 'MFG-G002',
-        pricePerSqFt: 2900,
-        gaugeSpec: 'Heavy I-Beam & C-Channel Structural Trusses',
-        finishSpec: 'Marine Grade Industrial Coating'
-      }
-    ]
-  },
-  {
-    id: 'wip-modern-home',
-    category: 'Modern Home',
-    title: 'Modern Architecture & CNC Laser Gates',
-    tagline: 'Clean lines, laser-cut geometry & minimalist architecture',
-    description: 'Sleek architectural steelwork tailored for contemporary urban residences with fiber laser cutting.',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-    itemsCount: 5,
-    primaryItem: 'Front Gates',
-    gaugeSpec: '14-Gauge MS & ±0.1mm CNC Fiber Laser',
-    finishSpec: 'Matte Jet-Black Electrostatic Powder Coat (200°C)',
-    deliverables: 'Main Driveway Gate, Boundary Wall Grills, Balcony Railings',
-    location: 'DHA Phase 2, Islamabad',
-    status: 'completed',
-    statusLabel: 'Completed & Handed Over',
-    designs: [
-      {
-        id: 'wip-des-mh-1',
+        id: 'wip-sub-hs-entrance-gates',
         title: 'Front Gate',
-        description: 'Metropolis CNC Laser-Cut Geometric Main Gate with flush concealed hinges and integrated wicket pass door.',
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Front Gates',
-        associatedProductId: 'prod-mfg-g001',
-        associatedProductCode: 'MFG-G001',
-        pricePerSqFt: 2500,
-        gaugeSpec: '14-Gauge (2.0mm) Cold-Rolled MS',
-        finishSpec: 'Jet-Black Matte Electrostatic Powder Coat (200°C)'
+        slug: 'front-gate',
+        description: 'Monumental society entrance archways, multi-lane security gates, and heavy automated barriers.',
+        image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: 1,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-hs-1',
+            title: 'Monumental Society Entrance Gate',
+            subcategoryId: 'wip-sub-hs-entrance-gates',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-HS-G01',
+            associatedProductCode: 'MFG-G001',
+            description: 'Monumental automated double swing entrance with heavy steel portal frame and integrated security cabin framing.',
+            image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 3200,
+            basePrice: 280000,
+            gaugeSpec: '12-Gauge Heavy Structural Channels',
+            finishSpec: 'Zinc-Rich Anti-Rust Primer & Epoxy Enamel'
+          },
+          {
+            id: 'wip-des-hs-2',
+            title: 'Commercial Multi-Lane Security Check Gate',
+            subcategoryId: 'wip-sub-hs-entrance-gates',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-HS-G02',
+            associatedProductCode: 'MFG-G002',
+            description: 'Automated sliding steel barrier gate with high-speed Italian motor and RFID vehicle sensor integration.',
+            image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 3400,
+            basePrice: 320000,
+            gaugeSpec: 'Heavy I-Beam & C-Channel Framing',
+            finishSpec: 'Industrial Epoxy Primer & Highway Safety Yellow/Black'
+          }
+        ]
       },
       {
-        id: 'wip-des-mh-2',
-        title: 'Front Balcony',
-        description: 'Horizon frameless modern balcony safety railing with 12mm tempered safety glass and SS-304 spigots.',
-        image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Balcony Railing',
-        associatedProductId: 'prod-mfg-r001',
-        associatedProductCode: 'MFG-R001',
-        pricePerSqFt: 2200,
-        gaugeSpec: '12mm Toughened Glass & SS-304 Hardware',
-        finishSpec: 'Satin Brushed Stainless Steel'
+        id: 'wip-sub-hs-boundary-grills',
+        title: 'Boundary Wall Grills',
+        slug: 'boundary-wall-grills',
+        description: 'Perimeter security spike grills and continuous anti-climb wall toppings.',
+        image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: 2,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-hs-3',
+            title: 'Laser-Cut Continuous Anti-Climb Security Spikes',
+            subcategoryId: 'wip-sub-hs-boundary-grills',
+            subcategory: 'Boundary Wall Grills',
+            productCode: 'MSF-HS-W01',
+            associatedProductCode: 'MFG-W001',
+            description: 'Continuous laser-cut serrated steel teeth engineered for perimeter boundary security with concrete anchor brackets.',
+            image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 1500,
+            basePrice: 45000,
+            gaugeSpec: '3mm Solid Laser Cut Steel Teeth',
+            finishSpec: 'Hot-Dip Galvanized & Black Powder Coat'
+          },
+          {
+            id: 'wip-des-hs-4',
+            title: 'High-Security Palisade Perimeter Wall Grate',
+            subcategoryId: 'wip-sub-hs-boundary-grills',
+            subcategory: 'Boundary Wall Grills',
+            productCode: 'MSF-HS-W02',
+            associatedProductCode: 'MFG-W002',
+            description: 'Heavy duty vertical steel palisade pales with triple-pointed spear tops for perimeter property fencing.',
+            image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 1650,
+            basePrice: 52000,
+            gaugeSpec: 'Schedule 40 Solid Round & Square MS Bars',
+            finishSpec: 'Dual Protective Coat & Weatherproof Enamel'
+          }
+        ]
       },
       {
-        id: 'wip-des-mh-3',
-        title: 'Spiral Stairs',
-        description: 'Helix architectural steel spiral staircase with laser-curved stringers and solid timber/steel steps.',
-        image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Stair Railing',
-        associatedProductId: 'prod-mfg-r002',
-        associatedProductCode: 'MFG-R002',
-        pricePerSqFt: 2800,
-        gaugeSpec: '8-inch Seamless Column & 10mm Laser Stringer',
-        finishSpec: 'Textured Charcoal Metallic Powder Coat'
-      },
-      {
-        id: 'wip-des-mh-4',
-        title: 'Prism Window Security Grill',
-        description: 'Solid square bar geometric security grill with seamless hidden anchor brackets and anti-pry joints.',
+        id: 'wip-sub-hs-park-railings',
+        title: 'Balcony & Park Railings',
+        slug: 'park-railings',
+        description: 'Child-safe public park railings, jogging track guardrails, and decorative boulevard fencing.',
         image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Grills',
-        associatedProductId: 'prod-mfg-w001',
-        associatedProductCode: 'MFG-W001',
-        pricePerSqFt: 1600,
-        gaugeSpec: '1/2-inch Solid Cold-Rolled Steel Bars',
-        finishSpec: 'Satin Black Powder Coat'
+        displayOrder: 3,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-hs-5',
+            title: 'Community Park Safe-Edge Guardrails',
+            subcategoryId: 'wip-sub-hs-park-railings',
+            subcategory: 'Balcony & Park Railings',
+            productCode: 'MSF-HS-PR01',
+            associatedProductCode: 'MFG-R001',
+            description: 'Heavy duty all-weather public park railings with smooth child-safe edge profiles.',
+            image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 1850,
+            basePrice: 58000,
+            gaugeSpec: 'Schedule 40 Heavy MS Pipes',
+            finishSpec: 'Electrostatic Polyester Powder Coating'
+          }
+        ]
       },
       {
-        id: 'wip-des-mh-5',
-        title: 'Louver Pipes & Gate Gridding',
-        description: 'Horizontal aerodynamic steel louver tube accents offering privacy with modern ventilation airflow.',
-        image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Boundary Wall Grills',
-        associatedProductId: 'prod-mfg-g002',
-        associatedProductCode: 'MFG-G002',
-        pricePerSqFt: 2700,
-        gaugeSpec: '14-Gauge Aerodynamic MS Hollow Tubing',
-        finishSpec: 'Dual-Stage Zinc Rich Primer & Matte Top Coat'
+        id: 'wip-sub-hs-sheds',
+        title: 'Sheds & Guard Canopies',
+        slug: 'sheds-and-canopies',
+        description: 'Engineered steel trusses, vehicular inspection shelters, and guard check-post canopies.',
+        image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: 4,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-hs-6',
+            title: 'Security Gate House Canopy & Shed',
+            subcategoryId: 'wip-sub-hs-sheds',
+            subcategory: 'Sheds & Guard Canopies',
+            productCode: 'MSF-HS-SC01',
+            associatedProductCode: 'MFG-G002',
+            description: 'Engineered steel truss canopy and cantilevered vehicular check-post shelter.',
+            image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2900,
+            basePrice: 185000,
+            gaugeSpec: 'Heavy I-Beam & C-Channel Structural Trusses',
+            finishSpec: 'Marine Grade Industrial Coating'
+          }
+        ]
       }
     ]
   },
@@ -1470,62 +1752,103 @@ export const SEED_WHAT_IS_YOUR_PROJECT: WhatIsYourProjectItem[] = [
     tagline: 'Timeless wrought iron craftsmanship, scrollwork & royal crests',
     description: 'Hand-forged ornamental wrought iron gates, classical balustrades, cast brass accents, and archway doors.',
     image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
-    itemsCount: 4,
-    primaryItem: 'Front Gates',
+    itemsCount: 6,
+    primaryItem: 'Front Gate',
     gaugeSpec: 'Solid Hand-Forged Carbon Steel (20mm solid bars)',
     finishSpec: 'Hand-Rubbed Antique Roman Bronze & Gold Leaf Accents',
     deliverables: 'Arched Double Wrought Iron Driveway Gate, Curved Balustrades',
     location: 'Sector F-7, Islamabad',
     status: 'completed',
     statusLabel: 'Completed & Handed Over',
-    designs: [
+    subcategories: [
       {
-        id: 'wip-des-ch-1',
-        title: 'Arched Wrought Iron Driveway Gate',
-        description: 'Hand-beaten hot-forged ornamental scrollwork with solid spear finials and classical leaf crests.',
+        id: 'wip-sub-ch-driveway-gates',
+        title: 'Front Gate',
+        slug: 'front-gate',
+        description: 'Hand-beaten hot-forged ornamental scrollwork gates with solid spear finials and royal crests.',
         image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Front Gates',
-        associatedProductId: 'prod-mfg-g002',
-        associatedProductCode: 'MFG-G002',
-        pricePerSqFt: 3600,
-        gaugeSpec: '20mm Solid Forged Square Bars',
-        finishSpec: 'Antique Roman Bronze & Gold Leaf Accents'
+        displayOrder: 1,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-ch-1',
+            title: 'Arched Wrought Iron Royal Driveway Gate',
+            subcategoryId: 'wip-sub-ch-driveway-gates',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-CH-G01',
+            associatedProductCode: 'MFG-G002',
+            description: 'Hand-beaten hot-forged ornamental scrollwork with solid spear finials and classical leaf crests.',
+            image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 3600,
+            basePrice: 260000,
+            gaugeSpec: '20mm Solid Forged Square Bars',
+            finishSpec: 'Antique Roman Bronze & Gold Leaf Accents'
+          },
+          {
+            id: 'wip-des-ch-2',
+            title: 'Baroque Hand-Forged Double Arched Gate',
+            subcategoryId: 'wip-sub-ch-driveway-gates',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-CH-G02',
+            associatedProductCode: 'MFG-G002',
+            description: 'Classical Baroque floral crests and hand-forged C-scrolls with heavy solid steel decorative posts.',
+            image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 3800,
+            basePrice: 295000,
+            gaugeSpec: 'Solid Hand-Forged Carbon Steel',
+            finishSpec: 'Multi-Stage Zinc Primer & Hand-Rubbed Patina'
+          }
+        ]
       },
       {
-        id: 'wip-des-ch-2',
-        title: 'Classical Heritage Balcony Balustrade',
-        description: 'Solid forged iron spindles with cast iron knuckles, floral badges, and molded top handrail.',
+        id: 'wip-sub-ch-balcony',
+        title: 'Front Balcony',
+        slug: 'front-balcony',
+        description: 'Classical forged iron balustrades with cast brass rosettes, molded handrails, and curved returns.',
         image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Balcony Railing',
-        associatedProductId: 'prod-mfg-r001',
-        associatedProductCode: 'MFG-R001',
-        pricePerSqFt: 2800,
-        gaugeSpec: '16mm Solid Forged Iron Spindles',
-        finishSpec: 'Multi-Stage Zinc Primer & Satin Black Enamel'
+        displayOrder: 2,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-ch-3',
+            title: 'Classical Heritage Balcony Balustrade',
+            subcategoryId: 'wip-sub-ch-balcony',
+            subcategory: 'Front Balcony',
+            productCode: 'MSF-CH-B01',
+            associatedProductCode: 'MFG-R001',
+            description: 'Solid forged iron spindles with cast iron knuckles, floral badges, and molded top handrail.',
+            image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2800,
+            basePrice: 95000,
+            gaugeSpec: '16mm Solid Forged Iron Spindles',
+            finishSpec: 'Multi-Stage Zinc Primer & Satin Black Enamel'
+          }
+        ]
       },
       {
-        id: 'wip-des-ch-3',
-        title: 'Ornamental French Iron Entry Door',
-        description: 'Heavy thermal iron entryway door with operable decorative scroll grate over insulated safety glass.',
-        image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Doors',
-        associatedProductId: 'prod-mfg-d001',
-        associatedProductCode: 'MFG-D001',
-        pricePerSqFt: 3200,
-        gaugeSpec: '12-Gauge Tubular Steel & Solid Forgings',
-        finishSpec: 'Aged Patina Thermal Powder Finish'
-      },
-      {
-        id: 'wip-des-ch-4',
-        title: 'Bavaria Heavy Forged Window Security Grate',
-        description: 'Bavaria forged security bars with decorative forged collars and reinforced wall anchors.',
-        image: 'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Grills',
-        associatedProductId: 'prod-mfg-w002',
-        associatedProductCode: 'MFG-W002',
-        pricePerSqFt: 1900,
-        gaugeSpec: 'Solid Forged Carbon Steel & Collars',
-        finishSpec: 'Hand-Rubbed Antique Black Finish'
+        id: 'wip-sub-ch-stairs',
+        title: 'Spiral Stairs',
+        slug: 'spiral-stairs',
+        description: 'French ornamental curved porch stairs with classical iron scrolls and molded brass caps.',
+        image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: 3,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-ch-4',
+            title: 'French Ornamental Spiral Porch Stairs',
+            subcategoryId: 'wip-sub-ch-stairs',
+            subcategory: 'Spiral Stairs',
+            productCode: 'MSF-CH-S01',
+            associatedProductCode: 'MFG-R002',
+            description: 'Helical curved wrought iron staircase with hand-forged acanthus leaves and curved brass handrails.',
+            image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 3400,
+            basePrice: 210000,
+            gaugeSpec: 'Solid Forged Treads & Structural Column',
+            finishSpec: 'Antique Bronze Enamel with Gold Highlights'
+          }
+        ]
       }
     ]
   },
@@ -1536,62 +1859,89 @@ export const SEED_WHAT_IS_YOUR_PROJECT: WhatIsYourProjectItem[] = [
     tagline: 'Industrial strength, motorized sliding systems & structural steel',
     description: 'High-traffic commercial entrances, warehouse sliding doors, structural steel mezzanines, and emergency staircases.',
     image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
-    itemsCount: 4,
-    primaryItem: 'Main Gates',
+    itemsCount: 5,
+    primaryItem: 'Front Gate',
     gaugeSpec: 'Heavy I-Beam & Structural Channel Portal Trusses',
     finishSpec: 'AkzoNobel High-Endurance Powder Coat',
     deliverables: 'Multi-Storey Glass Curtain Sub-Frame, Fire Spiral Escape Stairs',
     location: 'Sector G-13 Markaz, Islamabad',
     status: 'completed',
     statusLabel: 'Completed & Handed Over',
-    designs: [
+    subcategories: [
       {
-        id: 'wip-des-cm-1',
-        title: 'Commercial Plaza Sliding Gate',
-        description: 'High-traffic cantilevered motorized sliding gate designed for continuous plaza entrance clearance.',
+        id: 'wip-sub-com-gates',
+        title: 'Front Gate',
+        slug: 'front-gate',
+        description: 'High-traffic motorized sliding and cantilever gates for commercial plazas and industrial corporate parks.',
         image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Main Gates',
-        associatedProductId: 'prod-mfg-g001',
-        associatedProductCode: 'MFG-G001',
-        pricePerSqFt: 3400,
-        gaugeSpec: 'Heavy Structural Channel & 12-Gauge Infill',
-        finishSpec: 'AkzoNobel High-Endurance Industrial Powder Coat'
+        displayOrder: 1,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-cm-1',
+            title: 'Commercial Plaza Motorized Sliding Gate',
+            subcategoryId: 'wip-sub-com-gates',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-COM-G01',
+            associatedProductCode: 'MFG-G001',
+            description: 'High-traffic cantilevered motorized sliding gate designed for continuous plaza entrance clearance.',
+            image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 3400,
+            basePrice: 240000,
+            gaugeSpec: 'Heavy Structural Channel & 12-Gauge Infill',
+            finishSpec: 'AkzoNobel High-Endurance Industrial Powder Coat'
+          }
+        ]
       },
       {
-        id: 'wip-des-cm-2',
-        title: 'Fire Escape Spiral Staircase',
-        description: 'Certified exterior multi-storey spiral emergency exit staircase with anti-slip perforated treads.',
+        id: 'wip-sub-com-stairs',
+        title: 'Spiral Stairs',
+        slug: 'spiral-stairs',
+        description: 'Certified exterior multi-storey spiral emergency exit staircases with anti-slip perforated treads.',
         image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Stair Railing',
-        associatedProductId: 'prod-mfg-r002',
-        associatedProductCode: 'MFG-R002',
-        pricePerSqFt: 2900,
-        gaugeSpec: 'Heavy Structural Central Pipe & 5mm Checkered Treads',
-        finishSpec: 'Hot-Dip Galvanized & Yellow Safety Enamel'
+        displayOrder: 2,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-cm-2',
+            title: 'Fire Escape Certified Spiral Staircase',
+            subcategoryId: 'wip-sub-com-stairs',
+            subcategory: 'Spiral Stairs',
+            productCode: 'MSF-COM-S01',
+            associatedProductCode: 'MFG-R002',
+            description: 'Certified exterior multi-storey spiral emergency exit staircase with anti-slip perforated treads.',
+            image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2900,
+            basePrice: 175000,
+            gaugeSpec: 'Heavy Structural Central Pipe & 5mm Checkered Treads',
+            finishSpec: 'Hot-Dip Galvanized & Yellow Safety Enamel'
+          }
+        ]
       },
       {
-        id: 'wip-des-cm-3',
-        title: 'Multi-Storey Glass Curtain Sub-Frame',
-        description: 'Precision laser-leveled steel skeleton framing for architectural structural glazing facades.',
-        image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Steel Structures',
-        associatedProductId: 'prod-mfg-g002',
-        associatedProductCode: 'MFG-G002',
-        pricePerSqFt: 3100,
-        gaugeSpec: 'Heavy Box Sections & Precision Gusset Plates',
-        finishSpec: 'Zinc Chromate Primer & Industrial Polyurethane'
-      },
-      {
-        id: 'wip-des-cm-4',
-        title: 'Plaza Security Guardrail & Bollards',
-        description: 'Heavy gauge steel crowd control railings and high-impact perimeter bollards.',
+        id: 'wip-sub-com-railings',
+        title: 'Balcony Railings',
+        slug: 'balcony-railings',
+        description: 'High-impact commercial crowd control railings and high-traffic stainless steel balustrades.',
         image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Railing',
-        associatedProductId: 'prod-mfg-r001',
-        associatedProductCode: 'MFG-R001',
-        pricePerSqFt: 2300,
-        gaugeSpec: 'Heavy Stainless Steel SS-304 & Structural MS',
-        finishSpec: 'Dual Powder Coat & High Visibility Finish'
+        displayOrder: 3,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-cm-3',
+            title: 'Plaza Security Guardrail & Bollards',
+            subcategoryId: 'wip-sub-com-railings',
+            subcategory: 'Balcony Railings',
+            productCode: 'MSF-COM-R01',
+            associatedProductCode: 'MFG-R001',
+            description: 'Heavy gauge steel crowd control railings and high-impact perimeter bollards.',
+            image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2300,
+            basePrice: 85000,
+            gaugeSpec: 'Heavy Stainless Steel SS-304 & Structural MS',
+            finishSpec: 'Dual Powder Coat & High Visibility Finish'
+          }
+        ]
       }
     ]
   },
@@ -1602,176 +1952,193 @@ export const SEED_WHAT_IS_YOUR_PROJECT: WhatIsYourProjectItem[] = [
     tagline: 'Rustic warmth meets industrial steel precision',
     description: 'Modern ranch gates, cross-buck porch railings, oversized sliding barn doors, and black powder-coated perimeter fencing.',
     image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
-    itemsCount: 3,
-    primaryItem: 'Front Gates',
+    itemsCount: 4,
+    primaryItem: 'Front Gate',
     gaugeSpec: 'Schedule 40 Galvanized Heavy MS Pipes',
     finishSpec: 'Triple Hot-Zinc Chemical Primer & Protective Powder Coat',
     deliverables: 'Grand Entrance Gate, 1,200 RFT Security Fencing, Custom Porch Pergola',
     location: 'Gulberg Greens, Islamabad',
     status: 'completed',
     statusLabel: 'Completed & Handed Over',
-    designs: [
+    subcategories: [
       {
-        id: 'wip-des-mf-1',
-        title: 'Modern Ranch Cross-Buck Entrance Gate',
-        description: 'Contemporary agrarian estate entrance combining heavy steel boundary frames with natural teak accents.',
+        id: 'wip-sub-mf-gates',
+        title: 'Front Gate',
+        slug: 'front-gate',
+        description: 'Contemporary agrarian estate entrance combining heavy steel boundary frames with natural accents.',
         image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Front Gates',
-        associatedProductId: 'prod-mfg-g001',
-        associatedProductCode: 'MFG-G001',
-        pricePerSqFt: 2600,
-        gaugeSpec: 'Schedule 40 Galvanized Heavy Steel Pipes',
-        finishSpec: 'Matte Jet Black Electrostatic Powder Coat'
+        displayOrder: 1,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-mf-1',
+            title: 'Modern Ranch Cross-Buck Entrance Gate',
+            subcategoryId: 'wip-sub-mf-gates',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-MF-G01',
+            associatedProductCode: 'MFG-G001',
+            description: 'Contemporary agrarian estate entrance combining heavy steel boundary frames with natural teak accents.',
+            image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2600,
+            basePrice: 155000,
+            gaugeSpec: 'Schedule 40 Galvanized Heavy Steel Pipes',
+            finishSpec: 'Matte Jet Black Electrostatic Powder Coat'
+          }
+        ]
       },
       {
-        id: 'wip-des-mf-2',
-        title: 'Industrial Sliding Steel Barn Door',
-        description: 'Smooth gliding interior/exterior steel framed sliding barn door with smooth top track rollers.',
-        image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Doors',
-        associatedProductId: 'prod-mfg-d002',
-        associatedProductCode: 'MFG-D002',
-        pricePerSqFt: 3100,
-        gaugeSpec: 'Slim Structural Profiles & 10mm Tempered Glass',
-        finishSpec: 'Distressed Antique Steel Powder Coat'
-      },
-      {
-        id: 'wip-des-mf-3',
-        title: 'Farmhouse Cross-Buck Porch Railing',
+        id: 'wip-sub-mf-railings',
+        title: 'Balcony Railings',
+        slug: 'balcony-railings',
         description: 'Clean X-brace cross-buck safety railing engineered for wrap-around porches and veranda perimeters.',
         image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Railing',
-        associatedProductId: 'prod-mfg-r001',
-        associatedProductCode: 'MFG-R001',
-        pricePerSqFt: 2200,
-        gaugeSpec: '2-inch Solid Square MS Hollow Tubing',
-        finishSpec: 'Satin Powder Coat UV-Resistant Finish'
+        displayOrder: 2,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-mf-2',
+            title: 'Farmhouse Cross-Buck Porch Railing',
+            subcategoryId: 'wip-sub-mf-railings',
+            subcategory: 'Balcony Railings',
+            productCode: 'MSF-MF-R01',
+            associatedProductCode: 'MFG-R001',
+            description: 'Clean X-brace cross-buck safety railing engineered for wrap-around porches and veranda perimeters.',
+            image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2200,
+            basePrice: 65000,
+            gaugeSpec: '2-inch Solid Square MS Hollow Tubing',
+            finishSpec: 'Satin Powder Coat UV-Resistant Finish'
+          }
+        ]
       }
     ]
   },
   {
     id: 'wip-classical-farmhouse',
     category: 'Classical Farmhouse',
-    title: 'Classical Country Estate Entrances',
-    tagline: 'Stately country estate gates & heavy forged boundary elements',
-    description: 'Solid bar iron gates with spear finials, heavy duty stone-column mounting hardware, and estate driveway gates.',
-    image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80',
+    title: 'Classical Manor Farmhouse Estates',
+    tagline: 'Timeless colonial charm, heavy forged gates & expansive boundary grillwork',
+    description: 'Colonial style manor gates, wrap-around veranda railings, solid arched entry doors, and estate security fabrications.',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
     itemsCount: 2,
-    primaryItem: 'Main Gates',
-    gaugeSpec: 'Solid Forged Carbon Steel & Spear Finials',
-    finishSpec: 'Multi-Stage Marine Grade Primer & Matte Top Coat',
-    deliverables: 'Country Estate Double Swing Gates, Estate Perimeter Fencing',
+    primaryItem: 'Front Gate',
+    gaugeSpec: '12-Gauge Box Pipe & Solid 16mm Square Bars',
+    finishSpec: 'Textured Bronze Electrostatic Powder Coat',
+    deliverables: 'Colonial Main Entrance Gate, Veranda Balustrades',
     location: 'Chak Shahzad, Islamabad',
     status: 'completed',
     statusLabel: 'Completed & Handed Over',
-    designs: [
+    subcategories: [
       {
-        id: 'wip-des-cf-1',
-        title: 'Country Estate Double Swing Gate',
-        description: 'Heavy duty estate gates with spear finials, greaseable bronze bearing hinges, and stone pillar mounts.',
-        image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Main Gates',
-        associatedProductId: 'prod-mfg-g002',
-        associatedProductCode: 'MFG-G002',
-        pricePerSqFt: 3300,
-        gaugeSpec: 'Solid Forged Carbon Steel & Spear Finials',
-        finishSpec: 'Marine Grade Anti-Rust Enamel'
-      },
-      {
-        id: 'wip-des-cf-2',
-        title: 'Estate Boundary Perimeter Fencing',
-        description: 'Heavy iron boundary perimeter protection with forged spears and welded intermediate stabilizing posts.',
-        image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Boundary Wall Grills',
-        associatedProductId: 'prod-mfg-w001',
-        associatedProductCode: 'MFG-W001',
-        pricePerSqFt: 1700,
-        gaugeSpec: '16mm Solid Square Bars & Forged Spears',
-        finishSpec: 'Triple Chemical Dip & Electrostatic Coat'
+        id: 'wip-sub-cf-gates',
+        title: 'Front Gate',
+        slug: 'front-gate',
+        description: 'Colonial style estate driveway gates with arched cresting and heavy forged finials.',
+        image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: 1,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-cf-1',
+            title: 'Colonial Manor Estate Entrance Gate',
+            subcategoryId: 'wip-sub-cf-gates',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-CF-G01',
+            associatedProductCode: 'MFG-G002',
+            description: 'Arched colonial driveway gate with hand-forged spears, decorative center rings, and integrated wicket door.',
+            image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 3100,
+            basePrice: 195000,
+            gaugeSpec: '12-Gauge Box Pipe & Solid 16mm Square Bars',
+            finishSpec: 'Textured Bronze Electrostatic Powder Coat'
+          }
+        ]
       }
     ]
   },
   {
     id: 'wip-village-house',
     category: 'Village House',
-    title: 'Heavy Solid Security Gates',
-    tagline: 'Maximum security, solid steel plates & long-lasting durability',
-    description: 'Heavy gauge solid steel sheets, anti-theft window security grills, reinforced main entrance doors, and robust locking hardware.',
+    title: 'Robust Heavy-Duty Residential Security Gates',
+    tagline: 'Maximum security, heavy-gauge steel & reinforced perimeter safety',
+    description: 'Rugged, high-security steel main gates with reinforced lock-boxes, anti-tamper hinges, boundary spike grills, and durable rooftop railings.',
     image: 'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1200&q=80',
     itemsCount: 2,
-    primaryItem: 'Main Gates',
-    gaugeSpec: '12-Gauge Thick Cold-Rolled Mild Steel',
-    finishSpec: '7-Stage Chemical Pre-Treatment & Powder Oven Baked',
-    deliverables: 'Heavy Automated Swing Gate, 180 RFT Laser Precision Anti-Climb Spikes',
-    location: 'Naval Anchorage, Islamabad',
+    primaryItem: 'Front Gate',
+    gaugeSpec: 'Heavy 12-Gauge Solid Steel Plate & Structural Channels',
+    finishSpec: 'Zinc-Chromate Anti-Rust Primer & Enamel Paint',
+    deliverables: 'Heavy Main Security Gate with Wicket Door & Lock Shield',
+    location: 'Rawat / Kallar Syedan',
     status: 'completed',
     statusLabel: 'Completed & Handed Over',
-    designs: [
+    subcategories: [
       {
-        id: 'wip-des-vh-1',
-        title: 'Reinforced Solid Steel Plate Main Gate',
-        description: 'Uncompromising security gate with double 12-gauge solid steel sheets and internal stiffener ribs.',
+        id: 'wip-sub-vh-gates',
+        title: 'Front Gate',
+        slug: 'front-gate',
+        description: 'Solid heavy steel sheet security gates with anti-pry deadbolt shields and reinforced steel frames.',
         image: 'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Main Gates',
-        associatedProductId: 'prod-mfg-g001',
-        associatedProductCode: 'MFG-G001',
-        pricePerSqFt: 2400,
-        gaugeSpec: '12-Gauge Cold Rolled Solid Steel Plates',
-        finishSpec: 'Heavy Zinc Primer & Oven Baked Enamel'
-      },
-      {
-        id: 'wip-des-vh-2',
-        title: 'Anti-Theft Solid Bar Window Grills',
-        description: 'Solid steel window bars deeply anchored into brickwork with anti-tamper concealed welds.',
-        image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Grills',
-        associatedProductId: 'prod-mfg-w001',
-        associatedProductCode: 'MFG-W001',
-        pricePerSqFt: 1550,
-        gaugeSpec: '5/8-inch Solid Square Steel Bars',
-        finishSpec: 'Satin Black Anti-Corrosion Finish'
+        displayOrder: 1,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-vh-1',
+            title: 'Reinforced 12-Gauge Solid Steel Security Gate',
+            subcategoryId: 'wip-sub-vh-gates',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-VH-G01',
+            associatedProductCode: 'MFG-G001',
+            description: 'Solid heavy sheet security gate with anti-pry deadbolt shield, triple internal locking bars, and reinforced steel frame.',
+            image: 'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2100,
+            basePrice: 125000,
+            gaugeSpec: 'Heavy 12-Gauge Solid Steel Plate & C-Channels',
+            finishSpec: 'Zinc-Chromate Anti-Rust Primer & Enamel Paint'
+          }
+        ]
       }
     ]
   },
   {
     id: 'wip-farm',
     category: 'Farm',
-    title: 'Galvanized Farm & Livestock Barriers',
-    tagline: 'Galvanized cattle barriers, agricultural sheds & field gates',
-    description: 'Corrosion-proof hot-dip galvanized steel gates, cattle containment grids, heavy equipment shed trusses, and durable property protection.',
+    title: 'Agricultural Farm Enclosures & Cattle Yards',
+    tagline: 'Heavy-duty tubular fencing, cattle gates & steel livestock sheds',
+    description: 'Hot-dip galvanized agricultural gates, livestock holding pens, heavy-duty tractor entrance gates, and modular structural farm sheds.',
     image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
     itemsCount: 2,
-    primaryItem: 'Main Gates',
-    gaugeSpec: 'Hot-Dip Galvanized Industrial Steel Pipes',
-    finishSpec: 'Hot-Dip Galvanized Anti-Corrosion (80 Microns)',
-    deliverables: 'Field Gates, Cattle Grids, Agricultural Machinery Sheds',
-    location: 'Rawat Industrial Estate, Rawalpindi',
+    primaryItem: 'Front Gate',
+    gaugeSpec: 'Hot-Dip Galvanized Class B/C Heavy Steel Tubes',
+    finishSpec: 'Hot-Dip Galvanized Coating (85 microns zinc)',
+    deliverables: 'Heavy-Duty 16ft Farm Entry Gate & Modular Cattle Pens',
+    location: 'Fateh Jang / Attock',
     status: 'completed',
     statusLabel: 'Completed & Handed Over',
-    designs: [
+    subcategories: [
       {
-        id: 'wip-des-fm-1',
-        title: 'Galvanized Heavy Livestock Field Gate',
-        description: 'Hot-dip galvanized heavy pipe gate designed for livestock paddocks and machinery access.',
+        id: 'wip-sub-farm-gates',
+        title: 'Front Gate',
+        slug: 'front-gate',
+        description: 'Tubular galvanized wide-span gates designed for heavy tractors and livestock management.',
         image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Main Gates',
-        associatedProductId: 'prod-mfg-g001',
-        associatedProductCode: 'MFG-G001',
-        pricePerSqFt: 2200,
-        gaugeSpec: 'Hot-Dip Galvanized Industrial Pipes (Class B)',
-        finishSpec: 'Hot-Dip Galvanized Anti-Corrosion (80 Microns)'
-      },
-      {
-        id: 'wip-des-fm-2',
-        title: 'Agricultural Shed Structural Trusses',
-        description: 'Heavy clear-span steel roof trusses for farm tractors, implements, and livestock shelters.',
-        image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Steel Structures',
-        associatedProductId: 'prod-mfg-g002',
-        associatedProductCode: 'MFG-G002',
-        pricePerSqFt: 2600,
-        gaugeSpec: 'Industrial Angle Iron & Steel Channel Trusses',
-        finishSpec: 'Weather-Tolerant Red Oxide & Enamel'
+        displayOrder: 1,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-fm-1',
+            title: 'Heavy-Duty Galvanized Farm Tractor Gate',
+            subcategoryId: 'wip-sub-farm-gates',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-FM-G01',
+            associatedProductCode: 'MFG-G001',
+            description: 'Wide 16ft double swing gate constructed with round galvanized pipes, slam latches, and heavy pin hinges.',
+            image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 1800,
+            basePrice: 95000,
+            gaugeSpec: 'Hot-Dip Galvanized Heavy Steel Tubes',
+            finishSpec: 'Hot-Dip Galvanized Coating (85 microns zinc)'
+          }
+        ]
       }
     ]
   },
@@ -1783,37 +2150,63 @@ export const SEED_WHAT_IS_YOUR_PROJECT: WhatIsYourProjectItem[] = [
     description: 'Smart telescopic and bi-fold gates for limited driveway clearances, sleek terrace glass/steel railings, and slim-profile doors.',
     image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
     itemsCount: 2,
-    primaryItem: 'Front Gates',
+    primaryItem: 'Front Gate',
     gaugeSpec: '14-Gauge CNC Geometric Laser Cut MS',
     finishSpec: 'Charcoal Grey Electrostatic Powder Coat',
     deliverables: 'Automated Sliding Gate with Italian Motor, Frameless Glass Balconies',
     location: 'Bahria Town Phase 7, Rawalpindi',
     status: 'completed',
     statusLabel: 'Completed & Handed Over',
-    designs: [
+    subcategories: [
       {
-        id: 'wip-des-sv-1',
-        title: 'Telescopic Space-Saving Sliding Gate',
-        description: 'Multi-leaf synchronized telescopic sliding gate allowing full driveway access with minimal pullback space.',
+        id: 'wip-sub-sv-gates',
+        title: 'Front Gate',
+        slug: 'front-gate',
+        description: 'Multi-leaf synchronized telescopic and bi-fold gates for limited driveway clearances.',
         image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Front Gates',
-        associatedProductId: 'prod-mfg-g001',
-        associatedProductCode: 'MFG-G001',
-        pricePerSqFt: 2900,
-        gaugeSpec: '14-Gauge CNC Precision Laser Cut MS',
-        finishSpec: 'Charcoal Grey Electrostatic Powder Coat'
+        displayOrder: 1,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-sv-1',
+            title: 'Telescopic Space-Saving Sliding Gate',
+            subcategoryId: 'wip-sub-sv-gates',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-SV-G01',
+            associatedProductCode: 'MFG-G001',
+            description: 'Multi-leaf synchronized telescopic sliding gate allowing full driveway access with minimal pullback space.',
+            image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2900,
+            basePrice: 175000,
+            gaugeSpec: '14-Gauge CNC Precision Laser Cut MS',
+            finishSpec: 'Charcoal Grey Electrostatic Powder Coat'
+          }
+        ]
       },
       {
-        id: 'wip-des-sv-2',
-        title: 'Compact Villa Terrace Balcony Railing',
-        description: 'Slim-line safety railing with tempered glass inserts designed for compact urban villa balconies.',
+        id: 'wip-sub-sv-railings',
+        title: 'Balcony Railings',
+        slug: 'balcony-railings',
+        description: 'Slim-line safety railings with tempered glass inserts designed for compact urban villa balconies.',
         image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Balcony Railing',
-        associatedProductId: 'prod-mfg-r001',
-        associatedProductCode: 'MFG-R001',
-        pricePerSqFt: 2300,
-        gaugeSpec: '10mm Clear Toughened Safety Glass & MS Frame',
-        finishSpec: 'Matte Graphite Electrostatic Coating'
+        displayOrder: 2,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-sv-2',
+            title: 'Compact Villa Terrace Balcony Railing',
+            subcategoryId: 'wip-sub-sv-railings',
+            subcategory: 'Balcony Railings',
+            productCode: 'MSF-SV-R01',
+            associatedProductCode: 'MFG-R001',
+            description: 'Slim-line safety railing with tempered glass inserts designed for compact urban villa balconies.',
+            image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2300,
+            basePrice: 62000,
+            gaugeSpec: '10mm Clear Toughened Safety Glass & MS Frame',
+            finishSpec: 'Matte Graphite Electrostatic Coating'
+          }
+        ]
       }
     ]
   },
@@ -1825,38 +2218,72 @@ export const SEED_WHAT_IS_YOUR_PROJECT: WhatIsYourProjectItem[] = [
     description: 'Thermally isolated aluminum window frames, double-glazed soundproof glass walls, frameless tempered glass railings, and pivot doors.',
     image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
     itemsCount: 2,
-    primaryItem: 'Doors',
+    primaryItem: 'Front Gate',
     gaugeSpec: '6063-T6 Thermal-Break Profile with 12mm Acoustic Glass',
     finishSpec: 'Deep Matte Anodized Architectural Black',
     deliverables: '5x10 ft Hydraulic Floor-Spring Pivot Entrance Door & Laser Leveling',
     location: 'Sector F-7/2, Islamabad',
     status: 'ongoing',
     statusLabel: 'Active Installation (90%)',
-    designs: [
+    subcategories: [
       {
-        id: 'wip-des-ag-1',
-        title: 'Architectural Hydraulic Pivot Door',
-        description: 'Grand 5x10 ft hydraulic floor-spring pivot entrance door with acoustic double glazing and German hardware.',
+        id: 'wip-sub-ag-doors',
+        title: 'Front Gate',
+        slug: 'front-gate',
+        description: 'Grand hydraulic floor-spring pivot entrance doors with acoustic double glazing and German hardware.',
         image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Doors',
-        associatedProductId: 'prod-mfg-d001',
-        associatedProductCode: 'MFG-D001',
-        pricePerSqFt: 3800,
-        gaugeSpec: '6063-T6 Architectural Profile & 12mm Glass',
-        finishSpec: 'Deep Matte Anodized Architectural Black'
+        displayOrder: 1,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-ag-1',
+            title: 'Architectural Hydraulic Pivot Door',
+            subcategoryId: 'wip-sub-ag-doors',
+            subcategory: 'Front Gate',
+            productCode: 'MSF-AG-D01',
+            associatedProductCode: 'MFG-D001',
+            description: 'Grand 5x10 ft hydraulic floor-spring pivot entrance door with acoustic double glazing and German hardware.',
+            image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 3800,
+            basePrice: 280000,
+            gaugeSpec: '6063-T6 Architectural Profile & 12mm Glass',
+            finishSpec: 'Deep Matte Anodized Architectural Black'
+          }
+        ]
       },
       {
-        id: 'wip-des-ag-2',
-        title: 'Frameless Glass Balustrade System',
-        description: 'Minimalist aluminum base-shoe channel system holding structural laminated tempered glass with zero vertical posts.',
+        id: 'wip-sub-ag-railings',
+        title: 'Balcony Railings',
+        slug: 'balcony-railings',
+        description: 'Minimalist aluminum base-shoe channel systems holding structural laminated tempered glass with zero vertical posts.',
         image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-        itemType: 'Balcony Railing',
-        associatedProductId: 'prod-mfg-r001',
-        associatedProductCode: 'MFG-R001',
-        pricePerSqFt: 2500,
-        gaugeSpec: 'Heavy Extruded Aluminum U-Channel & 12mm Glass',
-        finishSpec: 'Anodized Champagne / Matte Black'
+        displayOrder: 2,
+        active: true,
+        designs: [
+          {
+            id: 'wip-des-ag-2',
+            title: 'Frameless Glass Balustrade System',
+            subcategoryId: 'wip-sub-ag-railings',
+            subcategory: 'Balcony Railings',
+            productCode: 'MSF-AG-R01',
+            associatedProductCode: 'MFG-R001',
+            description: 'Minimalist aluminum base-shoe channel system holding structural laminated tempered glass with zero vertical posts.',
+            image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+            pricePerSqFt: 2500,
+            basePrice: 78000,
+            gaugeSpec: 'Heavy Extruded Aluminum U-Channel & 12mm Glass',
+            finishSpec: 'Anodized Champagne / Matte Black'
+          }
+        ]
       }
     ]
   }
 ];
+
+// Helper to ensure flat designs list is always synchronized with subcategories for any backwards-compatible consumers
+SEED_WHAT_IS_YOUR_PROJECT.forEach(category => {
+  if (category.subcategories && category.subcategories.length > 0) {
+    category.designs = category.subcategories.flatMap(sub => sub.designs || []);
+    category.itemsCount = category.designs.length;
+  }
+});

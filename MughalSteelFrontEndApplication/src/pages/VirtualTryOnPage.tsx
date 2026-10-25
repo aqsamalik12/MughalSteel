@@ -6,19 +6,22 @@ import {
   Upload, Sparkles, Move, ZoomIn, ZoomOut, RotateCw, 
   Trash2, MessageCircle, Calculator, CheckCircle2, 
   Layers, RefreshCw, Eye, Download, Info, Search, Filter, 
-  SlidersHorizontal, Check, ArrowRight, CornerDownRight, Maximize2, FileText,
+  SlidersHorizontal, Check, ArrowRight, ArrowLeft, CornerDownRight, Maximize2, FileText,
   FlipHorizontal, FlipVertical, Lock, Unlock, Image as ImageIcon, Compass, Sliders
 } from 'lucide-react';
 import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
 export const VirtualTryOnPage: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const { products, getWhatsAppUrl } = useData();
+  const { products, whatIsYourProject, getWhatsAppUrl } = useData();
   const { formatPrice } = useCurrency();
 
-
   // Initial params
-  const preSelectedCode = searchParams.get('product') || searchParams.get('code') || searchParams.get('slug');
+  const isFromWhatIsYourProject = searchParams.get('from') === 'what-is-your-project';
+  const paramCategory = searchParams.get('category') || '';
+  const paramSubcategory = searchParams.get('subcategory') || '';
+  const paramDesignId = searchParams.get('designId') || '';
+  const preSelectedCode = searchParams.get('product') || searchParams.get('code') || searchParams.get('slug') || paramDesignId;
 
   // Sample Elevations
   const sampleElevations = [
@@ -49,7 +52,65 @@ export const VirtualTryOnPage: React.FC = () => {
   const [houseImageName, setHouseImageName] = useState<string>('Sample Modern Villa Elevation');
 
   // Selected Product State
-  const [selectedProduct, setSelectedProduct] = useState<typeof products[0]>(() => {
+  const [selectedProduct, setSelectedProduct] = useState<any>(() => {
+    // 1. Check if design is passed from What Is Your Project
+    if (paramDesignId || isFromWhatIsYourProject) {
+      for (const cat of whatIsYourProject) {
+        // Search in subcategories
+        if (cat.subcategories) {
+          for (const sub of cat.subcategories) {
+            if (sub.designs) {
+              const matchDes = sub.designs.find(d => 
+                d.id === paramDesignId || 
+                d.productCode?.toLowerCase() === preSelectedCode?.toLowerCase() ||
+                d.id === preSelectedCode
+              );
+              if (matchDes) {
+                return {
+                  id: matchDes.id,
+                  productCode: matchDes.productCode || matchDes.associatedProductCode || 'MSF-001',
+                  name: matchDes.title,
+                  slug: matchDes.id,
+                  category: cat.category,
+                  item: sub.title,
+                  description: matchDes.description || '',
+                  images: matchDes.images?.length ? matchDes.images : [matchDes.image],
+                  materials: matchDes.materials || ['Mild Steel'],
+                  finishes: matchDes.finishes || ['Powder Coat'],
+                  pricePerSqFt: matchDes.pricePerSqFt || 2500,
+                  price: matchDes.basePrice || (matchDes.pricePerSqFt || 2500) * 105
+                };
+              }
+            }
+          }
+        }
+        // Search in flat category designs
+        if (cat.designs) {
+          const matchDes = cat.designs.find(d => 
+            d.id === paramDesignId || 
+            d.productCode?.toLowerCase() === preSelectedCode?.toLowerCase() ||
+            d.id === preSelectedCode
+          );
+          if (matchDes) {
+            return {
+              id: matchDes.id,
+              productCode: matchDes.productCode || matchDes.associatedProductCode || 'MSF-001',
+              name: matchDes.title,
+              slug: matchDes.id,
+              category: cat.category,
+              item: matchDes.subcategory || matchDes.itemType || 'Front Gate',
+              description: matchDes.description || '',
+              images: matchDes.images?.length ? matchDes.images : [matchDes.image],
+              materials: matchDes.materials || ['Mild Steel'],
+              finishes: matchDes.finishes || ['Powder Coat'],
+              pricePerSqFt: matchDes.pricePerSqFt || 2500,
+              price: matchDes.basePrice || (matchDes.pricePerSqFt || 2500) * 105
+            };
+          }
+        }
+      }
+    }
+
     if (preSelectedCode) {
       const match = products.find(p => 
         p.productCode.toLowerCase() === preSelectedCode.toLowerCase() ||
@@ -78,7 +139,7 @@ export const VirtualTryOnPage: React.FC = () => {
   const [selectedSide, setSelectedSide] = useState<'front' | 'back' | 'left' | 'right'>('front');
 
   // Compute 4 Views for selectedProduct
-  const currentDefaultImages = (selectedProduct?.images || []).filter(img => Boolean(img && img.trim()));
+  const currentDefaultImages = (selectedProduct?.images || []).filter((img: string) => Boolean(img && img.trim()));
   const currentFront = (selectedProduct?.frontImage || selectedProduct?.galleryViews?.front || currentDefaultImages[0] || '').trim();
   const currentBack = (selectedProduct?.backImage || selectedProduct?.galleryViews?.back || (currentDefaultImages.length > 1 ? currentDefaultImages[1] : '') || currentFront).trim();
   const currentLeft = (selectedProduct?.leftSideImage || selectedProduct?.galleryViews?.leftSide || (currentDefaultImages.length > 2 ? currentDefaultImages[2] : '') || currentFront).trim();
@@ -1246,16 +1307,72 @@ export const VirtualTryOnPage: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Official Quote Button */}
-                <div className="pt-1">
-                  <Link 
-                    to={`/quote?productCode=${selectedProduct.productCode}&category=${encodeURIComponent(selectedProduct.category)}`}
-                    className="btn-gold w-full p-3 text-xs font-heading font-black rounded text-center transition-colors flex items-center justify-center gap-2 uppercase tracking-wider shadow-lg hover:shadow-glow-gold"
-                  >
-                    <FileText className="w-4 h-4 text-brand-dark" />
-                    <span>Request Official Quotation & Site Survey</span>
-                  </Link>
-                </div>
+                {/* Action Buttons: Direct WhatsApp for What Is Your Project vs Regular Quote */}
+                {isFromWhatIsYourProject ? (
+                  <div className="space-y-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const message = [
+                          '*MUGHAL STEEL FABRICATION — TRY AT HOME INQUIRY*',
+                          '',
+                          `• Selected Project: ${paramCategory || selectedProduct.category} — ${paramSubcategory || selectedProduct.item}`,
+                          `• Design: ${selectedProduct.name}`,
+                          `• Product Code: ${selectedProduct.productCode}`,
+                          `• Dimensions: ${width} ft Width × ${height} ft Height`,
+                          `• Calculated Area: ${area} sq.ft`,
+                          `• Rate: Rs. ${rate.toLocaleString()} / sq.ft`,
+                          `• Quantity: ${quantity}`,
+                          `• Estimated Total: Rs. ${estimatedPrice.toLocaleString()}`,
+                          '',
+                          '• *Try at Home Preview:* Tested on house elevation photograph in Visualizer.',
+                          '  _(Note: I will attach my house photograph directly in this chat for quotation review)_',
+                          '',
+                          'Hello Mughal Steel, I tried this design on my house photo and would like to place an inquiry. Please confirm site survey and quotation.'
+                        ].join('\n');
+                        window.open(getWhatsAppUrl(message), '_blank', 'noopener,noreferrer');
+                      }}
+                      className="btn-whatsapp w-full p-3 text-xs font-heading font-black rounded text-center transition-all flex items-center justify-center gap-2 uppercase tracking-wider shadow-xl cursor-pointer"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      <span>Order on WhatsApp (No Cart Required)</span>
+                    </button>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link 
+                        to={`/what-is-your-project/${(paramCategory || selectedProduct.category).toLowerCase().replace(/[\s&]+/g, '-')}/${(paramSubcategory || selectedProduct.item).toLowerCase().replace(/[\s&]+/g, '-')}`}
+                        className="btn-navy p-2 text-[11px] font-bold rounded text-center flex items-center justify-center gap-1"
+                      >
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                        <span>Back to Designs</span>
+                      </Link>
+
+                      <Link 
+                        to={`/quote?productCode=${selectedProduct.productCode}&category=${encodeURIComponent(selectedProduct.category)}`}
+                        className="btn-gold p-2 text-[11px] font-bold rounded text-center flex items-center justify-center gap-1"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-brand-dark" />
+                        <span>Official Quote</span>
+                      </Link>
+                    </div>
+
+                    <div className="p-2.5 bg-brand-gold/10 border border-brand-gold/30 rounded text-[10px] text-brand-gold flex items-center gap-2">
+                      <Info className="w-3.5 h-3.5 shrink-0" />
+                      <span>House Photo Notice: When WhatsApp opens, please attach your house photo in the chat for elevation review.</span>
+                    </div>
+                  </div>
+                ) : (
+                  /* Regular Products Quote */
+                  <div className="pt-1">
+                    <Link 
+                      to={`/quote?productCode=${selectedProduct.productCode}&category=${encodeURIComponent(selectedProduct.category)}`}
+                      className="btn-gold w-full p-3 text-xs font-heading font-black rounded text-center transition-colors flex items-center justify-center gap-2 uppercase tracking-wider shadow-lg hover:shadow-glow-gold"
+                    >
+                      <FileText className="w-4 h-4 text-brand-dark" />
+                      <span>Request Official Quotation & Site Survey</span>
+                    </Link>
+                  </div>
+                )}
               </div>
 
 

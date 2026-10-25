@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import type { 
   Product, Quote, Order, CustomDesign, Review,
   Discount, ContactMessage, ActivityLog, Testimonial, WebsiteSettings, BlogPost,
-  ServiceItem, ProjectShowcase, TeamMember, ProjectShowcaseItem, WhatIsYourProjectItem, ProjectDesignItem
+  ServiceItem, ProjectShowcase, TeamMember, ProjectShowcaseItem, WhatIsYourProjectItem, ProjectDesignItem, ProjectSubcategoryItem
 } from '../types';
 import { SEED_PRODUCTS, SEED_TESTIMONIALS, SEED_BLOGS, SEED_SERVICES, SEED_PROJECTS, SEED_TEAM_MEMBERS, SEED_PROJECT_SHOWCASES, SEED_WHAT_IS_YOUR_PROJECT, PROJECT_CATEGORIES_DATA, type CategoryInfo } from '../data/seedData';
 import { apiRequest } from '../utils/api';
@@ -52,9 +52,12 @@ interface DataContextType {
   addWhatIsYourProjectItem: (item: Omit<WhatIsYourProjectItem, 'id'> | WhatIsYourProjectItem) => Promise<WhatIsYourProjectItem>;
   updateWhatIsYourProjectItem: (item: WhatIsYourProjectItem) => Promise<void>;
   deleteWhatIsYourProjectItem: (id: string) => Promise<void>;
-  addProjectDesign: (categoryIdOrName: string, design: Omit<ProjectDesignItem, 'id'> | ProjectDesignItem) => Promise<ProjectDesignItem>;
-  updateProjectDesign: (categoryIdOrName: string, design: ProjectDesignItem) => Promise<void>;
-  deleteProjectDesign: (categoryIdOrName: string, designId: string) => Promise<void>;
+  addSubcategory: (categoryIdOrName: string, subcategory: Omit<ProjectSubcategoryItem, 'id'> | ProjectSubcategoryItem) => Promise<ProjectSubcategoryItem>;
+  updateSubcategory: (categoryIdOrName: string, subcategory: ProjectSubcategoryItem) => Promise<void>;
+  deleteSubcategory: (categoryIdOrName: string, subcategoryId: string) => Promise<void>;
+  addProjectDesign: (categoryIdOrName: string, designOrSubcategoryId: any, maybeDesign?: any) => Promise<ProjectDesignItem>;
+  updateProjectDesign: (categoryIdOrName: string, designOrSubcategoryId: any, maybeDesign?: any) => Promise<void>;
+  deleteProjectDesign: (categoryIdOrName: string, designIdOrSubcategoryId: string, maybeDesignId?: string) => Promise<void>;
   contactMessages: ContactMessage[];
   addContactMessage: (msg: Omit<ContactMessage, 'id' | 'createdAt' | 'status'>) => Promise<ContactMessage>;
   updateContactMessageStatus: (id: string, status: ContactMessage['status']) => Promise<void>;
@@ -216,17 +219,36 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Ensure designs exist on each item, migrating from SEED_WHAT_IS_YOUR_PROJECT if missing
+          // Ensure subcategories and designs exist on each item, migrating from SEED_WHAT_IS_YOUR_PROJECT if missing
           return parsed.map((item: WhatIsYourProjectItem) => {
-            if (!item.designs || item.designs.length === 0) {
-              const seedMatch = SEED_WHAT_IS_YOUR_PROJECT.find(
-                s => s.id === item.id || s.category.toLowerCase() === item.category.toLowerCase()
-              );
-              if (seedMatch && seedMatch.designs) {
-                return { ...item, designs: seedMatch.designs, itemsCount: seedMatch.designs.length };
+            const seedMatch = SEED_WHAT_IS_YOUR_PROJECT.find(
+              s => s.id === item.id || s.category.toLowerCase() === item.category.toLowerCase()
+            );
+
+            let subcats = item.subcategories;
+            if (!subcats || subcats.length === 0) {
+              if (seedMatch && seedMatch.subcategories && seedMatch.subcategories.length > 0) {
+                subcats = seedMatch.subcategories;
               }
             }
-            return item;
+
+            let des = item.designs;
+            if (!des || des.length === 0) {
+              if (subcats && subcats.length > 0) {
+                des = subcats.flatMap(sc => sc.designs || []);
+              } else if (seedMatch && seedMatch.designs) {
+                des = seedMatch.designs;
+              }
+            }
+
+            return {
+              ...item,
+              subcategories: subcats || [],
+              designs: des || [],
+              itemsCount: (subcats && subcats.length > 0) 
+                ? subcats.reduce((sum, sc) => sum + (sc.designs?.length || 0), 0)
+                : (des?.length || 0)
+            };
           });
         }
       }
@@ -1222,17 +1244,25 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
   };
 
-  const addProjectDesign = async (categoryIdOrName: string, design: Omit<ProjectDesignItem, 'id'> | ProjectDesignItem): Promise<ProjectDesignItem> => {
-    const newDesign: ProjectDesignItem = {
-      ...design,
-      id: (design as any).id || `des-${Date.now()}`
+  const addSubcategory = async (
+    categoryIdOrName: string, 
+    subcategory: Omit<ProjectSubcategoryItem, 'id'> | ProjectSubcategoryItem
+  ): Promise<ProjectSubcategoryItem> => {
+    const newSub: ProjectSubcategoryItem = {
+      ...subcategory,
+      id: (subcategory as any).id || `sub-${Date.now()}`,
+      designs: (subcategory as any).designs || [],
+      active: subcategory.active !== false
     };
+
     const updated = whatIsYourProject.map(cat => {
       if (cat.id === categoryIdOrName || cat.category.toLowerCase() === categoryIdOrName.toLowerCase()) {
-        const currentDesigns = cat.designs || [];
-        const nextDesigns = [newDesign, ...currentDesigns];
+        const currentSubs = cat.subcategories || [];
+        const nextSubs = [...currentSubs, newSub];
+        const nextDesigns = nextSubs.flatMap(s => s.designs || []);
         return {
           ...cat,
+          subcategories: nextSubs,
           designs: nextDesigns,
           itemsCount: nextDesigns.length,
           updatedAt: new Date().toISOString()
@@ -1240,33 +1270,193 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return cat;
     });
+
+    setWhatIsYourProject(updated);
+    localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
+    return newSub;
+  };
+
+  const updateSubcategory = async (categoryIdOrName: string, subcategory: ProjectSubcategoryItem) => {
+    const updated = whatIsYourProject.map(cat => {
+      if (cat.id === categoryIdOrName || cat.category.toLowerCase() === categoryIdOrName.toLowerCase()) {
+        const currentSubs = cat.subcategories || [];
+        const nextSubs = currentSubs.map(s => s.id === subcategory.id ? { ...s, ...subcategory } : s);
+        const nextDesigns = nextSubs.flatMap(s => s.designs || []);
+        return {
+          ...cat,
+          subcategories: nextSubs,
+          designs: nextDesigns,
+          itemsCount: nextDesigns.length,
+          updatedAt: new Date().toISOString()
+        };
+      }
+      return cat;
+    });
+
+    setWhatIsYourProject(updated);
+    localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
+  };
+
+  const deleteSubcategory = async (categoryIdOrName: string, subcategoryId: string) => {
+    const updated = whatIsYourProject.map(cat => {
+      if (cat.id === categoryIdOrName || cat.category.toLowerCase() === categoryIdOrName.toLowerCase()) {
+        const nextSubs = (cat.subcategories || []).filter(s => s.id !== subcategoryId);
+        const nextDesigns = nextSubs.flatMap(s => s.designs || []);
+        return {
+          ...cat,
+          subcategories: nextSubs,
+          designs: nextDesigns,
+          itemsCount: nextDesigns.length,
+          updatedAt: new Date().toISOString()
+        };
+      }
+      return cat;
+    });
+
+    setWhatIsYourProject(updated);
+    localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
+  };
+
+  const addProjectDesign = async (
+    categoryIdOrName: string, 
+    designOrSubcategoryId: any, 
+    maybeDesign?: any
+  ): Promise<ProjectDesignItem> => {
+    let subcategoryId = typeof designOrSubcategoryId === 'string' ? designOrSubcategoryId : undefined;
+    let designData: any = typeof designOrSubcategoryId === 'object' ? designOrSubcategoryId : maybeDesign;
+
+    if (!subcategoryId && designData?.subcategoryId) {
+      subcategoryId = designData.subcategoryId;
+    }
+
+    const newDesign: ProjectDesignItem = {
+      ...designData,
+      id: designData?.id || `des-${Date.now()}`,
+      subcategoryId: subcategoryId || designData?.subcategoryId,
+      active: designData?.active !== false
+    };
+
+    const updated = whatIsYourProject.map(cat => {
+      if (cat.id === categoryIdOrName || cat.category.toLowerCase() === categoryIdOrName.toLowerCase()) {
+        let currentSubs = cat.subcategories || [];
+        
+        // If category has no subcategories, create a default subcategory
+        if (currentSubs.length === 0) {
+          const defaultSub: ProjectSubcategoryItem = {
+            id: `sub-${cat.id || 'gen'}-default`,
+            title: cat.primaryItem || 'General Designs',
+            image: cat.image,
+            active: true,
+            designs: [newDesign]
+          };
+          currentSubs = [defaultSub];
+          newDesign.subcategoryId = defaultSub.id;
+        } else {
+          // Add to target subcategory or the first subcategory if not specified
+          let targetSubFound = false;
+          currentSubs = currentSubs.map(sub => {
+            if (
+              (subcategoryId && (sub.id === subcategoryId || sub.title.toLowerCase() === subcategoryId.toLowerCase())) ||
+              (!subcategoryId && !targetSubFound)
+            ) {
+              targetSubFound = true;
+              newDesign.subcategoryId = sub.id;
+              newDesign.subcategory = sub.title;
+              const subDesigns = [newDesign, ...(sub.designs || [])];
+              return { ...sub, designs: subDesigns };
+            }
+            return sub;
+          });
+
+          if (!targetSubFound && currentSubs.length > 0) {
+            newDesign.subcategoryId = currentSubs[0].id;
+            newDesign.subcategory = currentSubs[0].title;
+            currentSubs[0] = {
+              ...currentSubs[0],
+              designs: [newDesign, ...(currentSubs[0].designs || [])]
+            };
+          }
+        }
+
+        const nextDesigns = currentSubs.flatMap(s => s.designs || []);
+        return {
+          ...cat,
+          subcategories: currentSubs,
+          designs: nextDesigns,
+          itemsCount: nextDesigns.length,
+          updatedAt: new Date().toISOString()
+        };
+      }
+      return cat;
+    });
+
     setWhatIsYourProject(updated);
     localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
     return newDesign;
   };
 
-  const updateProjectDesign = async (categoryIdOrName: string, design: ProjectDesignItem) => {
+  const updateProjectDesign = async (
+    categoryIdOrName: string, 
+    designOrSubcategoryId: any, 
+    maybeDesign?: any
+  ) => {
+    let subcategoryId = typeof designOrSubcategoryId === 'string' ? designOrSubcategoryId : undefined;
+    let design: ProjectDesignItem = typeof designOrSubcategoryId === 'object' ? designOrSubcategoryId : maybeDesign;
+
+    if (!subcategoryId && design?.subcategoryId) {
+      subcategoryId = design.subcategoryId;
+    }
+
     const updated = whatIsYourProject.map(cat => {
       if (cat.id === categoryIdOrName || cat.category.toLowerCase() === categoryIdOrName.toLowerCase()) {
-        const nextDesigns = (cat.designs || []).map(d => d.id === design.id ? design : d);
+        const nextSubs = (cat.subcategories || []).map(sub => {
+          if (!subcategoryId || sub.id === subcategoryId || sub.designs?.some(d => d.id === design.id)) {
+            const updatedDesigns = (sub.designs || []).map(d => d.id === design.id ? { ...d, ...design } : d);
+            return { ...sub, designs: updatedDesigns };
+          }
+          return sub;
+        });
+
+        const nextFlatDesigns = (cat.designs || []).map(d => d.id === design.id ? { ...d, ...design } : d);
         return {
           ...cat,
-          designs: nextDesigns,
+          subcategories: nextSubs,
+          designs: nextSubs.length > 0 ? nextSubs.flatMap(s => s.designs || []) : nextFlatDesigns,
           updatedAt: new Date().toISOString()
         };
       }
       return cat;
     });
+
     setWhatIsYourProject(updated);
     localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
   };
 
-  const deleteProjectDesign = async (categoryIdOrName: string, designId: string) => {
+  const deleteProjectDesign = async (
+    categoryIdOrName: string, 
+    designIdOrSubcategoryId: string, 
+    maybeDesignId?: string
+  ) => {
+    const targetDesignId = maybeDesignId || designIdOrSubcategoryId;
+    const targetSubId = maybeDesignId ? designIdOrSubcategoryId : undefined;
+
     const updated = whatIsYourProject.map(cat => {
       if (cat.id === categoryIdOrName || cat.category.toLowerCase() === categoryIdOrName.toLowerCase()) {
-        const nextDesigns = (cat.designs || []).filter(d => d.id !== designId);
+        const nextSubs = (cat.subcategories || []).map(sub => {
+          if (!targetSubId || sub.id === targetSubId || sub.designs?.some(d => d.id === targetDesignId)) {
+            const filteredDesigns = (sub.designs || []).filter(d => d.id !== targetDesignId);
+            return { ...sub, designs: filteredDesigns };
+          }
+          return sub;
+        });
+
+        const nextDesigns = nextSubs.length > 0
+          ? nextSubs.flatMap(s => s.designs || [])
+          : (cat.designs || []).filter(d => d.id !== targetDesignId);
+
         return {
           ...cat,
+          subcategories: nextSubs,
           designs: nextDesigns,
           itemsCount: nextDesigns.length,
           updatedAt: new Date().toISOString()
@@ -1274,6 +1464,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return cat;
     });
+
     setWhatIsYourProject(updated);
     localStorage.setItem('mfg_what_is_your_project', JSON.stringify(updated));
   };
@@ -1327,6 +1518,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addWhatIsYourProjectItem,
       updateWhatIsYourProjectItem,
       deleteWhatIsYourProjectItem,
+      addSubcategory,
+      updateSubcategory,
+      deleteSubcategory,
       addProjectDesign,
       updateProjectDesign,
       deleteProjectDesign,

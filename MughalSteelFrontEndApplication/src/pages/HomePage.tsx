@@ -974,11 +974,11 @@ export const HomePage: React.FC = () => {
                 {whatIsYourProject.map((item) => {
                   const isActive = whatIsYourProjectCategory.toLowerCase() === item.category.toLowerCase();
                   const designsCount = item.designs?.length || item.itemsCount || 0;
+                  const catSlug = item.slug || encodeURIComponent(item.category);
                   return (
-                    <button
+                    <Link
                       key={`wip-cat-${item.id || item.category}`}
-                      type="button"
-                      onClick={() => handleSelectWhatIsYourProjectCategory(item.category)}
+                      to={`/what-is-your-project/${catSlug}`}
                       className={`group rounded-xl border text-left transition-all duration-300 cursor-pointer flex flex-col justify-between relative overflow-hidden card-interactive ${
                         isActive
                           ? 'bg-gradient-to-b from-[#14233D] to-[#0A1322] border-brand-gold shadow-[0_0_20px_rgba(204,160,75,0.4)] ring-2 ring-brand-gold scale-[1.02]'
@@ -1027,11 +1027,11 @@ export const HomePage: React.FC = () => {
                             {item.primaryItem || 'Main Gates'}
                           </span>
                           <span className="text-slate-400 font-sans truncate text-right text-[9px]">
-                            Click to View
+                            Explore Subcategories →
                           </span>
                         </div>
                       </div>
-                    </button>
+                    </Link>
                   );
                 })}
               </div>
@@ -1153,7 +1153,7 @@ export const HomePage: React.FC = () => {
                                     {formatPrice(rate)} / sq.ft
                                   </span>
                                   <Link
-                                    to={`/try-at-home?product=${productCode}`}
+                                    to={`/try-at-home?from=what-is-your-project&category=${encodeURIComponent(selectedCatObj.category)}&subcategory=${encodeURIComponent(design.subcategory || 'Designs')}&designId=${encodeURIComponent(design.id)}`}
                                     className="text-[10px] font-bold text-stone-300 hover:text-brand-gold bg-black/70 px-2 py-0.5 rounded border border-white/20 flex items-center gap-1"
                                     title="Try on house photo"
                                   >
@@ -1197,7 +1197,7 @@ export const HomePage: React.FC = () => {
                                 {/* Order & Collection Action Buttons */}
                                 <div className="pt-2 border-t border-brand-light/40 space-y-2">
                                   <Link
-                                    to={`/product/${productSlug}`}
+                                    to={`/what-is-your-project/${encodeURIComponent(selectedCatObj.category)}/${encodeURIComponent(design.subcategory || 'Designs')}/${encodeURIComponent(design.id)}`}
                                     className="btn-gold text-xs py-2 px-3 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 w-full shadow-lg"
                                   >
                                     <Calculator className="w-3.5 h-3.5" />
@@ -1207,16 +1207,16 @@ export const HomePage: React.FC = () => {
 
                                   <div className="grid grid-cols-2 gap-2">
                                     <Link
-                                      to={`/items?item=${encodeURIComponent(design.itemType || 'Front Gates')}&category=${encodeURIComponent(selectedCatObj.category)}`}
+                                      to={`/what-is-your-project/${encodeURIComponent(selectedCatObj.category)}/${encodeURIComponent(design.subcategory || 'Designs')}`}
                                       className="btn-navy text-[10px] py-1.5 px-2 font-bold uppercase text-center flex items-center justify-center gap-1"
-                                      title="View design collection"
+                                      title="View subcategory collection"
                                     >
                                       <Layers className="w-3 h-3 text-brand-gold" />
                                       <span>Collection</span>
                                     </Link>
 
                                     <a
-                                      href={getWhatsAppUrl(`*WHAT IS YOUR PROJECT ORDER INQUIRY*\nCategory: ${selectedCatObj.category}\nDesign: ${design.title}\nProduct Code: ${productCode}\nEstimated Rate: Rs. ${rate.toLocaleString()} / sq.ft\nImage: ${design.image}\n\nHello Mughal Steel, I want to order this project design. Please share details.`)}
+                                      href={getWhatsAppUrl(`*MUGHAL STEEL — NEW PROJECT INQUIRY*\nCategory: ${selectedCatObj.category}\nSubcategory: ${design.subcategory || 'Fabrication'}\nDesign: ${design.title}\nProduct Code: ${productCode}\nEstimated Rate: Rs. ${rate.toLocaleString()} / sq.ft\nImage: ${design.image}\n\nHello Mughal Steel, I want to inquire about this project design directly.`)}
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className="btn-whatsapp text-[10px] py-1.5 px-2 font-bold uppercase text-center flex items-center justify-center gap-1"
