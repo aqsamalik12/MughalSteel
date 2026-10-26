@@ -3,9 +3,10 @@ import { useParams, Link } from 'react-router-dom';
 import { PROJECT_CATEGORIES_DATA } from '../data/seedData';
 import { useData } from '../context/DataContext';
 import { useCurrency } from '../context/CurrencyContext';
+import { useCart } from '../context/CartContext';
 import { 
   ArrowRight, Sparkles, MessageCircle, Calculator, 
-  Ruler, Eye, CheckCircle2, Filter, Compass
+  Ruler, Eye, CheckCircle2, Filter, Compass, ShoppingBag, Check
 } from 'lucide-react';
 import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 
@@ -14,7 +15,35 @@ export const CategoryDetailPage: React.FC = () => {
   const activeSlugOrName = routeCategoryParam || categorySlug || '';
   const { products, getWhatsAppUrl, categories } = useData();
   const { formatPrice } = useCurrency();
+  const { addToCart, setCartOpen } = useCart();
   const [selectedItemFilter, setSelectedItemFilter] = useState<string>('all');
+  const [addedId, setAddedId] = useState<string | null>(null);
+
+  const handleQuickAdd = (prod: any) => {
+    const width = 5;
+    const height = 10;
+    const area = 50;
+    const rate = prod.pricePerSqFt || prod.price || 2500;
+    addToCart({
+      id: `${prod.id}-${Date.now()}`,
+      productId: prod.id,
+      productCode: prod.productCode,
+      productName: prod.name,
+      productImage: prod.frontImage || prod.images?.[0] || FALLBACK_IMAGE_URL,
+      category: prod.category,
+      item: prod.item,
+      width,
+      height,
+      area,
+      pricePerSqFt: rate,
+      material: prod.materials?.[0] || 'Mild Steel',
+      finish: 'Matte Powder Coating'
+    }, 1);
+
+    setAddedId(prod.id);
+    setCartOpen(true);
+    setTimeout(() => setAddedId(null), 2000);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -232,12 +261,35 @@ export const CategoryDetailPage: React.FC = () => {
                       </span>
                     </div>
 
+                    {/* Quick Add to Cart Button */}
+                    <button
+                      type="button"
+                      onClick={() => handleQuickAdd(prod)}
+                      className={`w-full py-1.5 px-2.5 text-[10px] font-heading font-black uppercase tracking-wider rounded transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95 ${
+                        addedId === prod.id
+                          ? 'bg-emerald-600 text-white border border-emerald-400'
+                          : 'bg-gradient-to-r from-amber-400 via-brand-gold to-amber-500 hover:from-amber-300 hover:to-amber-400 text-brand-dark border border-amber-300'
+                      }`}
+                    >
+                      {addedId === prod.id ? (
+                        <>
+                          <Check className="w-3 h-3 text-white animate-bounce" />
+                          <span>Added to Cart!</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingBag className="w-3 h-3" />
+                          <span>Add to Cart</span>
+                        </>
+                      )}
+                    </button>
+
                     <div className="grid grid-cols-2 gap-2">
-                      <Link to={`/product/${prod.slug}`} className="btn-gold text-[10px] py-1.5 text-center">
+                      <Link to={`/product/${prod.slug}`} className="btn-gold text-[10px] py-1.5 text-center flex items-center justify-center gap-1">
                         <Calculator className="w-3 h-3" />
                         <span>Quote</span>
                       </Link>
-                      <Link to={`/try-at-home?product=${prod.productCode}`} className="btn-outline text-[10px] py-1.5 text-center">
+                      <Link to={`/try-at-home?product=${prod.productCode}`} className="btn-outline text-[10px] py-1.5 text-center flex items-center justify-center gap-1">
                         <Eye className="w-3 h-3 text-brand-gold" />
                         <span>Try On</span>
                       </Link>

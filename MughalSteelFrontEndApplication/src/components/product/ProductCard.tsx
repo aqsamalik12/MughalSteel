@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Product } from '../../types';
 import { useWishlist } from '../../context/WishlistContext';
+import { useCart } from '../../context/CartContext';
 import { useData } from '../../context/DataContext';
-import { Heart, Eye, Calculator, ArrowRight, MessageCircle } from 'lucide-react';
+import { Heart, Eye, Calculator, ArrowRight, MessageCircle, ShoppingBag, Check } from 'lucide-react';
 import { handleImageError, FALLBACK_IMAGE_URL } from '../../utils/imageFallback';
 
 interface ProductCardProps {
@@ -12,9 +13,40 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { addToCart, setCartOpen } = useCart();
   const { getWhatsAppUrl } = useData();
+  const [added, setAdded] = useState(false);
 
   const isWishlisted = isInWishlist(product.id);
+
+  const handleQuickAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const width = 5;
+    const height = 10;
+    const area = 50;
+    const rate = product.pricePerSqFt || product.price || 2500;
+
+    addToCart({
+      id: `${product.id}-${Date.now()}`,
+      productId: product.id,
+      productCode: product.productCode,
+      productName: product.name,
+      productImage: product.frontImage || product.galleryViews?.front || product.images?.[0] || FALLBACK_IMAGE_URL,
+      category: product.category,
+      item: product.item,
+      width,
+      height,
+      area,
+      pricePerSqFt: rate,
+      material: product.materials?.[0] || 'Mild Steel',
+      finish: 'Matte Powder Coating'
+    }, 1);
+
+    setAdded(true);
+    setCartOpen(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
 
   const handleWhatsAppInquire = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -75,7 +107,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <Link to={`/product/${product.slug}`} className="block relative aspect-[4/3] w-full overflow-hidden bg-brand-dark border-b border-brand-light">
         <img 
           src={product.frontImage || product.galleryViews?.front || product.images?.[0] || FALLBACK_IMAGE_URL} 
-          alt={product.name}
+          alt={product.name} 
           onError={handleImageError}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
@@ -117,13 +149,36 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 pt-1">
+          {/* Quick Add to Cart Button */}
+          <button
+            type="button"
+            onClick={handleQuickAddToCart}
+            className={`w-full py-2.5 px-3 text-xs font-heading font-black uppercase tracking-wider rounded transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-95 ${
+              added 
+                ? 'bg-emerald-600 text-white border border-emerald-400 shadow-emerald-900/30' 
+                : 'bg-gradient-to-r from-amber-400 via-brand-gold to-amber-500 hover:from-amber-300 hover:to-amber-400 text-brand-dark border border-amber-300 shadow-[0_0_12px_rgba(212,175,55,0.25)]'
+            }`}
+          >
+            {added ? (
+              <>
+                <Check className="w-4 h-4 text-white animate-bounce" />
+                <span>Added to Cart!</span>
+              </>
+            ) : (
+              <>
+                <ShoppingBag className="w-4 h-4" />
+                <span>Add to Cart</span>
+              </>
+            )}
+          </button>
+
+          <div className="grid grid-cols-2 gap-2 pt-0.5">
             <Link 
               to={`/product/${product.slug}`}
               className="btn-gold btn-shimmer text-[10px] py-2 text-center flex items-center justify-center gap-1"
             >
               <Calculator className="w-3.5 h-3.5" />
-              <span>View & Quote</span>
+              <span>Configure</span>
             </Link>
 
             <Link 

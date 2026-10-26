@@ -10,7 +10,7 @@ import {
   Ruler, ShieldCheck, Hammer, Award, Star, ArrowRight, Eye, 
   ChevronRight, Info, AlertCircle, Maximize2, ChevronLeft, 
   X, Layers, Compass, ZoomIn, Share2, Check, FileText,
-  User, Phone, MapPin
+  User, Phone, MapPin, ShoppingBag, Plus, Minus
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
 import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
@@ -21,7 +21,7 @@ export const ProductDetailPage: React.FC = () => {
   const { products, getWhatsAppUrl } = useData();
   const { formatPrice } = useCurrency();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
-  const { addToCart } = useCart();
+  const { addToCart, setCartOpen } = useCart();
 
   const { user } = useAuth();
 
@@ -122,6 +122,7 @@ export const ProductDetailPage: React.FC = () => {
   const [newReviewScore, setNewReviewScore] = useState(5);
   const [newReviewText, setNewReviewText] = useState('');
   const [reviewAddedSuccess, setReviewAddedSuccess] = useState(false);
+  const [addedToCartSuccess, setAddedToCartSuccess] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -264,13 +265,41 @@ export const ProductDetailPage: React.FC = () => {
     window.open(url, '_blank');
   };
 
+  const handleAddToCart = () => {
+    addToCart({
+      id: `${product.id}-${Date.now()}`,
+      productId: product.id,
+      productCode: product.productCode,
+      productName: product.name,
+      productImage: galleryViews[activeImageIndex]?.url || galleryViews[0]?.url || product.frontImage || product.images[0] || FALLBACK_IMAGE_URL,
+      category: product.category,
+      item: product.item,
+      width: validatedWidth,
+      height: validatedHeight,
+      area: area,
+      pricePerSqFt: rate,
+      customNotes: [
+        notes,
+        customSize ? 'Custom Driveway Size' : '',
+        customDesign ? 'Custom CNC Laser Motif' : '',
+        colorChange ? 'Custom Powder Color' : '',
+        automaticSystem ? 'German Motor Automation' : '',
+        siteInstallation ? 'Turnkey Site Installation' : ''
+      ].filter(Boolean).join(', ')
+    }, validatedQty);
+
+    setAddedToCartSuccess(true);
+    setCartOpen(true);
+    setTimeout(() => setAddedToCartSuccess(false), 3000);
+  };
+
   const handleBuyNow = () => {
     addToCart({
       id: `${product.id}-${Date.now()}`,
       productId: product.id,
       productCode: product.productCode,
       productName: product.name,
-      productImage: galleryViews[activeImageIndex]?.url || galleryViews[0]?.url || product.frontImage || product.images[0],
+      productImage: galleryViews[activeImageIndex]?.url || galleryViews[0]?.url || product.frontImage || product.images[0] || FALLBACK_IMAGE_URL,
       category: product.category,
       item: product.item,
       width: validatedWidth,
@@ -749,42 +778,123 @@ export const ProductDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* ACTION BUTTONS GRID */}
-              <div className="space-y-2.5 pt-1">
-                {/* Order Now / Proceed to Checkout Button */}
-                <button 
-                  onClick={handleBuyNow}
-                  className="btn-gold w-full text-xs py-3.5 px-4 text-center justify-center font-bold shadow-xl uppercase tracking-wider flex items-center gap-2 cursor-pointer active:scale-[0.99] transition-all"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Order Now / Proceed to Checkout</span>
-                </button>
+              {/* ======================================================== */}
+              {/* DEDICATED ADD TO CART & INSTANT FABRICATION ORDER SECTION */}
+              {/* ======================================================== */}
+              <div className="bg-gradient-to-b from-[#0F172A] to-[#0A101D] border border-brand-gold/60 rounded-xl p-4 sm:p-5 space-y-4 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gold/5 rounded-full blur-2xl pointer-events-none" />
+
+                <div className="flex items-center justify-between pb-3 border-b border-brand-light/40">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 bg-brand-gold/15 text-brand-gold rounded-lg border border-brand-gold/30 shadow-sm">
+                      <ShoppingBag className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-heading font-black text-xs sm:text-sm text-stone-100 uppercase tracking-wider">
+                        Add to Cart & Order
+                      </h4>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        Configured: {validatedWidth}ft × {validatedHeight}ft ({area} sq.ft)
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-[10px] text-slate-400 font-mono block">Estimated Total</span>
+                    <span className="text-sm sm:text-base font-heading font-black text-brand-gold">
+                      {formatPrice(estimatedTotal, true)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Quantity Stepper & Add to Cart Action Row */}
+                <div className="flex flex-col sm:flex-row items-stretch gap-2.5">
+                  {/* Quantity Stepper */}
+                  <div className="flex items-center justify-between bg-brand-dark border border-brand-light/80 rounded-lg p-1 shrink-0 sm:w-36">
+                    <button 
+                      type="button"
+                      onClick={() => setQuantity(Math.max(1, (quantity || 1) - 1))}
+                      className="w-8 h-8 flex items-center justify-center rounded bg-brand-navy hover:bg-brand-medium text-stone-200 hover:text-brand-gold transition-colors font-bold text-sm cursor-pointer"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus className="w-3.5 h-3.5" />
+                    </button>
+                    <div className="text-center px-2">
+                      <span className="text-xs font-mono font-black text-stone-100 block">
+                        {validatedQty}
+                      </span>
+                      <span className="text-[8px] uppercase tracking-wider text-slate-400 font-bold block">
+                        Units
+                      </span>
+                    </div>
+                    <button 
+                      type="button"
+                      onClick={() => setQuantity((quantity || 1) + 1)}
+                      className="w-8 h-8 flex items-center justify-center rounded bg-brand-navy hover:bg-brand-medium text-stone-200 hover:text-brand-gold transition-colors font-bold text-sm cursor-pointer"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Primary Add to Cart Button */}
+                  <button 
+                    type="button"
+                    onClick={handleAddToCart}
+                    className={`flex-1 py-3 px-4 rounded-lg font-heading font-black text-xs uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-[0.98] ${
+                      addedToCartSuccess
+                        ? 'bg-emerald-600 text-white border border-emerald-400 shadow-emerald-900/40'
+                        : 'bg-gradient-to-r from-amber-400 via-brand-gold to-amber-500 hover:from-amber-300 hover:to-amber-400 text-brand-dark border border-amber-300 shadow-[0_0_20px_rgba(212,175,55,0.3)]'
+                    }`}
+                  >
+                    {addedToCartSuccess ? (
+                      <>
+                        <Check className="w-4 h-4 text-white animate-bounce" />
+                        <span>Added to Cart! Opening Cart...</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag className="w-4 h-4" />
+                        <span>Add to Cart</span>
+                      </>
+                    )}
+                  </button>
+
+                  {/* Buy Now / Direct Checkout */}
+                  <button 
+                    type="button"
+                    onClick={handleBuyNow}
+                    className="py-3 px-4 rounded-lg bg-brand-navy hover:bg-brand-medium border border-brand-gold/50 hover:border-brand-gold text-brand-gold hover:text-amber-300 font-heading font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-[0.98] shrink-0"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Buy Now</span>
+                  </button>
+                </div>
 
                 {/* Primary WhatsApp Order & Inquiry with Photo */}
                 <button 
+                  type="button"
                   onClick={handleWhatsAppInquiry}
-                  className="btn-whatsapp w-full text-xs py-3 px-4 text-center justify-center font-bold shadow-xl uppercase tracking-wider flex items-center gap-2 cursor-pointer active:scale-[0.99] transition-all"
+                  className="btn-whatsapp w-full text-xs py-3 px-4 text-center justify-center font-bold shadow-xl uppercase tracking-wider flex items-center gap-2 cursor-pointer active:scale-[0.99] transition-all rounded-lg"
                 >
                   <MessageCircle className="w-4 h-4" />
                   <span>Send Order & Inquire on WhatsApp</span>
                 </button>
 
-
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                   <Link 
                     to={`/quote?productCode=${product.productCode}&category=${encodeURIComponent(product.category)}`}
-                    className="p-2.5 bg-brand-navy hover:bg-brand-medium border border-brand-light text-slate-200 text-xs font-heading font-bold rounded text-center transition-colors flex items-center justify-center gap-1.5 uppercase tracking-wider"
+                    className="p-2.5 bg-brand-navy/80 hover:bg-brand-medium border border-brand-light text-slate-200 text-xs font-heading font-bold rounded-lg text-center transition-colors flex items-center justify-center gap-1.5 uppercase tracking-wider"
                   >
-                    <FileText className="w-4 h-4 text-brand-gold" />
+                    <FileText className="w-3.5 h-3.5 text-brand-gold" />
                     <span>Request Official Quote</span>
                   </Link>
 
                   <Link 
                     to={`/try-at-home?product=${product.productCode}`}
-                    className="p-2.5 bg-brand-dark hover:bg-brand-medium border border-brand-gold/60 text-brand-gold text-xs font-heading font-bold rounded text-center transition-colors flex items-center justify-center gap-1.5 uppercase tracking-wider"
+                    className="p-2.5 bg-brand-dark hover:bg-brand-medium border border-brand-gold/60 text-brand-gold text-xs font-heading font-bold rounded-lg text-center transition-colors flex items-center justify-center gap-1.5 uppercase tracking-wider"
                   >
-                    <Eye className="w-4 h-4" />
+                    <Eye className="w-3.5 h-3.5" />
                     <span>Try at Home Studio</span>
                   </Link>
                 </div>

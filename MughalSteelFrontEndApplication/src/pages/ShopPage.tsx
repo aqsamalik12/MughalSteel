@@ -2,10 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { useCurrency } from '../context/CurrencyContext';
+import { useCart } from '../context/CartContext';
 import { PROJECT_CATEGORIES_DATA } from '../data/seedData';
 import { 
   Search, Filter, SlidersHorizontal, ArrowUpDown, 
-  Sparkles, Eye, Calculator, ArrowRight, X, CheckCircle, MessageCircle 
+  Sparkles, Eye, Calculator, ArrowRight, X, CheckCircle, MessageCircle,
+  ShoppingBag, Check
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
 import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
@@ -21,7 +23,35 @@ export const ShopPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { products, getWhatsAppUrl, categories } = useData();
   const { formatPrice } = useCurrency();
+  const { addToCart, setCartOpen } = useCart();
+  const [addedProductId, setAddedProductId] = useState<string | null>(null);
   const activeCategories = (categories && categories.length > 0) ? categories : PROJECT_CATEGORIES_DATA;
+
+  const handleQuickAdd = (prod: any) => {
+    const width = 5;
+    const height = 10;
+    const area = 50;
+    const rate = prod.pricePerSqFt || prod.price || 2500;
+    addToCart({
+      id: `${prod.id}-${Date.now()}`,
+      productId: prod.id,
+      productCode: prod.productCode,
+      productName: prod.name,
+      productImage: prod.frontImage || prod.images?.[0] || FALLBACK_IMAGE_URL,
+      category: prod.category,
+      item: prod.item,
+      width,
+      height,
+      area,
+      pricePerSqFt: rate,
+      material: prod.materials?.[0] || 'Mild Steel',
+      finish: 'Matte Powder Coating'
+    }, 1);
+
+    setAddedProductId(prod.id);
+    setCartOpen(true);
+    setTimeout(() => setAddedProductId(null), 2000);
+  };
 
 
   // URL state sync
@@ -366,6 +396,29 @@ export const ShopPage: React.FC = () => {
                             Certified 14G+
                           </span>
                         </div>
+
+                        {/* Quick Add to Cart Button */}
+                        <button
+                          type="button"
+                          onClick={() => handleQuickAdd(prod)}
+                          className={`w-full py-2.5 px-3 text-xs font-heading font-black uppercase tracking-wider rounded transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-95 ${
+                            addedProductId === prod.id
+                              ? 'bg-emerald-600 text-white border border-emerald-400 shadow-emerald-900/30'
+                              : 'bg-gradient-to-r from-amber-400 via-brand-gold to-amber-500 hover:from-amber-300 hover:to-amber-400 text-brand-dark border border-amber-300 shadow-[0_0_12px_rgba(212,175,55,0.25)]'
+                          }`}
+                        >
+                          {addedProductId === prod.id ? (
+                            <>
+                              <Check className="w-4 h-4 text-white animate-bounce" />
+                              <span>Added to Cart!</span>
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingBag className="w-4 h-4" />
+                              <span>Add to Cart</span>
+                            </>
+                          )}
+                        </button>
 
                         <div className="grid grid-cols-2 gap-2">
                           <Link 

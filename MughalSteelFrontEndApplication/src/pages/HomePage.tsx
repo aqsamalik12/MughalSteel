@@ -17,6 +17,9 @@ import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
 import { CountUp } from '../components/common/CountUp';
 import { getGoogleMapsEmbedUrl, getGoogleMapsDirectionsUrl } from '../utils/mapsHelper';
 import { LeadershipSection } from '../components/common/LeadershipSection';
+import { AddToCartSection } from '../components/home/AddToCartSection';
+import { useCart } from '../context/CartContext';
+import { ShoppingBag } from 'lucide-react';
 
 
 export const HomePage: React.FC = () => {
@@ -30,7 +33,35 @@ export const HomePage: React.FC = () => {
   const location = useLocation();
   const { products, testimonials, addTestimonial, getWhatsAppUrl, categories, projects, settings, whatIsYourProject } = useData();
   const { formatPrice } = useCurrency();
+  const { addToCart, setCartOpen } = useCart();
+  const [quickAddedId, setQuickAddedId] = useState<string | null>(null);
   const activeCategories = (categories && categories.length > 0) ? categories : PROJECT_CATEGORIES_DATA;
+
+  const handleSliderQuickAdd = (prod: any) => {
+    const width = 5;
+    const height = 10;
+    const area = 50;
+    const rate = prod.pricePerSqFt || prod.price || 2500;
+    addToCart({
+      id: `${prod.id}-${Date.now()}`,
+      productId: prod.id,
+      productCode: prod.productCode,
+      productName: prod.name,
+      productImage: prod.frontImage || prod.images?.[0] || FALLBACK_IMAGE_URL,
+      category: prod.category,
+      item: prod.item,
+      width,
+      height,
+      area,
+      pricePerSqFt: rate,
+      material: prod.materials?.[0] || 'Mild Steel',
+      finish: 'Matte Powder Coating'
+    }, 1);
+
+    setQuickAddedId(prod.id);
+    setCartOpen(true);
+    setTimeout(() => setQuickAddedId(null), 2000);
+  };
 
 
   const [activeVideoModal, setActiveVideoModal] = useState<{
@@ -1459,6 +1490,29 @@ export const HomePage: React.FC = () => {
                       </span>
                     </div>
 
+                    {/* Quick Add to Cart Button */}
+                    <button
+                      type="button"
+                      onClick={() => handleSliderQuickAdd(prod)}
+                      className={`w-full py-2 px-3 text-[11px] font-heading font-black uppercase tracking-wider rounded transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-95 ${
+                        quickAddedId === prod.id
+                          ? 'bg-emerald-600 text-white border border-emerald-400 shadow-emerald-900/30'
+                          : 'bg-gradient-to-r from-amber-400 via-brand-gold to-amber-500 hover:from-amber-300 hover:to-amber-400 text-brand-dark border border-amber-300 shadow-[0_0_12px_rgba(212,175,55,0.25)]'
+                      }`}
+                    >
+                      {quickAddedId === prod.id ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-white animate-bounce" />
+                          <span>Added to Cart!</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingBag className="w-3.5 h-3.5" />
+                          <span>Add to Cart</span>
+                        </>
+                      )}
+                    </button>
+
                     <div className="grid grid-cols-2 gap-2">
                       <Link to={`/product/${prod.slug}`} className="btn-gold btn-shimmer text-[10px] py-2 text-center justify-center font-bold">
                         <span>Details</span>
@@ -1476,6 +1530,11 @@ export const HomePage: React.FC = () => {
 
         </div>
       </section>
+
+      {/* ======================================================== */}
+      {/* 2.5 DEDICATED DIRECT SHOPPING & FABRICATION CART SECTION */}
+      {/* ======================================================== */}
+      <AddToCartSection />
 
       {/* ======================================================== */}
       {/* 3. INTERACTIVE ELEVATION STUDIO: TEST GATES & DOORS      */}

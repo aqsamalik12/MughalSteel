@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useWishlist } from '../../context/WishlistContext';
+import { useCart } from '../../context/CartContext';
 import { useData } from '../../context/DataContext';
 import { useCurrency, CURRENCIES, type CurrencyCode } from '../../context/CurrencyContext';
 import { MegaMenu } from './MegaMenu';
@@ -9,7 +10,8 @@ import {
   Search, Heart, Menu, X, Phone, MessageCircle, 
   ChevronDown, ChevronRight, Layers, Sparkles, Shield, Compass, 
   FileText, CheckCircle, Globe, MapPin, Eye, Grid, DoorClosed, Star,
-  LogOut, User as UserIcon, Home, Cog, Package, Image as ImageIcon, Mail
+  LogOut, User as UserIcon, Home, Cog, Package, Image as ImageIcon, Mail,
+  ShoppingBag
 } from 'lucide-react';
 import { PROJECT_CATEGORIES_DATA } from '../../data/seedData';
 import { prefetchRoute } from '../../utils/prefetchRoutes';
@@ -22,6 +24,8 @@ export const Header: React.FC = () => {
   const { products, settings, getWhatsAppUrl, categories } = useData();
   const { currency, setCurrency } = useCurrency();
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { cart, setCartOpen } = useCart();
+  const totalCartCount = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
 
   // Scroll detection for sticky header transition
   const [isScrolled, setIsScrolled] = useState(false);
@@ -411,8 +415,34 @@ export const Header: React.FC = () => {
             </nav>
           </div>
 
-          {/* 3. RIGHT CORNER: USER PROFILE & LOGOUT */}
+          {/* 3. RIGHT CORNER: CART, USER PROFILE & LOGOUT */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Quotation Cart Button with Live Animated Badge */}
+            <button 
+              type="button"
+              onClick={() => setCartOpen(true)}
+              className="relative flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg border border-brand-gold/60 bg-gradient-to-r from-brand-gold/20 via-brand-navy to-brand-gold/10 hover:border-brand-gold hover:from-brand-gold/30 hover:to-amber-500/20 text-brand-gold transition-all duration-300 group cursor-pointer shrink-0 shadow-[0_0_12px_rgba(212,175,55,0.15)] hover:shadow-[0_0_18px_rgba(212,175,55,0.35)] active:scale-95"
+              title="Open Quotation Cart"
+              aria-label="Quotation Cart"
+            >
+              <div className="relative">
+                <ShoppingBag className="w-4 h-4 text-brand-gold group-hover:scale-110 transition-transform duration-300" />
+                {totalCartCount > 0 && (
+                  <span className="absolute -top-2.5 -right-2.5 bg-brand-gold text-brand-dark font-mono font-black text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center shadow-lg border border-[#070D18] animate-pulse">
+                    {totalCartCount > 99 ? '99+' : totalCartCount}
+                  </span>
+                )}
+              </div>
+              <span className="text-[11px] sm:text-xs font-heading font-black tracking-wider uppercase text-stone-100 group-hover:text-brand-gold flex items-center gap-1">
+                <span>Cart</span>
+                {totalCartCount > 0 && (
+                  <span className="hidden md:inline font-mono text-[10px] text-brand-gold/90 bg-black/40 px-1 rounded">
+                    {totalCartCount}
+                  </span>
+                )}
+              </span>
+            </button>
+
             {/* User Profile Link */}
             <Link 
               to={isAdmin ? "/admin" : "/account"} 
@@ -540,6 +570,26 @@ export const Header: React.FC = () => {
                     <span>HOME</span>
                   </span>
                   <ChevronRight className="w-4 h-4 text-slate-500" />
+                </button>
+              </div>
+
+              {/* QUICK CART ACCESS IN MOBILE DRAWER */}
+              <div className="py-2">
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setCartOpen(true);
+                  }}
+                  className="w-full flex items-center justify-between py-2.5 px-3 rounded text-left bg-brand-gold/15 border border-brand-gold/50 text-brand-gold hover:bg-brand-gold/25 transition-all shadow-md"
+                >
+                  <span className="flex items-center gap-2.5 font-heading font-black">
+                    <ShoppingBag className="w-4 h-4 text-brand-gold" />
+                    <span>QUOTATION CART</span>
+                  </span>
+                  <span className="bg-brand-gold text-brand-dark px-2 py-0.5 rounded-full text-[10px] font-mono font-black shadow">
+                    {totalCartCount} {totalCartCount === 1 ? 'item' : 'items'}
+                  </span>
                 </button>
               </div>
 
