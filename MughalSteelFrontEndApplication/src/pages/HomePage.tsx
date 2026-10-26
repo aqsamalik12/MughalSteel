@@ -63,6 +63,37 @@ export const HomePage: React.FC = () => {
     setTimeout(() => setQuickAddedId(null), 2000);
   };
 
+  const handleWipQuickAddToCart = (e: React.MouseEvent, design: any, categoryName: string, matchedProduct?: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const width = 5;
+    const height = 10;
+    const area = 50;
+    const rate = design.pricePerSqFt || matchedProduct?.pricePerSqFt || 2500;
+    const productCode = design.associatedProductCode || matchedProduct?.productCode || 'MSF-001';
+    
+    addToCart({
+      id: `wip-${design.id}-${Date.now()}`,
+      productId: design.id,
+      productCode: productCode,
+      productName: design.title,
+      productImage: design.image || matchedProduct?.images?.[0] || FALLBACK_IMAGE_URL,
+      category: categoryName,
+      item: design.subcategory || design.itemType || 'Fabrication',
+      width,
+      height,
+      area,
+      pricePerSqFt: rate,
+      material: 'Mild Steel',
+      finish: design.finishSpec || 'Matte Powder Coating',
+      gauge: design.gaugeSpec || '14-Gauge'
+    }, 1);
+
+    setQuickAddedId(design.id);
+    setCartOpen(true);
+    setTimeout(() => setQuickAddedId(null), 2000);
+  };
+
 
   const [activeVideoModal, setActiveVideoModal] = useState<{
     title: string;
@@ -1227,11 +1258,34 @@ export const HomePage: React.FC = () => {
 
                                 {/* Order & Collection Action Buttons */}
                                 <div className="pt-2 border-t border-brand-light/40 space-y-2">
+                                  {/* Quick Add to Cart Button */}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => handleWipQuickAddToCart(e, design, selectedCatObj.category, matchedProduct)}
+                                    className={`w-full py-2.5 px-3 text-xs font-heading font-black uppercase tracking-wider rounded transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-95 ${
+                                      quickAddedId === design.id 
+                                        ? 'bg-emerald-600 text-white border border-emerald-400 shadow-emerald-900/30' 
+                                        : 'bg-gradient-to-r from-amber-400 via-brand-gold to-amber-500 hover:from-amber-300 hover:to-amber-400 text-brand-dark border border-amber-300 shadow-[0_0_12px_rgba(212,175,55,0.25)]'
+                                    }`}
+                                  >
+                                    {quickAddedId === design.id ? (
+                                      <>
+                                        <Check className="w-4 h-4 text-white animate-bounce" />
+                                        <span>Added to Cart!</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <ShoppingBag className="w-4 h-4" />
+                                        <span>Add to Cart</span>
+                                      </>
+                                    )}
+                                  </button>
+
                                   <Link
                                     to={`/what-is-your-project/${encodeURIComponent(selectedCatObj.category)}/${encodeURIComponent(design.subcategory || 'Designs')}/${encodeURIComponent(design.id)}`}
-                                    className="btn-gold text-xs py-2 px-3 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 w-full shadow-lg"
+                                    className="btn-navy text-xs py-2 px-3 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 w-full shadow border border-brand-gold/30 hover:border-brand-gold hover:text-brand-gold transition"
                                   >
-                                    <Calculator className="w-3.5 h-3.5" />
+                                    <Calculator className="w-3.5 h-3.5 text-brand-gold" />
                                     <span>Size &amp; Price Calculator</span>
                                     <ArrowRight className="w-3.5 h-3.5" />
                                   </Link>
@@ -1344,12 +1398,36 @@ export const HomePage: React.FC = () => {
                             </div>
                           </div>
 
-                          {/* Action Buttons: Direct Category Drill-down & Ordering */}
+                          {/* Action Buttons: Direct Category Drill-down & Quick Add */}
                           <div className="pt-2 border-t border-brand-light/40 space-y-2">
+                            {firstDesign && (
+                              <button
+                                type="button"
+                                onClick={(e) => handleWipQuickAddToCart(e, firstDesign, proj.category, matchedProduct)}
+                                className={`w-full py-2.5 px-3 text-xs font-heading font-black uppercase tracking-wider rounded transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-95 ${
+                                  quickAddedId === firstDesign.id 
+                                    ? 'bg-emerald-600 text-white border border-emerald-400 shadow-emerald-900/30' 
+                                    : 'bg-gradient-to-r from-amber-400 via-brand-gold to-amber-500 hover:from-amber-300 hover:to-amber-400 text-brand-dark border border-amber-300 shadow-[0_0_12px_rgba(212,175,55,0.25)]'
+                                }`}
+                              >
+                                {quickAddedId === firstDesign.id ? (
+                                  <>
+                                    <Check className="w-4 h-4 text-white animate-bounce" />
+                                    <span>Added to Cart!</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <ShoppingBag className="w-4 h-4" />
+                                    <span>Add to Cart</span>
+                                  </>
+                                )}
+                              </button>
+                            )}
+
                             <button
                               type="button"
                               onClick={() => handleSelectWhatIsYourProjectCategory(proj.category)}
-                              className="btn-gold text-xs py-2 px-3 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 w-full shadow-lg cursor-pointer"
+                              className="btn-navy text-xs py-2 px-3 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 w-full shadow cursor-pointer border border-brand-gold/30 hover:border-brand-gold hover:text-brand-gold transition"
                             >
                               <span>View All {designsCount} Designs</span>
                               <ArrowRight className="w-3.5 h-3.5" />

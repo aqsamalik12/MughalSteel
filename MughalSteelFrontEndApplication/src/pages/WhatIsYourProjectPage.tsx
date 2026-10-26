@@ -7,10 +7,12 @@ import {
   ArrowRight, Sparkles, MessageCircle, Calculator, 
   Ruler, Eye, CheckCircle2, MapPin, ShieldCheck, 
   Layers, ArrowLeft, ChevronRight, Check, AlertCircle,
-  Maximize2, X, Phone, User, Info, FileText, ChevronLeft
+  Maximize2, X, Phone, User, Info, FileText, ChevronLeft,
+  ShoppingBag
 } from 'lucide-react';
 import { useSEO } from '../utils/useSEO';
 import { handleImageError, FALLBACK_IMAGE_URL } from '../utils/imageFallback';
+import { useCart } from '../context/CartContext';
 import type { ProjectDesignItem, ProjectSubcategoryItem, WhatIsYourProjectItem } from '../types';
 
 export const WhatIsYourProjectPage: React.FC = () => {
@@ -26,6 +28,9 @@ export const WhatIsYourProjectPage: React.FC = () => {
   const { whatIsYourProject, products, settings, getWhatsAppUrl } = useData();
   const { formatPrice } = useCurrency();
   const { user } = useAuth();
+  const { addToCart, setCartOpen } = useCart();
+  const [addedDesignId, setAddedDesignId] = useState<string | null>(null);
+  const [calculatorAdded, setCalculatorAdded] = useState<boolean>(false);
 
   // Scroll to top on navigation change
   useEffect(() => {
@@ -241,8 +246,90 @@ export const WhatIsYourProjectPage: React.FC = () => {
     return list.length > 0 ? list : [FALLBACK_IMAGE_URL];
   }, [activeDesign, matchedProduct]);
 
+  // Quick Add to Cart for Design Cards
+  const handleQuickAddToCart = (e: React.MouseEvent, design: ProjectDesignItem) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const defaultWidth = 10;
+    const defaultHeight = 5;
+    const defaultArea = 50;
+    const rate = design.pricePerSqFt || 2500;
+    const code = design.productCode || design.associatedProductCode || 'MSF-001';
+
+    addToCart({
+      id: `project-${design.id}-${Date.now()}`,
+      productId: design.id,
+      productCode: code,
+      productName: design.title,
+      productImage: design.image || FALLBACK_IMAGE_URL,
+      category: activeCategory?.category || 'Project Fabrication',
+      item: activeSubcategory?.title || design.subcategory || 'Fabrication',
+      width: defaultWidth,
+      height: defaultHeight,
+      area: defaultArea,
+      pricePerSqFt: rate,
+      material: 'Mild Steel',
+      finish: design.finishSpec || 'Matte Powder Coating',
+      gauge: design.gaugeSpec || '14-Gauge'
+    }, 1);
+
+    setAddedDesignId(design.id);
+    setCartOpen(true);
+    setTimeout(() => setAddedDesignId(null), 2000);
+  };
+
+  // Add Configured Design to Cart from Interactive Calculator
+  const handleAddConfiguredToCart = () => {
+    if (!width || isNaN(width) || width <= 0) {
+      setValidationError('Please enter a valid width in feet (greater than 0).');
+      return;
+    }
+    if (!height || isNaN(height) || height <= 0) {
+      setValidationError('Please enter a valid height in feet (greater than 0).');
+      return;
+    }
+    setValidationError(null);
+
+    const designCode = activeDesign?.productCode || activeDesign?.associatedProductCode || 'MSF-CUSTOM';
+    const selectedCustomizations: string[] = [];
+    if (customSize) selectedCustomizations.push('Custom Driveway Size');
+    if (customDesign) selectedCustomizations.push('Custom CNC Motif');
+    if (colorChange) selectedCustomizations.push('Custom Powder Coat Color');
+    if (automation) selectedCustomizations.push('Motor Automation (+45K)');
+    if (antiClimbSpikes) selectedCustomizations.push('Anti-Climb Spikes');
+
+    const notesSummary = [
+      selectedCustomizations.length > 0 ? `Customizations: ${selectedCustomizations.join(', ')}` : '',
+      notes.trim() ? `Note: ${notes.trim()}` : ''
+    ].filter(Boolean).join(' | ');
+
+    if (!activeDesign) return;
+
+    addToCart({
+      id: `project-calc-${activeDesign.id}-${Date.now()}`,
+      productId: activeDesign.id,
+      productCode: designCode,
+      productName: activeDesign.title,
+      productImage: galleryImages[activeGalleryIndex] || activeDesign.image || FALLBACK_IMAGE_URL,
+      category: activeCategory?.category || 'Project Fabrication',
+      item: activeSubcategory?.title || 'Custom Fabrication',
+      width: Number(width),
+      height: Number(height),
+      area: unitArea,
+      pricePerSqFt: ratePerSqFt,
+      material: 'Mild Steel',
+      finish: activeDesign.finishSpec || 'Matte Powder Coating',
+      gauge: activeDesign.gaugeSpec || '14-Gauge',
+      customNotes: notesSummary
+    }, quantity || 1);
+
+    setCalculatorAdded(true);
+    setCartOpen(true);
+    setTimeout(() => setCalculatorAdded(false), 2000);
+  };
+
   // =========================================================================
-  // STEP 6: DIRECT WHATSAPP ORDERING HANDLER (STRICTLY NO CART PAGE)
+  // STEP 6: DIRECT WHATSAPP ORDERING HANDLER
   // =========================================================================
   const handleOrderOnWhatsApp = () => {
     // 1. Validate dimensions
@@ -957,14 +1044,37 @@ export const WhatIsYourProjectPage: React.FC = () => {
                         )}
                       </div>
 
-                      {/* Action Button: Opens Dedicated Design Detail & Calculator */}
+                      {/* Action Buttons: Add to Cart & Calculator */}
                       <div className="pt-2 border-t border-brand-light/40 space-y-2">
+                        {/* Quick Add to Cart Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => handleQuickAddToCart(e, design)}
+                          className={`w-full py-2.5 px-3 text-xs font-heading font-black uppercase tracking-wider rounded transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-95 ${
+                            addedDesignId === design.id
+                              ? 'bg-emerald-600 text-white border border-emerald-400 shadow-emerald-900/30'
+                              : 'bg-gradient-to-r from-amber-400 via-brand-gold to-amber-500 hover:from-amber-300 hover:to-amber-400 text-brand-dark border border-amber-300 shadow-[0_0_12px_rgba(212,175,55,0.25)]'
+                          }`}
+                        >
+                          {addedDesignId === design.id ? (
+                            <>
+                              <Check className="w-4 h-4 text-white animate-bounce" />
+                              <span>Added to Cart!</span>
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingBag className="w-4 h-4" />
+                              <span>Add to Cart</span>
+                            </>
+                          )}
+                        </button>
+
                         <button
                           type="button"
                           onClick={() => handleSelectDesign(design)}
-                          className="btn-gold text-xs py-2.5 px-3 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 w-full shadow-lg cursor-pointer"
+                          className="btn-navy text-xs py-2 px-3 font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 w-full shadow cursor-pointer border border-brand-gold/30 hover:border-brand-gold hover:text-brand-gold transition"
                         >
-                          <Calculator className="w-3.5 h-3.5" />
+                          <Calculator className="w-3.5 h-3.5 text-brand-gold" />
                           <span>Customize &amp; Calculate</span>
                           <ArrowRight className="w-3.5 h-3.5" />
                         </button>
@@ -1396,14 +1506,37 @@ export const WhatIsYourProjectPage: React.FC = () => {
                 {/* PRIMARY ACTIONS */}
                 <div className="space-y-2.5 pt-2">
                   
-                  {/* DIRECT WHATSAPP ORDER BUTTON (ZERO CART PAGE) */}
+                  {/* ADD CONFIGURED DESIGN TO CART BUTTON */}
+                  <button
+                    type="button"
+                    onClick={handleAddConfiguredToCart}
+                    className={`w-full py-3.5 px-4 font-heading font-black uppercase tracking-wider text-xs sm:text-sm rounded transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl active:scale-[0.99] ${
+                      calculatorAdded
+                        ? 'bg-emerald-600 text-white border border-emerald-400 shadow-emerald-900/30'
+                        : 'bg-gradient-to-r from-amber-400 via-brand-gold to-amber-500 hover:from-amber-300 hover:to-amber-400 text-brand-dark border border-amber-300 shadow-[0_0_15px_rgba(212,175,55,0.3)]'
+                    }`}
+                  >
+                    {calculatorAdded ? (
+                      <>
+                        <Check className="w-5 h-5 text-white animate-bounce" />
+                        <span>Configured Design Added to Cart!</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag className="w-5 h-5" />
+                        <span>Add to Cart ({formatPrice(estimatedTotal, true)})</span>
+                      </>
+                    )}
+                  </button>
+
+                  {/* DIRECT WHATSAPP ORDER BUTTON */}
                   <button
                     type="button"
                     onClick={handleOrderOnWhatsApp}
-                    className="btn-whatsapp w-full py-3.5 px-4 font-bold uppercase tracking-wider text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xl hover:brightness-105 active:scale-[0.99] transition cursor-pointer"
+                    className="btn-whatsapp w-full py-3 px-4 font-bold uppercase tracking-wider text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xl hover:brightness-105 active:scale-[0.99] transition cursor-pointer"
                   >
                     <MessageCircle className="w-5 h-5" />
-                    <span>Order on WhatsApp (No Cart Required)</span>
+                    <span>Order on WhatsApp (Direct Inquiry)</span>
                   </button>
 
                   {/* Secondary Actions Grid */}
